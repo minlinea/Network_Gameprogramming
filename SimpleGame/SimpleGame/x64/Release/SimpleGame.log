@@ -1,0 +1,14 @@
+﻿  stdafx.cpp
+  Object.cpp
+  Renderer.cpp
+  ScnMgr.cpp
+C:\Users\rkdqm\Downloads\SimpleGame\SimpleGame\Renderer.cpp(63,34): warning C4267:  '=': 'size_t'에서 'GLint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\rkdqm\Downloads\SimpleGame\SimpleGame\ScnMgr.cpp(29,36): warning C4305:  '인수': 'double'에서 'float'(으)로 잘립니다.
+  SimpleGame.cpp
+C:\Users\rkdqm\Downloads\SimpleGame\SimpleGame\ScnMgr.cpp(49,16): warning C4244:  '초기화 중': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\rkdqm\Downloads\SimpleGame\SimpleGame\SimpleGame.cpp(25,18): warning C4244:  '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\rkdqm\Downloads\SimpleGame\SimpleGame\SimpleGame.cpp(27,15): warning C4244:  '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  TCPClientClass.cpp
+C:\Users\rkdqm\Downloads\SimpleGame\SimpleGame\SimpleGame.cpp(104,22): warning C4244:  '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+ScnMgr.obj : error LNK2001: "public: __cdecl TCPClientClass<int>::TCPClientClass<int>(void)" (??0?$TCPClientClass@H@@QEAA@XZ) 외부 기호를 확인할 수 없습니다.
+C:\Users\rkdqm\Downloads\SimpleGame\x64\Release\SimpleGame.exe : fatal error LNK1120: 1개의 확인할 수 없는 외부 참조입니다.
