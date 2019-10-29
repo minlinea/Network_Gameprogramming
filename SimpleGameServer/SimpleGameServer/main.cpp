@@ -14,6 +14,7 @@ struct FileData {
 	unsigned int byte;
 };
 #pragma pack()	// 구조체 멤버 맞춤을 기본값으로 환원
+
 #pragma pack(1)
 struct InputData
 {
@@ -29,7 +30,7 @@ struct InputData
 #pragma pack()
 //	global variable
 char			NumOfClient{ 0 };
-InputData	ClientsInput[4];
+InputData	ClientsInput[256];
 //
 
 void update(void);
@@ -94,35 +95,34 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)& clientaddr, &addrlen);
 
-	while (1) {
+	while (1)
+	{
 		// 데이터 받기
 		retval = recv(client_sock, (char*)&ClientsInput[clientNumber-1], sizeof(ClientsInput[clientNumber - 1]), 0);
-		if (retval == SOCKET_ERROR) {
+		if (retval == SOCKET_ERROR)
+		{
 			err_display("recv()");
 			break;
 		}
 		else if (retval == 0)
 			break;
 
-		/*data.Down = 1;
-		data.Up = 1;
-		data.Right = 1;
-		data.Left = 1;
-		data.Interact1 = 1;*/
-
-		//받은 데이터 출력
-		//printf("%d %d %d %d %d %d %d %d \n", data.Up, data.Down, data.Left, data.Right, data.Interact1, data.Interact2, data.Interact3, data.Interact4);
-
-
 		retval = send(client_sock, (char*)& NumOfClient, sizeof(NumOfClient), 0);
-		if (retval == SOCKET_ERROR) {
+		if (retval == SOCKET_ERROR)
+		{
 			err_display("send()");
 			break;
 		}
 
-
 		for (int i = 0; i < NumOfClient; ++i)
+		{
 			retval = send(client_sock, (char*)& ClientsInput[i], sizeof(InputData), 0);
+			if (retval == SOCKET_ERROR)
+			{
+				err_display("send()");
+				break;
+			}
+		}
 	}
 
 	//closesocket()
@@ -175,8 +175,6 @@ int main(int argc, char* argv[])
 	int addrlen;
 	HANDLE hThread;
 
-	//
-
 	while (1) {
 		// accept()
 		addrlen = sizeof(clientaddr);
@@ -190,15 +188,18 @@ int main(int argc, char* argv[])
 
 		// 스레드 생성
 		NumOfClient += 1;
-		hThread = CreateThread(NULL, 0, ProcessClient,
-			(LPVOID)client_sock, 0, NULL);
-		if (hThread == NULL) { closesocket(client_sock); }
-		else { CloseHandle(hThread); }
+		printf("접속인원이%d가되었어요\n", NumOfClient);
+		hThread = CreateThread(NULL, 0, ProcessClient, (LPVOID)client_sock, 0, NULL);
+		if (hThread == NULL)
+		{
+			closesocket(client_sock);
+		}
+		else
+		{
+			CloseHandle(hThread);
+		}
 
 	}
-
-	while (1)
-		update();
 
 	//closesocket()
 	closesocket(listen_sock);
