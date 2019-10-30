@@ -1,5 +1,6 @@
 #pragma comment(lib, "ws2_32")
 #pragma warning(disable:4996) 
+#include <vector>
 #include <winsock2.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -32,6 +33,64 @@ struct InputData
 char			NumOfClient{ 0 };
 InputData	ClientsInput[256];
 //
+const int MAX_PLAYER{ 3 };
+
+
+enum status
+{
+	dead, live
+};
+struct Player
+{
+	float x, y;
+	status stat;
+	SOCKET clientSocket;
+	InputData KeyInput;
+	// 등등 게임 로직에 필요한 변수
+};
+struct GAMEMAP
+{
+
+};
+
+struct GameServerThreadData
+{
+	std::vector<SOCKET*> pClients;
+	std::vector<Player*> pPlayers;		// 플레이어 개개인의 상태 구조체 (소켓 프로그래밍과 무관)
+
+	char		m_nCurrentPlayerAmount;
+	bool		m_bMapChanged;
+	CGameTimer	m_timer;				// 업데이트에서 프레임시간연산할때 사용
+	GAMEMAP		m_Map;
+
+	void MakeCommunicationThread(void);
+};
+
+DWORD WINAPI GameServerThread(LPVOID* arg)
+{
+	GameServerThreadData gameData;
+
+	for (int i = 0; i < MAX_PLAYER; ++i)
+	{
+		gameData.MakeCommunicationThread();
+	}
+
+	while (1)
+	{
+		// 게임 업데이트
+	}
+}
+
+DWORD WINAPI ClientCommunicationThread(LPVOID* arg)
+{
+	Player* pPlayer = (Player*)arg; // 게임서버스레드의 플레이어 정보를 가지고 클라이언트와 통신한다
+	
+	recv(pPlayer->clientSocket, (char*)pPlayer->KeyInput, sizeof(InputData), 0);
+
+	//send () 맵변경여부 클라이언트길이
+	//send () 플레이어가 렌더하는데 필요한 정보들
+	return 0;
+}
 
 void update(void);
 
@@ -107,6 +166,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		else if (retval == 0)
 			break;
 
+		// 유저 수 보내기
 		retval = send(client_sock, (char*)& NumOfClient, sizeof(NumOfClient), 0);
 		if (retval == SOCKET_ERROR)
 		{
@@ -114,6 +174,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			break;
 		}
 
+		// 유저 수 만큼의 개별 유저 입력 정보 보내기
 		for (int i = 0; i < NumOfClient; ++i)
 		{
 			retval = send(client_sock, (char*)& ClientsInput[i], sizeof(InputData), 0);
