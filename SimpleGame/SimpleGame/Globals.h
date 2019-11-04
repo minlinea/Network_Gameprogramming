@@ -1,14 +1,9 @@
 #pragma once
-////////////////////ScnMgr.cpp///////////////////////////
-#define MAX_OBJ_NUM 1000
-////////////////////Object.cpp///////////////////////////
-#define VELOCITY 10
-#define WINWIDTH  500
-#define WINHEIGHT 500
-////////////////////Object.cpp///////////////////////////
-#define HERO_ID 0		//히어로 아이디가 무조건 0번이다
-/////////////////////////////////////////////////////
+#define MAX_OBJ_COUNT 1000
+#define HERO_ID 0
 #define GRAVITY 9.8f
+
+#define FAMOUNT 20.f;
 
 #define TYPE_NORMAL 0
 #define TYPE_BULLET 1

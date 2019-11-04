@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Object.h"
-#include <iostream>
+#include "Globals.h"
 #include <math.h>
-
+#include <float.h>
 
 Object::Object()
 {
@@ -11,71 +11,56 @@ Object::Object()
 
 Object::~Object()
 {
+
 }
-/////////////////////////////////////////////////////////////////////
-void Object::InitPhysics()
+
+void Object::Update(float ElapsedTime)
 {
-	m_posX = m_posY = m_posZ = 0;
-	m_volX = m_volY = m_volZ = 0;
-	m_velX = 0;
-	m_velY = 0;
-	m_velZ = 0;
-	m_accX = m_accY = m_accZ = 0;
-	m_r = m_g = m_b = m_a = 0;
-	m_mass = 0;
-	m_fricCoef = 0.f;
-}
-void Object::Update(float elapsedTimeInSec)
-{
-	/////////////Apply friction///////////////////
-	float nForce = m_mass * GRAVITY;  //scalar
+	// 쿨타임 줄이기
+	m_RemainingCoolTime -= ElapsedTime;
+
+
+	//마찰 계수 적용
+	float nForce = m_mass * GRAVITY; //scalar
 	float fForce = m_fricCoef * nForce;	//scalar
-	float velSize = sqrtf(m_velX * m_velX + m_velY * m_velY);
+	float velSize = sqrtf(m_velX*m_velX + m_velY * m_velY);
 	if (velSize > 0.f)
 	{
 		float fDirX = -1.f * m_velX / velSize;
 		float fDirY = -1.f * m_velY / velSize;
-		float fDirZ = -1.f * m_velZ / velSize;
 		fDirX = fDirX * fForce;
 		fDirY = fDirY * fForce;
 		float fAccX = fDirX / m_mass;
 		float fAccY = fDirY / m_mass;
-		float newX = m_velX + fAccX * elapsedTimeInSec;
-		float newY = m_velY + fAccY * elapsedTimeInSec;
-
-		if (newX * m_velX < 0.f)
+		float newX = m_velX + fAccX * ElapsedTime;
+		float newY = m_velY + fAccY * ElapsedTime;
+		if (newX*m_velX < 0.f)
 		{
 			m_velX = 0.f;
 		}
 		else
+		{
 			m_velX = newX;
-		if (newY * m_velY < 0.f)
+		}
+		if (newY*m_velY < 0.f)
 		{
 			m_velY = 0.f;
 		}
 		else
+		{
 			m_velY = newY;
+		}
 	}
-	
-	//////////////////////////////////////////////
-	m_posX += m_velX * elapsedTimeInSec;
-	if (m_posX > WINWIDTH / 2)
-		m_posX = -WINWIDTH / 2;
-	if( m_posX < -WINWIDTH / 2)
-		m_posX = WINWIDTH / 2;
-	//std::cout << m_posX << std::endl;
-	if (m_posY < WINHEIGHT / 2 && m_posY > -WINHEIGHT / 2)m_posY += m_velY * elapsedTimeInSec;
-	else {
-		m_posY -= m_velY * elapsedTimeInSec; m_velY *= -1;
-	}
-	if (m_posZ<250 && m_posZ > -250)m_posZ += m_velZ * elapsedTimeInSec;
-	else {
-		m_posZ -= m_velZ * elapsedTimeInSec; m_velZ *= -1;
-	}
+	//마찰 계수 적용
 
+
+	//위치
+	m_posX = m_posX + m_velX * ElapsedTime;
+	m_posY = m_posY + m_velY * ElapsedTime;
+	m_posZ = m_posZ + m_velZ * ElapsedTime;
 }
 
-void Object::AddForce(float x, float y, float z,float elapsedTimeInSec)
+void Object::AddForce(float x, float y, float z, float ElapsedTime)
 {
 	float accX, accY, accZ;
 	accX = accY = accZ = 0.f;
@@ -84,81 +69,40 @@ void Object::AddForce(float x, float y, float z,float elapsedTimeInSec)
 	accY = y / m_mass;
 	accZ = z / m_mass;
 
-	m_velX = m_velX + accX * elapsedTimeInSec;
-	m_velY = m_velY + accY * elapsedTimeInSec;
-	m_velZ = m_velZ+ accZ * elapsedTimeInSec;
+	m_velX = m_velX + accX * ElapsedTime;
+	m_velY = m_velY + accY * ElapsedTime;
+	m_velZ = m_velZ + accZ * ElapsedTime;
 }
 
-//////////////////////////////////////////////
-float Object::GetPos(float* x, float* y, float* z)
+void Object::InitPhysics()
 {
-	*x = m_posX;
-	*y = m_posY;
-	*z = m_posZ;
+	float default_setting = 0;
+
+	m_posX = m_posY = m_posZ = default_setting;
+	m_r = m_g = m_b = m_a = default_setting;
+	m_posX = m_posY = m_posZ = default_setting;
+
+	m_velX = m_velY = m_velZ = default_setting;
+	m_accX = m_accY = m_accZ = default_setting;
+	m_volX = m_volY = m_volZ = default_setting;
+	m_mass = default_setting;
+	m_fricCoef = default_setting;
 }
 
-float Object::GetMass(float* mass)
+bool Object::CanShootBullet()
 {
-	*mass = m_mass;
+	if (m_RemainingCoolTime < FLT_EPSILON)
+		return true;
+
+	return false;
 }
-float Object::GetVel(float* x, float* y, float* z)
+void Object::ResetBulletCoolTime()
 {
-	*x = m_velX;
-	*y = m_velY;
-	*z = m_velZ;
-}
-float Object::GetAcc(float* x, float* y, float* z)
-{
-	*x = m_accX;
-	*y = m_accY;
-	*z = m_accZ;
-}
-float Object::GetVol(float* x, float* y, float* z)
-{
-	*x = m_volX;
-	*y = m_volY;
-	*z = m_volZ;
+	m_RemainingCoolTime = m_CurrentCoolTime;
 }
 
 
-float Object::GetColor(float* r, float* g, float* b, float* a)
-{
-	*r = m_r;
-	*g = m_g;
-	*b = m_b;
-	*a = m_a;
-}
 
-
-void Object::SetPos(float x, float y, float z)
-{
-	m_posX = x;
-	m_posY = y;
-	m_posZ = z;
-}
-
-void Object::SetAcc(float x, float y, float z)
-{
-	m_accX = x;
-	m_accY = y;
-	m_accZ = z;
-}
-void Object::SetMass(float mass)
-{
-	m_mass = mass;
-}
-void Object::SetVel(float x, float y, float z)
-{
-	m_velX = x;
-	m_velY = y;
-	m_velZ = z;
-}
-void Object::SetVol(float x, float y, float z)
-{
-	m_volX = x;
-	m_volY = y;
-	m_volZ = z;
-}
 void Object::SetColor(float r, float g, float b, float a)
 {
 	m_r = r;
@@ -166,6 +110,75 @@ void Object::SetColor(float r, float g, float b, float a)
 	m_b = b;
 	m_a = a;
 }
+void Object::GetColor(float *r, float *g, float *b, float *a)
+{
+	*r = m_r;
+	*g = m_g;
+	*b = m_b;
+	*a = m_a;
+}
+
+void Object::SetPos(float posX, float posY, float posZ)
+{
+	m_posX = posX;
+	m_posY = posY;
+	m_posZ = posZ;
+}
+void Object::GetPos(float *posX, float *posY, float *posZ)
+{
+	*posX = m_posX;
+	*posY = m_posY;
+	*posZ = m_posZ;
+}
+
+void Object::SetMass(float mass)
+{
+	m_mass = mass;
+}
+void Object::GetMass(float *mass)
+{
+	*mass = m_mass;
+}
+
+void Object::SetAcc(float accX, float accY, float accZ)
+{
+	m_accX = accX;
+	m_accY = accY;
+	m_accZ = accZ;
+}
+void Object::GetAcc(float *accX, float *accY, float *accZ)
+{
+	*accX = m_accX;
+	*accY = m_accY;
+	*accZ = m_accZ;
+}
+
+void Object::SetVel(float velX, float velY, float velZ)
+{
+	m_velX = velX;
+	m_velY = velY;
+	m_velZ = velZ;
+}
+void Object::GetVel(float *velX, float *velY, float *velZ)
+{
+	*velX = m_velX;
+	*velY = m_velY;
+	*velZ = m_velZ;
+}
+
+void Object::SetVol(float volX, float volY, float volZ)
+{
+	m_volX = volX;
+	m_volY = volY;
+	m_volZ = volZ;
+}
+void Object::GetVol(float *volX, float *volY, float *volZ)
+{
+	*volX = m_volX;
+	*volY = m_volY;
+	*volZ = m_volZ;
+}
+
 void Object::SetFricCoef(float coef)
 {
 	m_fricCoef = coef;
@@ -175,11 +188,11 @@ void Object::GetFricCoef(float *coef)
 	*coef = m_fricCoef;
 }
 
-void  Object::SetType(int type)
+void Object::SetType(int type)
 {
 	m_type = type;
 }
-void  Object::GetType(int* type)
+void Object::GetType(int *type)
 {
 	*type = m_type;
 }
