@@ -21,12 +21,10 @@ ScnMgr::ScnMgr()
 	//가급적 수동으로 지우는건 지양하지만, 초기화 할 때는 괜찮다.
 
 	m_Obj[HERO_ID] = new Object();
-	m_Obj[HERO_ID]->SetPos(0,0,0);
-	m_Obj[HERO_ID]->SetVol(0.5,0.5,0.5);
-	m_Obj[HERO_ID]->SetColor(1, 1, 1, 1);
-	m_Obj[HERO_ID]->SetVel(0, 0, 0);
-	m_Obj[HERO_ID]->SetMass(1);	//1kg
-	m_Obj[HERO_ID]->SetFricCoef(0.7);
+	m_Obj[HERO_ID]->SetPos({ 0,0 });
+	m_Obj[HERO_ID]->SetVol({ 1,1 });
+	m_Obj[HERO_ID]->SetColor({ 1, 1, 1, 1 });
+	m_Obj[HERO_ID]->SetVel({ 1,1 });
 	m_Obj[HERO_ID]->SetType(TYPE_NORMAL);
 }
 
@@ -48,75 +46,71 @@ void ScnMgr::RenderScene(float ElapsedTime)
 	glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
 
 	// Renderer Test
-	m_Renderer->DrawSolidRect(50, 0, 0, 50, 0, 0, 1, 1);
-	m_Renderer->DrawSolidRect(0, 0, 0, 100, 1, 1, 0, 1);
+	//m_Renderer->DrawSolidRect(50, 0, 0, 50, 0, 0, 1, 1);
+	//m_Renderer->DrawSolidRect(0, 0, 0, 100, 1, 1, 0, 1);
 
 	for (int i = 0; i < MAX_OBJ_COUNT; ++i)
 	{
 		if (m_Obj[i] != NULL)
 		{
-			float x, y, z = 0;
-			float sx, sy, sz = 0;
-			float r, g, b, a = 0;
-			m_Obj[i]->GetPos(&x, &y, &z);
-			m_Obj[i]->GetVol(&sx, &sy, &sz);
-			m_Obj[i]->GetColor(&r, &g, &b, &a);
+			Float2 pos;
+			Float2 vol;
+			Color4 col;
+			m_Obj[i]->GetPos(&pos);
+			m_Obj[i]->GetVol(&vol);
+			m_Obj[i]->GetColor(&col);
 
 			//1m = 100cm = 100pixels
 			//x = x * 100.f;	sx = sx * 100.f;
 			//y = y * 100.f;	 sy = sy * 100.f;
 			//z = z * 100.f;	 sz = sz * 100.f;
-			m_Renderer->DrawSolidRect(x * 100.f, y * 100.f, z * 100.f, sx * 100.f, r, g, b, a);
+			m_Renderer->DrawSolidRect(pos.x * 100.f, pos.y * 100.f, 0, vol.x * 100.f, col.r, col.g, col.b, col.a);
 		}
-		//else
-		//{
-		//	std::cout << "m_Obj[" << i << "] is NULL" << std::endl;
-		//}
 	}
 }
 
-int ScnMgr::AddObject(float x, float y, float z,
-					float sx, float sy, float sz,
-					float r, float g, float b, float a,
-					float vx, float vy, float vz,
-					float mass,
-					float fricCoef,
-					int type)
-{
-	// TEST OBJECT CLASS
-	int idx = -1;
-
-	for (int i = 0; i < MAX_OBJ_COUNT; ++i)
-	{
-		if (m_Obj[i] == NULL)
-		{
-			idx = i;
-			break;
-		}
-	}
-	if (idx == -1)
-	{
-		std::cout << "No more empty obj slot. " << std::endl;
-		return -1;
-	}
-
-	m_Obj[idx] = new Object();
-	m_Obj[idx]->SetPos(x, y, z);
-	m_Obj[idx]->SetVol(sx, sy, sz);
-	m_Obj[idx]->SetColor(r, g, b, a);
-	m_Obj[idx]->SetVel(vx, vy, vz);
-	m_Obj[idx]->SetMass(mass);
-	m_Obj[idx]->SetFricCoef(fricCoef);
-	m_Obj[idx]->SetType(type);
-	return idx;
-
-}
+//int ScnMgr::AddObject(float x, float y, float z,
+//					float sx, float sy, float sz,
+//					float r, float g, float b, float a,
+//					float vx, float vy, float vz,
+//					float mass,
+//					float fricCoef,
+//					int type)
+//{
+//	// TEST OBJECT CLASS
+//	int idx = -1;
+//
+//	for (int i = 0; i < MAX_OBJ_COUNT; ++i)
+//	{
+//		if (m_Obj[i] == NULL)
+//		{
+//			idx = i;
+//			break;
+//		}
+//	}
+//	if (idx == -1)
+//	{
+//		std::cout << "No more empty obj slot. " << std::endl;
+//		return -1;
+//	}
+//
+//	m_Obj[idx] = new Object();
+//	m_Obj[idx]->SetPos(x, y, z);
+//	m_Obj[idx]->SetVol(sx, sy, sz);
+//	m_Obj[idx]->SetColor(r, g, b, a);
+//	m_Obj[idx]->SetVel(vx, vy, vz);
+//	m_Obj[idx]->SetMass(mass);
+//	m_Obj[idx]->SetFricCoef(fricCoef);
+//	m_Obj[idx]->SetType(type);
+//	return idx;
+//
+//}
 
 void ScnMgr::DeleteObject(int idx)
 {
 	if (idx < 0)
 	{
-		std::cout << "input idx is negative : " << idx << std::endl;	
+		std::cout << "input idx is negative : " << idx << std::endl;
 		return;
 	}
 
@@ -131,13 +125,13 @@ void ScnMgr::DeleteObject(int idx)
 		std::cout << "m_Obj[" << idx << "] is NULL" << std::endl;
 		return;
 	}
-	
+
 	delete m_Obj[idx];
 	m_Obj[idx] = NULL;
 	return;
 }
 
-Object *ScnMgr::GetObj() const
+Object* ScnMgr::GetObj() const
 {
 	return *m_Obj;
 }
@@ -145,97 +139,58 @@ Object *ScnMgr::GetObj() const
 void ScnMgr::Update(float ElapsedTime)
 {
 	//character control
-	std::cout << "W: " << m_KeyW
-				<< ", A: " << m_KeyA
-				<< ", S: " << m_KeyS
-				<< ", D: " << m_KeyD << std::endl;
+	std::cout << "Up: " << m_key.Up
+		<< ", Down: " << m_key.Down
+		<< ", Left: " << m_key.Left
+		<< ", Right: " << m_key.Right << std::endl;
 
-		std::cout << "Up: " << m_KeyUp
-		<< ", Left: " << m_KeyLeft
-		<< ", Down: " << m_KeyDown
-		<< ", Right: " << m_KeyRight << std::endl;
 
-	float fx, fy, fz;
-	fx = fy = fz = 0.f;
+	Float2 f;
+	f.x = f.y = 0;
 	float fAmount = 10.f;
-	if (m_KeyW)
+	if (m_key.Up)
 	{
-		fy += 1.f;
+		f.y += 1.f;
 	}
-	if (m_KeyS)
+	if (m_key.Down)
 	{
-		fy -= 1.f;
+		f.y -= 1.f;
 	}
-	if (m_KeyD)
+	if (m_key.Right)
 	{
-		fx += 1.f;
+		f.x += 1.f;
 	}
-	if (m_KeyA)
+	if (m_key.Left)
 	{
-		fx -= 1.f;
+		f.x -= 1.f;
 	}
 
-	// Add control force to hero
-	float fsize = sqrtf(fx*fx + fy * fy + fz * fz);
+	//// Add control force to hero
+	float fsize = sqrtf(f.x * f.x + f.y * f.y );
 	if (fsize > FLT_EPSILON)
 	{
-		fx /= fsize;
-		fy /= fsize;
-		fz /= fsize;
-		fx *= fAmount;
-		fy *= fAmount;
-		fz *= fAmount;
-		m_Obj[HERO_ID]->AddForce(fx, fy, fz, ElapsedTime);
+		f.x /= fsize;
+		f.y /= fsize;
+		f.x *= fAmount;
+		f.y *= fAmount;
+
+		m_Obj[HERO_ID]->AddForce(f.x, f.y, ElapsedTime);
 	}
 	//Fire bullets
-	if(m_Obj[HERO_ID]->CanShootBullet())
+	if (m_Obj[HERO_ID]->CanShootBullet())
 	{
-		float bulletVel = 5.f;
-		float vBulletX, vBulletY, vBulletZ;
-		vBulletX = vBulletY = vBulletZ = 0.f;
 
-		if (m_KeyUp)
-			vBulletY += 1.f;
-		if (m_KeyLeft)
-			vBulletX -= 1.f;
-		if (m_KeyRight)
-			vBulletX += 1.f;
-		if (m_KeyDown)
-			vBulletY -= 1.f;
+		/*AddObject(hx, hy, hz,
+						0.1, 0.1, 0.1,
+						1, 0, 0, 1,
+						vBulletX, vBulletY, vBulletZ,
+						1.f,
+						0.7f,
+						TYPE_BULLET);*/
 
-		float vBulletSize = sqrtf(vBulletX * vBulletX + vBulletY * vBulletY + vBulletZ * vBulletZ);
-		if (vBulletSize > FLT_EPSILON)
-		{
-			//create bullet
-			//normalize
-			vBulletX /= vBulletSize;
-			vBulletY /= vBulletSize;
-			vBulletZ /= vBulletSize;
-			//실제 속도
-			vBulletX *= bulletVel;
-			vBulletY *= bulletVel;
-			vBulletZ *= bulletVel;
-
-			float hx, hy, hz;
-			float hvx, hvy, hvz;
-			m_Obj[HERO_ID]->GetPos(&hx, &hy, &hz);
-			m_Obj[HERO_ID]->GetVel(&hvx, &hvy, &hvz);
-
-			vBulletX += hvx;
-			vBulletY += hvy;
-			vBulletZ += hvz;
-
-			AddObject(hx, hy, hz,
-							0.1, 0.1, 0.1,
-							1, 0, 0, 1,
-							vBulletX, vBulletY, vBulletZ,
-							1.f,
-							0.7f, 
-							TYPE_BULLET);
-
-			m_Obj[HERO_ID]->ResetBulletCoolTime();
-		}
+		m_Obj[HERO_ID]->ResetBulletCoolTime();
 	}
+
 
 	for (int i = 0; i < MAX_OBJ_COUNT; ++i)
 	{
@@ -254,9 +209,9 @@ void ScnMgr::DoGarbageCollection()
 			m_Obj[i]->GetType(&type);
 			if (type == TYPE_BULLET)
 			{
-				float vx, vy, vz;
-				m_Obj[i]->GetVel(&vx, &vy, &vz);
-				float vSize = sqrtf(vx * vx + vy * vy + vz * vz);
+				Float2 v;
+				m_Obj[i]->GetVel(&v);
+				float vSize = sqrtf(v.x * v.x + v.y * v.y );
 				if (vSize < FLT_EPSILON)
 					DeleteObject(i);
 			}
@@ -270,23 +225,23 @@ void ScnMgr::KeyDownInput(unsigned char key, int x, int y)
 {
 	if (key == 'w' || key == 'W')
 	{
-		m_KeyW = true;
+		m_key.notuse0 = true;
 	}
 	if (key == 'a' || key == 'A')
 	{
-		m_KeyA = true;
+		m_key.notuse1 = true;
 	}
 	if (key == 's' || key == 'S')
 	{
-		m_KeyS = true;
+		m_key.notuse2 = true;
 	}
 	if (key == 'd' || key == 'D')
 	{
-		m_KeyD = true;
+		m_key.notuse3 = true;
 	}
 	if (key == 'r' || key == 'R')
 	{
-		m_Obj[HERO_ID]->SetPos(0, 0, 0);
+		m_Obj[HERO_ID]->SetPos({ 0, 0 });
 	}
 }
 
@@ -294,19 +249,19 @@ void ScnMgr::KeyUpInput(unsigned char key, int x, int y)
 {
 	if (key == 'w' || key == 'W')
 	{
-		m_KeyW = false;
+		m_key.notuse0 = false;
 	}
 	if (key == 'a' || key == 'A')
 	{
-		m_KeyA = false;
+		m_key.notuse1 = false;
 	}
 	if (key == 's' || key == 'S')
 	{
-		m_KeyS = false;
+		m_key.notuse2 = false;
 	}
 	if (key == 'd' || key == 'D')
 	{
-		m_KeyD = false;
+		m_key.notuse3 = false;
 	}
 }
 
@@ -314,19 +269,19 @@ void ScnMgr::SpecialKeyDownInput(int key, int x, int y)
 {
 	if (key == GLUT_KEY_UP)
 	{
-		m_KeyUp = true;
+		m_key.Up = true;
 	}
 	if (key == GLUT_KEY_LEFT)
 	{
-		m_KeyLeft = true;
+		m_key.Left = true;
 	}
 	if (key == GLUT_KEY_DOWN)
 	{
-		m_KeyDown = true;
+		m_key.Down = true;
 	}
 	if (key == GLUT_KEY_RIGHT)
 	{
-		m_KeyRight = true;
+		m_key.Right = true;
 	}
 }
 
@@ -334,19 +289,19 @@ void ScnMgr::SpecialKeyUpInput(int key, int x, int y)
 {
 	if (key == GLUT_KEY_UP)
 	{
-		m_KeyUp = false;
+		m_key.Up = false;
 	}
 	if (key == GLUT_KEY_LEFT)
 	{
-		m_KeyLeft = false;
+		m_key.Left = false;
 	}
 	if (key == GLUT_KEY_DOWN)
 	{
-		m_KeyDown = false;
+		m_key.Down = false;
 	}
 	if (key == GLUT_KEY_RIGHT)
 	{
-		m_KeyRight = false;
+		m_key.Right = false;
 	}
 }
 
