@@ -7,10 +7,6 @@
 
 #include "Dependencies\glew.h"
 
-#include "Dependencies\glm/glm.hpp"
-#include "Dependencies\glm/gtc/matrix_transform.hpp"
-#include "Dependencies\glm/gtx/euler_angles.hpp"
-
 class Renderer
 {
 public:
@@ -26,6 +22,7 @@ private:
 	void AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType);
 	GLuint CompileShaders(char* filenameVS, char* filenameFS);
 	void CreateVertexBufferObjects();
+	void GetGLPosition(float x, float y, float *newX, float *newY);
 
 	bool m_Initialized = false;
 	
@@ -34,18 +31,5 @@ private:
 
 	GLuint m_VBORect = 0;
 	GLuint m_SolidRectShader = 0;
-
-	//camera position
-	glm::vec3 m_v3Camera_Position;
-	//camera lookat position
-	glm::vec3 m_v3Camera_Lookat;
-	//camera up vector
-	glm::vec3 m_v3Camera_Up;
-
-	glm::mat4 m_m4OrthoProj;
-	glm::mat4 m_m4PersProj;
-	glm::mat4 m_m4Model;
-	glm::mat4 m_m4View;
-	glm::mat4 m_m4ProjView;
 };
 

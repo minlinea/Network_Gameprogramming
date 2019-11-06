@@ -31,7 +31,7 @@ ScnMgr 클래스 구현
 
 #include "ScnMgr.h"
 
-ScnMgr *g_ScnMgr = NULL;
+ScnMgr* g_ScnMgr = NULL;
 int g_PrevTime = 0;
 
 void RenderScene(int temp)
@@ -82,7 +82,7 @@ void SpecialKeyUpInput(int key, int x, int y)
 	g_ScnMgr->SpecialKeyUpInput(key, x, y);
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 	// Initialize GL things
 	glutInit(&argc, argv);
@@ -104,8 +104,8 @@ int main(int argc, char **argv)
 	// 생성자는 이곳에
 
 	g_ScnMgr = new ScnMgr;
-	
-	
+
+
 	// 생성자는 이곳에
 
 	glutDisplayFunc(Display);
@@ -124,21 +124,21 @@ int main(int argc, char **argv)
 
 	glutMainLoop();
 
-	 //소멸자는 이곳에
-	//Object* p_Obj = g_ScnMgr->GetObj();
-	//for (int i = 0; i < MAX_OBJ_COUNT; ++i)
-	//{
-	//	if (p_Obj[i] != NULL)
-	//	{
-	//		DeleteObject(i);
-	//		std::cout << i << "번 오브젝트 삭제 완료" << std::endl;
-	//	}
-	//}
+	//소멸자는 이곳에
+   //Object* p_Obj = g_ScnMgr->GetObj();
+   //for (int i = 0; i < MAX_OBJ_COUNT; ++i)
+   //{
+   //	if (p_Obj[i] != NULL)
+   //	{
+   //		DeleteObject(i);
+   //		std::cout << i << "번 오브젝트 삭제 완료" << std::endl;
+   //	}
+   //}
 
 	delete g_ScnMgr;
 
 
 	// 소멸자는 이곳에
-    return 0;
+	return 0;
 }
 

@@ -48,8 +48,8 @@ void ScnMgr::RenderScene(float ElapsedTime)
 	glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
 
 	// Renderer Test
-	//m_Renderer->DrawSolidRect(50, 0, 0, 50, 0, 0, 1, 1);
-	//m_Renderer->DrawSolidRect(0, 0, 0, 100, 1, 1, 0, 1);
+	m_Renderer->DrawSolidRect(50, 0, 0, 50, 0, 0, 1, 1);
+	m_Renderer->DrawSolidRect(0, 0, 0, 100, 1, 1, 0, 1);
 
 	for (int i = 0; i < MAX_OBJ_COUNT; ++i)
 	{
@@ -145,15 +145,15 @@ Object *ScnMgr::GetObj() const
 void ScnMgr::Update(float ElapsedTime)
 {
 	//character control
-	//std::cout << "W: " << m_KeyW
-	//			<< ", A: " << m_KeyA
-	//			<< ", S: " << m_KeyS
-	//			<< ", D: " << m_KeyD << std::endl;
+	std::cout << "W: " << m_KeyW
+				<< ", A: " << m_KeyA
+				<< ", S: " << m_KeyS
+				<< ", D: " << m_KeyD << std::endl;
 
-		//std::cout << "Up: " << m_KeyUp
-		//<< ", Left: " << m_KeyLeft
-		//<< ", Down: " << m_KeyDown
-		//<< ", Right: " << m_KeyRight << std::endl;
+		std::cout << "Up: " << m_KeyUp
+		<< ", Left: " << m_KeyLeft
+		<< ", Down: " << m_KeyDown
+		<< ", Right: " << m_KeyRight << std::endl;
 
 	float fx, fy, fz;
 	fx = fy = fz = 0.f;
@@ -236,9 +236,6 @@ void ScnMgr::Update(float ElapsedTime)
 			m_Obj[HERO_ID]->ResetBulletCoolTime();
 		}
 	}
-
-
-
 
 	for (int i = 0; i < MAX_OBJ_COUNT; ++i)
 	{
