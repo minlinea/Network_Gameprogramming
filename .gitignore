@@ -83,3 +83,4 @@ DemoProejct/Saved/AutoScreenshot.png
 DemoProejct/Saved/Logs/DemoProejct.log
 DemoProejct/Saved/Autosaves/PackageRestoreData.json
 *.tlog
+*.pdb
