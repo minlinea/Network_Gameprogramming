@@ -16,12 +16,36 @@ typedef struct InputData
 	bool Down;
 	bool Left;
 	bool Right;
-	bool Interact1;
-	bool Interact2;
-	bool Interact3;
-	bool Interact4;
+	bool attack;
+	bool button0;
+	bool button1;
+	bool button2;
+	bool button3;
+	bool button4;
+	bool button5;
+	bool button6;
+	bool button7;
+	bool button8;
+	bool button9;
+	bool button10;
 }
 InputData;
+#pragma pack()
+
+#pragma pack(1)
+struct FixedData
+{
+	bool mapChanged;
+	char NumOfClient;
+};
+#pragma pack()
+
+#pragma pack(1)
+struct PlayerData
+{
+	float x;
+	float y;
+};
 #pragma pack()
 
 // 소켓 함수 오류 출력 후 종료
@@ -102,8 +126,8 @@ int main(int argc, char *argv[])
 	if (retval == SOCKET_ERROR) err_quit("connect()");
 
 	InputData myInput;
-	InputData entireUserInput[256];
-	char NumofUser;
+	PlayerData Players[10];
+	FixedData fPacketH2C;
 
 	// 업데이트시작
 	while (1)
@@ -112,10 +136,6 @@ int main(int argc, char *argv[])
 		myInput.Down = false;
 		myInput.Left = false;
 		myInput.Right = false;
-		myInput.Interact1 = false;
-		myInput.Interact2 = false;
-		myInput.Interact3 = false;
-		myInput.Interact4 = false;
 
 		//
 		// 키 감지
@@ -127,21 +147,24 @@ int main(int argc, char *argv[])
 			myInput.Left = 1;
 		if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 			myInput.Right = 1;
-		if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
-			myInput.Interact1 = 1;
 		//
 
 		send(sock, (char*)& myInput, sizeof(myInput), 0);
 
-		recv(sock, (char*)& NumofUser, sizeof(NumofUser), 0);
+		recv(sock, (char*)& fPacketH2C, sizeof(FixedData), 0);
 
-		for (int i = 0; i < NumofUser; ++i)
-			recv(sock, (char*)& entireUserInput[i], sizeof(InputData), 0);
+		if (fPacketH2C.mapChanged)
+		{
+			//
+		}
+
+		for (int i = 0; i < fPacketH2C.NumOfClient; ++i)
+			recv(sock, (char*)& Players[i], sizeof(PlayerData), 0);
 
 		// 출력부
 		system("cls");
-		for (int i = 0; i < NumofUser; ++i)
-			printf("\n###%d번 유저###\nUp\t%d\nDown\t%d\nLeft\t%d\nRight\t%d\n", i, entireUserInput[i].Up, entireUserInput[i].Down, entireUserInput[i].Left, entireUserInput[i].Right);
+		for (int i = 0; i < fPacketH2C.NumOfClient; ++i)
+			printf("\n###%d번 유저###\nX\t%f\nY\t%f\n", i, Players[i].x, Players[i].y);
 		// 출력부
 	}
 	// 업데이트종료
