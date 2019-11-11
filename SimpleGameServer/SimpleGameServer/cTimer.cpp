@@ -1,8 +1,4 @@
-#include <Windows.h>
-#include <math.h>
 #include "cTimer.h"
-
-#pragma comment(lib,"winmm.lib")
 
 void CGameTimer::Reset()
 {

@@ -1,6 +1,5 @@
 #pragma once
-
-const ULONG MAX_SAMPLE_COUNT = 50;
+#include "Global.h"
 
 class CGameTimer
 {

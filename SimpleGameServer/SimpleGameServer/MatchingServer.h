@@ -1,8 +1,5 @@
 #pragma once
-#pragma comment(lib, "ws2_32")
-#pragma warning(disable:4996) 
-#include <vector>
-#include <winsock2.h>
+#include "Global.h"
 
 enum MSG_MatchingSystem
 {
@@ -30,7 +27,9 @@ public:
 
 bool MatchingServer::isMatchingQueueFull(int MatchingQueueCount)
 {
-
+	if (m_MatchingQueue.size() == MatchingQueueCount)
+		return true;
+	return false;
 }
 void MatchingServer::CreateGameServerThread()
 {

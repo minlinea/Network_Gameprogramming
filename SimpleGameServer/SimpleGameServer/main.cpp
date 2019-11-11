@@ -1,10 +1,5 @@
-#pragma comment(lib, "ws2_32")
-#pragma warning(disable:4996) 
-#include <vector>
-#include <winsock2.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <iostream>
+#include "Global.h"
+#include "MatchingServer.h"
 #include "cTimer.h"
 #define SERVERPORT 9000
 #define BUFSIZE 512
@@ -281,7 +276,7 @@ int main(int argc, char* argv[])
 
 	// 게임처리용 스레드
 	HANDLE hGthread;
-	hGthread = CreateThread(NULL, 0, GameServerThread, (LPVOID)client_sock, 0, NULL);
+	hGthread = CreateThread(NULL, 0, GameServerThread, (LPVOID)NULL, 0, NULL);
 	//
 
 	fPacketH2C.NumOfClient = 0;
