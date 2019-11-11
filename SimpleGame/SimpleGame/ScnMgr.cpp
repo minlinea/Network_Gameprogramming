@@ -6,6 +6,7 @@
 
 ScnMgr::ScnMgr()
 {
+	m_client = new TCPClient();
 	// Initialize Renderer
 	m_Renderer = new Renderer(1000, 1000);		// 10x10m ¹æ
 	if (!m_Renderer->IsInitialized())
@@ -148,54 +149,15 @@ void ScnMgr::Update(float ElapsedTime)
 	Float2 f;
 	f.x = f.y = 0;
 	float fAmount = 10.f;
-	if (m_key.Up)
-	{
-		f.y += 1.f;
-	}
-	if (m_key.Down)
-	{
-		f.y -= 1.f;
-	}
-	if (m_key.Right)
-	{
-		f.x += 1.f;
-	}
-	if (m_key.Left)
-	{
-		f.x -= 1.f;
-	}
+	CharacterStatus pos[3];
 
-	//// Add control force to hero
-	float fsize = sqrtf(f.x * f.x + f.y * f.y );
-	if (fsize > FLT_EPSILON)
-	{
-		f.x /= fsize;
-		f.y /= fsize;
-		f.x *= fAmount;
-		f.y *= fAmount;
-
-		m_Obj[HERO_ID]->AddForce(f.x, f.y, ElapsedTime);
-	}
-	//Fire bullets
-	if (m_Obj[HERO_ID]->CanShootBullet())
-	{
-
-		/*AddObject(hx, hy, hz,
-						0.1, 0.1, 0.1,
-						1, 0, 0, 1,
-						vBulletX, vBulletY, vBulletZ,
-						1.f,
-						0.7f,
-						TYPE_BULLET);*/
-
-		m_Obj[HERO_ID]->ResetBulletCoolTime();
-	}
-
+	m_client->PlaySceneSendData(m_key);
+	m_client->PlaySceneRecvData(pos);
 
 	for (int i = 0; i < MAX_OBJ_COUNT; ++i)
 	{
 		if (m_Obj[i] != NULL)
-			m_Obj[i]->Update(ElapsedTime);
+			m_Obj[i]->Update(pos[0],ElapsedTime);
 	}
 }
 

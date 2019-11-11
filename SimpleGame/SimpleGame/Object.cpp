@@ -13,15 +13,11 @@ Object::~Object()
 
 }
 
-void Object::Update(float ElapsedTime)
+void Object::Update(CharacterStatus pos,float ElapsedTime)
 {
-	// 쿨타임 줄이기
-	m_RemainingCoolTime -= ElapsedTime;
-
-
 	//위치
-	m_position.x += m_velocity.x * ElapsedTime;
-	m_position.y += m_velocity.y * ElapsedTime;
+	m_position.x = pos.position.x;
+	m_position.y = pos.position.y;
 }
 
 bool Object::CanShootBullet()
