@@ -24,7 +24,7 @@ ScnMgr::ScnMgr()
 	m_Obj[HERO_ID]->SetPos({ 0,0 });
 	m_Obj[HERO_ID]->SetVol({ 1,1 });
 	m_Obj[HERO_ID]->SetColor({ 1, 1, 1, 1 });
-	m_Obj[HERO_ID]->SetVel({ 0,0 });
+	m_Obj[HERO_ID]->SetVel({ 1,1 });
 	m_Obj[HERO_ID]->SetType(TYPE_NORMAL);
 }
 
