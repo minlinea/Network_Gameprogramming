@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="cTimer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Global.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="MatchingServer.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="cTimer.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{c5bfe404-40ec-4c46-8db6-150a1f6dd9b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header">
+      <UniqueIdentifier>{4b2eb955-be57-4f72-af0d-8b9ea9b52618}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
