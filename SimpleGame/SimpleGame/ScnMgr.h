@@ -2,7 +2,7 @@
 #include "Renderer.h"
 #include "Object.h"
 #include "Globals.h"
-
+#include "TCPClient.h"
 
 class ScnMgr
 {
@@ -27,5 +27,7 @@ private:
 	Object * m_Obj[MAX_OBJ_COUNT];
 
 	KeyInput m_key;
+
+	TCPClient* m_client;
 };
 

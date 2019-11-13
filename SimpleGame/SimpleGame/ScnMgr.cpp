@@ -6,6 +6,7 @@
 
 ScnMgr::ScnMgr()
 {
+	m_client = new TCPClient();
 	// Initialize Renderer
 	m_Renderer = new Renderer(1000, 1000);		// 10x10m ¹æ
 	if (!m_Renderer->IsInitialized())
@@ -25,6 +26,7 @@ ScnMgr::ScnMgr()
 	m_Obj[HERO_ID]->SetVol({ 1,1 });
 	m_Obj[HERO_ID]->SetColor({ 1, 1, 1, 1 });
 	m_Obj[HERO_ID]->SetVel({ 1,1 });
+
 	m_Obj[HERO_ID]->SetType(TYPE_NORMAL);
 }
 
@@ -45,10 +47,6 @@ void ScnMgr::RenderScene(float ElapsedTime)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
 
-	// Renderer Test
-	//m_Renderer->DrawSolidRect(50, 0, 0, 50, 0, 0, 1, 1);
-	//m_Renderer->DrawSolidRect(0, 0, 0, 100, 1, 1, 0, 1);
-
 	for (int i = 0; i < MAX_OBJ_COUNT; ++i)
 	{
 		if (m_Obj[i] != NULL)
@@ -60,10 +58,6 @@ void ScnMgr::RenderScene(float ElapsedTime)
 			m_Obj[i]->GetVol(&vol);
 			m_Obj[i]->GetColor(&col);
 
-			//1m = 100cm = 100pixels
-			//x = x * 100.f;	sx = sx * 100.f;
-			//y = y * 100.f;	 sy = sy * 100.f;
-			//z = z * 100.f;	 sz = sz * 100.f;
 			m_Renderer->DrawSolidRect(pos.x * 100.f, pos.y * 100.f, 0, vol.x * 100.f, col.r, col.g, col.b, col.a);
 		}
 	}
@@ -145,57 +139,15 @@ void ScnMgr::Update(float ElapsedTime)
 		<< ", Right: " << m_key.Right << std::endl;
 
 
-	Float2 f;
-	f.x = f.y = 0;
-	float fAmount = 10.f;
-	if (m_key.Up)
-	{
-		f.y += 1.f;
-	}
-	if (m_key.Down)
-	{
-		f.y -= 1.f;
-	}
-	if (m_key.Right)
-	{
-		f.x += 1.f;
-	}
-	if (m_key.Left)
-	{
-		f.x -= 1.f;
-	}
+	CharacterStatus pos[3];
 
-	//// Add control force to hero
-	float fsize = sqrtf(f.x * f.x + f.y * f.y );
-	if (fsize > FLT_EPSILON)
-	{
-		f.x /= fsize;
-		f.y /= fsize;
-		f.x *= fAmount;
-		f.y *= fAmount;
-
-		m_Obj[HERO_ID]->AddForce(f.x, f.y, ElapsedTime);
-	}
-	//Fire bullets
-	if (m_Obj[HERO_ID]->CanShootBullet())
-	{
-
-		/*AddObject(hx, hy, hz,
-						0.1, 0.1, 0.1,
-						1, 0, 0, 1,
-						vBulletX, vBulletY, vBulletZ,
-						1.f,
-						0.7f,
-						TYPE_BULLET);*/
-
-		m_Obj[HERO_ID]->ResetBulletCoolTime();
-	}
-
+	m_client->PlaySceneSendData(m_key);
+	m_client->PlaySceneRecvData(pos);
 
 	for (int i = 0; i < MAX_OBJ_COUNT; ++i)
 	{
 		if (m_Obj[i] != NULL)
-			m_Obj[i]->Update(ElapsedTime);
+			m_Obj[i]->Update(pos[0],ElapsedTime);
 	}
 }
 

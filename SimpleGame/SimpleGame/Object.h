@@ -8,8 +8,8 @@ public:
 	Object();
 	~Object();
 
-	void Update(float ElapsedTime);
-	void AddForce(float x, float y, float ElapsedTime);
+	void Update(CharacterStatus pos, float ElapsedTime);
+
 
 	//void InitPhysics();
 

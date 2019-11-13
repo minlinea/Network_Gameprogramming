@@ -23,17 +23,13 @@ struct Color4
 {
 	float r,g,b,a;
 };
-
+#pragma pack(1)
 struct CharacterStatus
 {
 	Float2 position;
-	bool isAlive;
-	char whoseControl;
-	char speed;
-	char power;
-	char NumOfMaxAttack;
 };
-
+#pragma pack()
+#pragma pack(1)
 struct KeyInput
 {
 	bool Up;
@@ -53,3 +49,11 @@ struct KeyInput
 	bool notuse9;
 	bool notuse10;
 };
+#pragma pack()
+#pragma pack(1)
+struct FixedData
+{
+	bool mapChanged;
+	char NumOfClient;
+};
+#pragma pack()
