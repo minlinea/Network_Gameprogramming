@@ -9,7 +9,7 @@ public:
 	~Object();
 
 	void Update(CharacterStatus pos, float ElapsedTime);
-	void AddForce(float x, float y, float ElapsedTime);
+
 
 	//void InitPhysics();
 

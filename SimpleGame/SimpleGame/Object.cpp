@@ -17,25 +17,9 @@ void Object::Update(CharacterStatus pos,float ElapsedTime)
 {
 	//À§Ä¡
 	m_position.x = pos.position.x;
-	m_position.y = pos.position.y;
+	m_position.y = -pos.position.y;
 }
 
-bool Object::CanShootBullet()
-{
-	if (m_RemainingCoolTime < FLT_EPSILON)
-		return true;
-
-	return false;
-}
-void Object::ResetBulletCoolTime()
-{
-	m_RemainingCoolTime = m_CurrentCoolTime;
-}
-void Object::AddForce(float x, float y, float ElapsedTime)
-{
-	m_velocity.x += x;
-	m_velocity.y += y;
-}
 
 void Object::SetColor(Color4 color)
 {
@@ -61,6 +45,7 @@ void Object::GetVel(Float2* vel)
 {
 	*vel = m_velocity;
 }
+
 void Object::SetVol(Float2 volume)
 {
 	m_volume = volume;

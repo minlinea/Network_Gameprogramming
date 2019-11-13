@@ -26,6 +26,7 @@ ScnMgr::ScnMgr()
 	m_Obj[HERO_ID]->SetVol({ 1,1 });
 	m_Obj[HERO_ID]->SetColor({ 1, 1, 1, 1 });
 	m_Obj[HERO_ID]->SetVel({ 1,1 });
+
 	m_Obj[HERO_ID]->SetType(TYPE_NORMAL);
 }
 
@@ -46,10 +47,6 @@ void ScnMgr::RenderScene(float ElapsedTime)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
 
-	// Renderer Test
-	//m_Renderer->DrawSolidRect(50, 0, 0, 50, 0, 0, 1, 1);
-	//m_Renderer->DrawSolidRect(0, 0, 0, 100, 1, 1, 0, 1);
-
 	for (int i = 0; i < MAX_OBJ_COUNT; ++i)
 	{
 		if (m_Obj[i] != NULL)
@@ -61,10 +58,6 @@ void ScnMgr::RenderScene(float ElapsedTime)
 			m_Obj[i]->GetVol(&vol);
 			m_Obj[i]->GetColor(&col);
 
-			//1m = 100cm = 100pixels
-			//x = x * 100.f;	sx = sx * 100.f;
-			//y = y * 100.f;	 sy = sy * 100.f;
-			//z = z * 100.f;	 sz = sz * 100.f;
 			m_Renderer->DrawSolidRect(pos.x * 100.f, pos.y * 100.f, 0, vol.x * 100.f, col.r, col.g, col.b, col.a);
 		}
 	}
@@ -146,9 +139,6 @@ void ScnMgr::Update(float ElapsedTime)
 		<< ", Right: " << m_key.Right << std::endl;
 
 
-	Float2 f;
-	f.x = f.y = 0;
-	float fAmount = 10.f;
 	CharacterStatus pos[3];
 
 	m_client->PlaySceneSendData(m_key);
