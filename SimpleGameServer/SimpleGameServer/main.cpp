@@ -1,9 +1,10 @@
+#define _WINSOCK_DEPRECATED_NO_WARNINGS 
+#define _CRT_SECURE_NO_WARNINGS
 #include "Global.h"
 #include "MatchingServer.h"
 #include "cTimer.h"
 #define SERVERPORT 9000
 #define BUFSIZE 512
-
 #pragma pack(1)
 struct InputData
 {

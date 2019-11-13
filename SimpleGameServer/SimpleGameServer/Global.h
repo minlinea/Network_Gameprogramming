@@ -8,7 +8,8 @@
 #include <math.h>
 #pragma comment(lib,"winmm.lib")
 #pragma comment(lib, "ws2_32")
-#pragma warning(disable:4996) 
+#pragma warning(disable:4996)
+
 const ULONG MAX_SAMPLE_COUNT = 50;
 
 

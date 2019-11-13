@@ -1,4 +1,1 @@
-﻿  cTimer.cpp
-  main.cpp
-  코드를 생성하고 있습니다...
-c:\users\rkdqm\onedrive\바탕 화면\넷겜플\network_gameprogramming\simplegameserver\simplegameserver\main.cpp(284): error C4700: 초기화되지 않은 'client_sock' 지역 변수를 사용했습니다.
+﻿  SimpleGameServer.vcxproj -> C:\NetworkGameprogramming\Network_Gameprogramming\SimpleGameServer\SimpleGameServer\x64\Debug\SimpleGameServer.exe
