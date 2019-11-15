@@ -65,12 +65,13 @@ void MatchingServer::SetClientNum(const unsigned char& Data)
 
 void MatchingServer::PushClient(const SOCKADDR_IN& client)
 {
-	m_MatchingQueue.insert(m_MatchingQueue.end(), client);
+	//m_MatchingQueue.insert(m_MatchingQueue.end(), client);
 	m_ClientNum += 1;
 	return;
 }
 
 void MatchingServer::PopClient(const SOCKADDR_IN& client)
 {
-
+	m_ClientNum -= 1;
+	return;
 }

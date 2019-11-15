@@ -94,7 +94,7 @@ DWORD WINAPI WaitingClientThread(LPVOID arg)
 	closesocket(client_sock);
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
 		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
-
+	g_Matching.PopClient(clientaddr);
 	return 0;
 }
 
