@@ -28,14 +28,6 @@ const int MAP_COLUMN{ 16 };
 const float TILEWIDTH{ 50 };
 const float TILEHEIGHT{ 50 };
 
-enum MSG_MatchingSystem
-{
-	Msg_Ready = 8,
-	Msg_ReadyCancel,
-	Msg_ConfirmReadyCancel,
-	Msg_PlayGame
-};
-
 #define SERVERPORT 9000
 #define BUFSIZE 512
 

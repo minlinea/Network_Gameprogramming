@@ -1,6 +1,14 @@
 #pragma once
 #include "Global.h"
 
+enum MSG_MatchingSystem
+{
+	Msg_Ready = 8,
+	Msg_ReadyCancel,
+	Msg_ConfirmReadyCancel,
+	Msg_PlayGame
+
+};
 class MatchingServer
 {
 private:
