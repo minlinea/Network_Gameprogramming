@@ -120,6 +120,7 @@
     <ClCompile Include="cTimer.cpp" />
     <ClCompile Include="GameServerThread.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MatchingServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cTimer.h" />
