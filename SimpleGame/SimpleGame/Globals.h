@@ -1,13 +1,12 @@
 #pragma once
-#define MAX_OBJ_COUNT 1000
-#define HERO_ID 0
-#define GRAVITY 9.8f
 
-#define FAMOUNT 20.f;
+///////////////////////////////////////////////////////////////////////
+#define WINDOW_WIDTH	1000
+#define WINDOW_HEIGH	1000
+#define MAP_ROW	16
+#define MAP_COLUMN	16
 
-#define TYPE_NORMAL 0
-#define TYPE_BULLET 1
-
+#define MAX_PLAYER_NUM	3
 ///////////////////////////////////////////////////////////////////////
 struct Float2
 {
@@ -27,6 +26,7 @@ struct Color4
 struct CharacterStatus
 {
 	Float2 position;
+	char whoseControlNum;
 };
 #pragma pack()
 #pragma pack(1)
@@ -57,3 +57,25 @@ struct FixedData
 	char NumOfClient;
 };
 #pragma pack()
+
+enum ObjectType 
+{
+	Player,
+	Empty,
+	Wall,
+	Breakable_Wall,
+	Item_AddSpeed,
+	Item_AddBomb,
+	Item_AddPower,
+	Bomb_Anim1,		//기본 형태
+	Bomb_Anim2,		//중간 크기
+	Bomb_Anim3		//가장 작은 크기
+};
+
+enum MSG_MatchingSystem
+{
+	Msg_Ready = 8,
+	msg_ReadyCancel,
+	Msg_ConfirmReadyCancel,
+	Msg_PlayGame
+};

@@ -10,12 +10,6 @@ public:
 
 	void Update(CharacterStatus pos, float ElapsedTime);
 
-
-	//void InitPhysics();
-
-	bool CanShootBullet();
-	void ResetBulletCoolTime();
-
 	void SetColor(Color4 color);
 	void GetColor(Color4 *color);
 	void SetPos(Float2 position);
@@ -24,17 +18,15 @@ public:
 	void GetVel(Float2*vel);
 	void SetVol(Float2 volume);
 	void GetVol(Float2 *volume);
-	void SetType(int type);
-	void GetType(int *type);
+	void SetType(ObjectType  type);
+	void GetType(ObjectType*type);
 
 private:
 	Color4		m_color;			//		색깔
 	Float2		m_position;
 	Float2		m_volume;		//		부피
 	Float2		m_velocity;
-	int m_type;								//		오브젝트 타입
+	ObjectType  m_type;								//		오브젝트 타입
 
-	float m_RemainingCoolTime = 0.f;;
-	float m_CurrentCoolTime = 0.1f;
 };
 

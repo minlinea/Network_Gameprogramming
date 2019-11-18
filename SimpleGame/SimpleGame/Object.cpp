@@ -20,7 +20,6 @@ void Object::Update(CharacterStatus pos,float ElapsedTime)
 	m_position.y = -pos.position.y;
 }
 
-
 void Object::SetColor(Color4 color)
 {
 	m_color = color;
@@ -55,11 +54,11 @@ void Object::GetVol(Float2* volume)
 	*volume = m_volume;
 }
 
-void Object::SetType(int type)
+void Object::SetType(ObjectType  type)
 {
 	m_type = type;
 }
-void Object::GetType(int *type)
+void Object::GetType(ObjectType*type)
 {
 	*type = m_type;
 }

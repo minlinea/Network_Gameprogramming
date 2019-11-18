@@ -15,6 +15,7 @@ private:
 
 public:
 	TCPClient();
+	~TCPClient();
 
 	
 public:
@@ -22,6 +23,10 @@ public:
 	void err_display(char* msg);
 
 	int recvn(SOCKET s, char* buf, int len, int flags);
+
+	int TitleSceneSendData(unsigned char msg);
+
+	int TitleSceneRecvData(unsigned char *msg);
 
 	int PlaySceneSendData(KeyInput&);
 
