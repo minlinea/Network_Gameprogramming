@@ -75,3 +75,6 @@ void MatchingServer::PopClient(const SOCKADDR_IN& client)
 	m_ClientNum -= 1;
 	return;
 }
+
+DWORD WINAPI MathcingThread(LPVOID listen_socket);
+DWORD WINAPI WaitingClientThread(LPVOID arg);
