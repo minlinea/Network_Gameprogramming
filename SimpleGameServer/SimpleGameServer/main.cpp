@@ -1,12 +1,13 @@
 #include "Global.h"
 
 
-DWORD WINAPI ClientThread(LPVOID arg);
 DWORD WINAPI MatchingThread(LPVOID listen_socket);
+DWORD WINAPI ClientThread(LPVOID arg);
 void err_quit(const char* msg);
 void err_display(const char* msg);
 
 MatchingServer g_Matching;
+CGameTimer timer;
 
 int main(int argc, char* argv[])
 {
@@ -52,6 +53,39 @@ int main(int argc, char* argv[])
 
 }
 
+DWORD WINAPI MatchingThread(LPVOID listen_socket)
+{
+	// 데이터 통신에 사용할 변수
+	SOCKET client_sock;
+	SOCKADDR_IN clientaddr;
+	int addrlen;
+	HANDLE hThread;
+
+	while (1) {
+		// accept()
+		addrlen = sizeof(clientaddr);
+		client_sock = accept((SOCKET)listen_socket, (SOCKADDR*)& clientaddr, &addrlen);
+		if (client_sock == INVALID_SOCKET) {
+			err_display("accept()");
+			break;
+		}
+		// 접속한 클라이언트 정보 출력
+		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+
+		hThread = CreateThread(NULL, 0, ClientThread, (LPVOID)client_sock, 0, NULL);
+
+		if (hThread == NULL)
+		{
+			closesocket(client_sock);
+		}
+		else
+		{
+			CloseHandle(hThread);
+		}
+	}
+	return 0;
+}
+
 DWORD WINAPI ClientThread(LPVOID arg)
 {
 	SOCKET client_sock = (SOCKET)arg;
@@ -63,10 +97,11 @@ DWORD WINAPI ClientThread(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)& clientaddr, &addrlen);
 
+	
 	g_Matching.PushClient(clientaddr);
-
 	while (1)
 	{
+		timer.Tick(1.5f);
 		unsigned char msg;
 		retval = recv(client_sock, (char*)&msg, sizeof(msg), 0);
 		if (retval == SOCKET_ERROR)
@@ -94,13 +129,13 @@ DWORD WINAPI ClientThread(LPVOID arg)
 
 		if (Msg_PlayGame == msg)
 		{
-			playgame = true;
-			g_Matching.PopClient(clientaddr);
+			playgame = false;
+			//g_Matching.PopClient(clientaddr);
 			break;
 		}
 		if (Msg_ConfirmReadyCancel == msg)
 		{
-			g_Matching.PopClient(clientaddr);
+			//g_Matching.PopClient(clientaddr);
 			break;
 		}
 	}
@@ -164,42 +199,10 @@ DWORD WINAPI ClientThread(LPVOID arg)
 	closesocket(client_sock);
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
 		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
-
+	g_Matching.PopClient(clientaddr);
 	return 0;
 }
 
-DWORD WINAPI MatchingThread(LPVOID listen_socket)
-{
-	// 데이터 통신에 사용할 변수
-	SOCKET client_sock;
-	SOCKADDR_IN clientaddr;
-	int addrlen;
-	HANDLE hThread;
-
-	while (1) {
-		// accept()
-		addrlen = sizeof(clientaddr);
-		client_sock = accept((SOCKET)listen_socket, (SOCKADDR*)& clientaddr, &addrlen);
-		if (client_sock == INVALID_SOCKET) {
-			err_display("accept()");
-			break;
-		}
-		// 접속한 클라이언트 정보 출력
-		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
-
-		hThread = CreateThread(NULL, 0, ClientThread, (LPVOID)client_sock, 0, NULL);
-
-		if (hThread == NULL)
-		{
-			closesocket(client_sock);
-		}
-		else
-		{
-			CloseHandle(hThread);
-		}
-	}
-	return 0;
-}
 
 
 // 소켓 함수 오류 출력

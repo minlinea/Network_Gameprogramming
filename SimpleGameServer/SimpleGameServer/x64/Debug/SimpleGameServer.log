@@ -1,6 +1,2 @@
-﻿  cTimer.cpp
-  GameServerThread.cpp
-  main.cpp
-  MatchingServer.cpp
-  코드를 생성하고 있습니다...
+﻿  main.cpp
   SimpleGameServer.vcxproj -> C:\NetworkGameprogramming\Network_Gameprogramming\SimpleGameServer\SimpleGameServer\x64\Debug\SimpleGameServer.exe
