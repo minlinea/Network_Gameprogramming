@@ -4,7 +4,7 @@
 #define SERVERPORT 9000
 #define BUFSIZE 524288
 #include<iostream>
-//template<typename Data_Type>
+
 void TCPClient::err_quit(char* msg)
 {
 	LPVOID lpMsgBuf;
@@ -19,7 +19,6 @@ void TCPClient::err_quit(char* msg)
 }
 
 // 소켓 함수 오류 출력
-//template<typename Data_Type>
 void TCPClient::err_display(char* msg)
 {
 	LPVOID lpMsgBuf;
@@ -33,7 +32,6 @@ void TCPClient::err_display(char* msg)
 }
 
 // 사용자 정이 데이터 수신 함수
-//template<typename Data_Type>
 int TCPClient::recvn(SOCKET s, char* buf, int len, int flags)
 {
 	int received;
@@ -52,8 +50,33 @@ int TCPClient::recvn(SOCKET s, char* buf, int len, int flags)
 
 	return (len - left);
 }
+//////////////Title Scene//////////////////////////////////////
+int TCPClient::TitleSceneSendData(unsigned char msg)
+{
+	int retval;
+	//std::cout << data->Up << data->Down << data->Left << data->Right << data->Interact1 << data->Interact2 << data->Interact3 << data->Interact4 << std::endl;
+	retval = send(sock, (char*)&msg, sizeof(msg), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+		return 0;
+	}
+	return 1;
+}
 
-//template<typename Data_Type>
+int TCPClient::TitleSceneRecvData(unsigned char* msg)
+{
+	int retval;
+	retval = recvn(sock, (char*)&msg, sizeof(msg), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+		return 0;
+	}
+		
+	return 1;
+}
+///////////////////////////////////////////////////////////////
+
+//////////////Play Scene///////////////////////////////////////
 int TCPClient::PlaySceneSendData(KeyInput& data)
 {
 	int retval;
@@ -82,6 +105,7 @@ int TCPClient::PlaySceneRecvData(CharacterStatus* data)
 		recv(sock, (char*)&data[i], sizeof(CharacterStatus), 0);
 	return 1;
 }
+////////////////////////////////////////////////////////////////
 
 TCPClient::TCPClient()
 {
@@ -105,4 +129,14 @@ TCPClient::TCPClient()
 	retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("connect()");
 	else { printf("서버 접속 성공\n"); }
+}
+
+
+TCPClient::~TCPClient()
+{
+	// closesocket()
+	closesocket(sock);
+
+	// 윈속 종료
+	WSACleanup();
 }

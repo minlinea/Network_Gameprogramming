@@ -6,14 +6,26 @@
 
 ScnMgr::ScnMgr()
 {
-	m_client = new TCPClient();
+	
 	// Initialize Renderer
 	m_Renderer = new Renderer(WINDOW_WIDTH, WINDOW_HEIGH);		// 10x10m ¹æ
 	if (!m_Renderer->IsInitialized())
 	{
 		std::cout << "Renderer could not be initialized.. \n";
 	}
+	///////////////////Mathing////////////////////////////
+	unsigned char msg;
+	m_client = new TCPClient();
 
+	//msg = Msg_Ready;
+	//while (msg != Msg_PlayGame) {
+	//	m_client->TitleSceneSendData(msg);
+
+	//	m_client->TitleSceneRecvData(&msg);
+	//	if (msg == Msg_ConfirmReadyCancel)
+	//		delete m_client;
+	//}
+	////////////////////////////////////////////////////////////////
 	//Initialize objects
 	for (int i = 0; i < MAX_PLAYER_NUM; ++i)
 	{

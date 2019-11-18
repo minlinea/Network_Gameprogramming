@@ -26,6 +26,7 @@ struct Color4
 struct CharacterStatus
 {
 	Float2 position;
+	char whoseControlNum;
 };
 #pragma pack()
 #pragma pack(1)
@@ -69,4 +70,12 @@ enum ObjectType
 	Bomb_Anim1,		//기본 형태
 	Bomb_Anim2,		//중간 크기
 	Bomb_Anim3		//가장 작은 크기
+};
+
+enum MSG_MatchingSystem
+{
+	Msg_Ready = 8,
+	msg_ReadyCancel,
+	Msg_ConfirmReadyCancel,
+	Msg_PlayGame
 };
