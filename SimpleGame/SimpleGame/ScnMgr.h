@@ -24,7 +24,8 @@ public:
 
 private:
 	Renderer *m_Renderer{ NULL };
-	Object * m_Obj[MAX_OBJ_COUNT];
+	Object* m_Player[MAX_PLAYER_NUM];
+	Object * m_MapObject[MAP_COLUMN][MAP_ROW];
 
 	KeyInput m_key;
 

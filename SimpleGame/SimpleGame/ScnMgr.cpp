@@ -8,26 +8,54 @@ ScnMgr::ScnMgr()
 {
 	m_client = new TCPClient();
 	// Initialize Renderer
-	m_Renderer = new Renderer(1000, 1000);		// 10x10m 방
+	m_Renderer = new Renderer(WINDOW_WIDTH, WINDOW_HEIGH);		// 10x10m 방
 	if (!m_Renderer->IsInitialized())
 	{
 		std::cout << "Renderer could not be initialized.. \n";
 	}
 
 	//Initialize objects
-	for (int i = 0; i < MAX_OBJ_COUNT; ++i)
+	for (int i = 0; i < MAX_PLAYER_NUM; ++i)
 	{
-		m_Obj[i] = NULL;
+		m_Player[i] = NULL;
 	}
 	//가급적 수동으로 지우는건 지양하지만, 초기화 할 때는 괜찮다.
 
-	m_Obj[HERO_ID] = new Object();
-	m_Obj[HERO_ID]->SetPos({ 0,0 });
-	m_Obj[HERO_ID]->SetVol({ 1,1 });
-	m_Obj[HERO_ID]->SetColor({ 1, 1, 1, 1 });
-	m_Obj[HERO_ID]->SetVel({ 1,1 });
+	for (int i = 0; i < MAX_PLAYER_NUM; ++i) {
+		m_Player[i] = new Object();
+		m_Player[i]->SetPos({ 0,0 });
+		m_Player[i]->SetVol({ 1,1 });
+		if(i==0)
+			m_Player[i]->SetColor({ 1, 0, 0, 1 });
+		else if (i == 1)
+			m_Player[i]->SetColor({ 0, 1, 0, 1 });
+		else if (i == 2)
+			m_Player[i]->SetColor({ 0, 0, 1, 1 });
+		m_Player[i]->SetVel({ 1,1 });
+			  
+		m_Player[i]->SetType(Player);
+	}
+	for (int i = 0; i < MAP_COLUMN; ++i)
+	{
+		for (int j = 0; j < MAP_ROW; ++j)
+		{
+			m_MapObject[i][j] = new Object();
+			m_MapObject[i][j]->SetPos({ (float)(i- MAP_COLUMN/2),(float)(j - MAP_COLUMN / 2) });
+			m_MapObject[i][j]->SetVol({ 1,1 });
+			m_MapObject[i][j]->SetVel({ 0,0 });
+			if (i == 0 || i == MAP_COLUMN - 1 || j == 0 || j == MAP_ROW - 1) {
+				m_MapObject[i][j]->SetColor({ 1, 1, 1, 1 });
 
-	m_Obj[HERO_ID]->SetType(TYPE_NORMAL);
+				m_MapObject[i][j]->SetType(Wall);
+			}
+			else
+			{
+				m_MapObject[i][j]->SetColor({ 0, 0, 0, 1 });
+
+				m_MapObject[i][j]->SetType(Empty);
+			}
+		}
+	}
 }
 
 
@@ -46,59 +74,39 @@ void ScnMgr::RenderScene(float ElapsedTime)
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
+	Float2 pos;
+	Float2 vol;
+	Color4 col;
+	float interval= 50;
+	ObjectType type;
 
-	for (int i = 0; i < MAX_OBJ_COUNT; ++i)
+	for (int i = 0; i < MAX_PLAYER_NUM; ++i) {
+		m_Player[i]->GetPos(&pos);
+		m_Player[i]->GetVol(&vol);
+		m_Player[i]->GetColor(&col);
+		float body_gap = interval / 4;
+		m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval + body_gap, 0, vol.x * body_gap, 1, 1, 1, col.a);
+		m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval - body_gap, 0, vol.x * body_gap * 3, col.r, col.g, col.b, col.a);
+	}
+
+	for (int i = 0; i < MAP_COLUMN; ++i)
 	{
-		if (m_Obj[i] != NULL)
+		for (int j = 0; j < MAP_ROW; ++j)
 		{
-			Float2 pos;
-			Float2 vol;
-			Color4 col;
-			m_Obj[i]->GetPos(&pos);
-			m_Obj[i]->GetVol(&vol);
-			m_Obj[i]->GetColor(&col);
+			m_MapObject[i][j]->GetPos(&pos);
+			m_MapObject[i][j]->GetVol(&vol);
+			m_MapObject[i][j]->GetColor(&col);
+			m_MapObject[i][j]->GetType(&type);
 
-			m_Renderer->DrawSolidRect(pos.x * 100.f, pos.y * 100.f, 0, vol.x * 100.f, col.r, col.g, col.b, col.a);
+			switch (type)
+			{
+			case Wall:
+				m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval, 0, vol.x * interval, 1, 1, 1, col.a);
+				break;
+			}
 		}
 	}
 }
-
-//int ScnMgr::AddObject(float x, float y, float z,
-//					float sx, float sy, float sz,
-//					float r, float g, float b, float a,
-//					float vx, float vy, float vz,
-//					float mass,
-//					float fricCoef,
-//					int type)
-//{
-//	// TEST OBJECT CLASS
-//	int idx = -1;
-//
-//	for (int i = 0; i < MAX_OBJ_COUNT; ++i)
-//	{
-//		if (m_Obj[i] == NULL)
-//		{
-//			idx = i;
-//			break;
-//		}
-//	}
-//	if (idx == -1)
-//	{
-//		std::cout << "No more empty obj slot. " << std::endl;
-//		return -1;
-//	}
-//
-//	m_Obj[idx] = new Object();
-//	m_Obj[idx]->SetPos(x, y, z);
-//	m_Obj[idx]->SetVol(sx, sy, sz);
-//	m_Obj[idx]->SetColor(r, g, b, a);
-//	m_Obj[idx]->SetVel(vx, vy, vz);
-//	m_Obj[idx]->SetMass(mass);
-//	m_Obj[idx]->SetFricCoef(fricCoef);
-//	m_Obj[idx]->SetType(type);
-//	return idx;
-//
-//}
 
 void ScnMgr::DeleteObject(int idx)
 {
@@ -108,26 +116,26 @@ void ScnMgr::DeleteObject(int idx)
 		return;
 	}
 
-	if (idx >= MAX_OBJ_COUNT)
+	//if (idx >= MAX_OBJ_COUNT)
+	//{
+	//	std::cout << "input idx exceeds MAX_OBJ_COUNT : " << idx << std::endl;
+	//	return;
+	//}
+
+	if (m_Player[idx] == NULL)
 	{
-		std::cout << "input idx exceeds MAX_OBJ_COUNT : " << idx << std::endl;
+		std::cout << "m_Player[" << idx << "] is NULL" << std::endl;
 		return;
 	}
 
-	if (m_Obj[idx] == NULL)
-	{
-		std::cout << "m_Obj[" << idx << "] is NULL" << std::endl;
-		return;
-	}
-
-	delete m_Obj[idx];
-	m_Obj[idx] = NULL;
+	delete m_Player[idx];
+	m_Player[idx] = NULL;
 	return;
 }
 
 Object* ScnMgr::GetObj() const
 {
-	return *m_Obj;
+	return *m_Player;
 }
 
 void ScnMgr::Update(float ElapsedTime)
@@ -143,32 +151,31 @@ void ScnMgr::Update(float ElapsedTime)
 
 	m_client->PlaySceneSendData(m_key);
 	m_client->PlaySceneRecvData(pos);
-
-	for (int i = 0; i < MAX_OBJ_COUNT; ++i)
-	{
-		if (m_Obj[i] != NULL)
-			m_Obj[i]->Update(pos[0],ElapsedTime);
+	ObjectType type;
+	for (int i = 0; i < MAX_PLAYER_NUM; ++i) {
+		m_Player[i]->Update(pos[i], ElapsedTime);
 	}
+
 }
 
 void ScnMgr::DoGarbageCollection()
 {
-	for (int i = 0; i < MAX_OBJ_COUNT; ++i)
+	/*for (int i = 0; i < MAX_OBJ_COUNT; ++i)
 	{
-		if (m_Obj[i] != NULL)
+		if (m_Player[i] != NULL)
 		{
 			int type;
-			m_Obj[i]->GetType(&type);
+			m_Player[i]->GetType(&type);
 			if (type == TYPE_BULLET)
 			{
 				Float2 v;
-				m_Obj[i]->GetVel(&v);
+				m_Player[i]->GetVel(&v);
 				float vSize = sqrtf(v.x * v.x + v.y * v.y );
 				if (vSize < FLT_EPSILON)
 					DeleteObject(i);
 			}
 		}
-	}
+	}*/
 }
 
 //디버그는 호출하는 놈을 찾아야 한다.	--> 호출 스택
@@ -193,7 +200,7 @@ void ScnMgr::KeyDownInput(unsigned char key, int x, int y)
 	}
 	if (key == 'r' || key == 'R')
 	{
-		m_Obj[HERO_ID]->SetPos({ 0, 0 });
+		m_Player[0]->SetPos({ 0, 0 });
 	}
 }
 

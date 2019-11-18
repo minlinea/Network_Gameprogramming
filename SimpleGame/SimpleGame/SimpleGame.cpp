@@ -39,7 +39,6 @@ void RenderScene(int temp)
 	int CurrTime = glutGet(GLUT_ELAPSED_TIME);
 	int ElapsedTime = CurrTime - g_PrevTime;
 	float ElapsedTimeInSec = (float)ElapsedTime / 1000.f;
-	//std::cout << ElapsedTimeInSec << std::endl;
 	g_PrevTime = CurrTime;
 
 	g_ScnMgr->Update(ElapsedTimeInSec);
@@ -123,17 +122,6 @@ int main(int argc, char** argv)
 
 
 	glutMainLoop();
-
-	//소멸자는 이곳에
-   //Object* p_Obj = g_ScnMgr->GetObj();
-   //for (int i = 0; i < MAX_OBJ_COUNT; ++i)
-   //{
-   //	if (p_Obj[i] != NULL)
-   //	{
-   //		DeleteObject(i);
-   //		std::cout << i << "번 오브젝트 삭제 완료" << std::endl;
-   //	}
-   //}
 
 	delete g_ScnMgr;
 
