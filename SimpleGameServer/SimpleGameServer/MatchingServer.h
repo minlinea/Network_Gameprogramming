@@ -9,7 +9,7 @@ enum MSG_MatchingSystem
 	Msg_PlayGame
 };
 
-DWORD WINAPI MathcingThread(LPVOID listen_socket);
+DWORD WINAPI MatchingThread(LPVOID listen_socket);
 DWORD WINAPI ClientThread(LPVOID arg);
 
 class MatchingServer
@@ -79,7 +79,11 @@ void MatchingServer::PopClient(const SOCKADDR_IN& client)
 	return;
 }
 
-DWORD WINAPI MathcingThread(LPVOID listen_socket)
+MatchingServer g_Matching;
+void err_quit(const char* msg);
+void err_display(const char* msg);
+
+DWORD WINAPI MatchingThread(LPVOID listen_socket)
 {
 	// 데이터 통신에 사용할 변수
 	SOCKET client_sock;

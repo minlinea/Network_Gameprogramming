@@ -6,6 +6,7 @@
 #include <iostream>
 #include <Windows.h>
 #include <math.h>
+
 #pragma comment(lib,"winmm.lib")
 #pragma comment(lib, "ws2_32")
 #pragma warning(disable:4996)
@@ -13,7 +14,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 //전역 변수
-MatchingServer g_Matching;
+
 
 
 
@@ -31,13 +32,16 @@ const ULONG MAX_SAMPLE_COUNT = 50;
 #define BUFSIZE 512
 
 
-// 사용자 정의 헤더
-#include "GameServerThread.h"
+//// 사용자 정의 헤더
 #include "cTimer.h"
-#include "MatchingServer.h"
+//#include "GameServerThread.h"
+//#include "MatchingServer.h"
+
+void err_quit(const char* msg);
+void err_display(const char* msg);
 
 // 소켓 함수 오류 출력
-inline void err_quit(const char* msg)
+void err_quit(const char* msg)
 {
 	LPVOID lpMsgBuf;
 	FormatMessage(
@@ -50,7 +54,7 @@ inline void err_quit(const char* msg)
 	exit(1);
 }
 
-inline void err_display(const char* msg)
+void err_display(const char* msg)
 {
 	LPVOID lpMsgBuf;
 	FormatMessage(

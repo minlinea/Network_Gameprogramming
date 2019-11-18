@@ -1,1 +1,5 @@
-﻿  SimpleGameServer.vcxproj -> C:\NetworkGameprogramming\Network_Gameprogramming\SimpleGameServer\SimpleGameServer\x64\Debug\SimpleGameServer.exe
+﻿  cTimer.cpp
+  GameServerThread.cpp
+  main.cpp
+c:\networkgameprogramming\network_gameprogramming\simplegameserver\simplegameserver\main.cpp(31): error C2065: 'MatchingThread': 선언되지 않은 식별자입니다.
+  코드를 생성하고 있습니다...

@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 
 	// Mathcing Thread
 	HANDLE hMatchingThread;
-	hMatchingThread = CreateThread(NULL, 0, MathcingThread, (LPVOID)listen_sock, 0, NULL);
+	hMatchingThread = CreateThread(NULL, 0, MatchingThread, (LPVOID)listen_sock, 0, NULL);
 
 	while (1)
 	{

@@ -120,9 +120,6 @@
     <ClCompile Include="cTimer.cpp" />
     <ClCompile Include="GameServerThread.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="main게임서버작업용.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cTimer.h" />
