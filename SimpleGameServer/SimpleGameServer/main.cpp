@@ -7,7 +7,7 @@ void err_quit(const char* msg);
 void err_display(const char* msg);
 
 MatchingServer g_Matching;
-CGameTimer timer;
+CGameTimer g_Msgtimer;
 
 int main(int argc, char* argv[])
 {
@@ -101,7 +101,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 	g_Matching.PushClient(clientaddr);
 	while (1)
 	{
-		timer.Tick(1.5f);
+		g_Msgtimer.Tick(1.5f);
 		unsigned char msg;
 		retval = recv(client_sock, (char*)&msg, sizeof(msg), 0);
 		if (retval == SOCKET_ERROR)
