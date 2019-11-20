@@ -1,8 +1,4 @@
-﻿  Object.cpp
-  ScnMgr.cpp
+﻿  ScnMgr.cpp
 c:\users\rkdqm\onedrive\바탕 화면\넷겜플\network_gameprogramming\simplegame\simplegame\scnmgr.cpp(17): warning C4101: 'msg' :참조되지 않은 지역 변수입니다.
-c:\users\rkdqm\onedrive\바탕 화면\넷겜플\network_gameprogramming\simplegame\simplegame\scnmgr.cpp(166): warning C4101: 'type' :참조되지 않은 지역 변수입니다.
-  SimpleGame.cpp
-  TCPClient.cpp
-  코드를 생성하고 있습니다...
+c:\users\rkdqm\onedrive\바탕 화면\넷겜플\network_gameprogramming\simplegame\simplegame\scnmgr.cpp(177): warning C4101: 'type' :참조되지 않은 지역 변수입니다.
   SimpleGame.vcxproj -> C:\Users\rkdqm\OneDrive\바탕 화면\넷겜플\Network_Gameprogramming\SimpleGame\x64\Debug\SimpleGame.exe
