@@ -26,7 +26,7 @@ public:
 
 	int TitleSceneSendData(unsigned char msg);
 
-	int TitleSceneRecvData(unsigned char *msg);
+	int TitleSceneRecvData(unsigned char &msg);
 
 	int PlaySceneSendData(KeyInput&);
 

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "TCPClient.h"
-#define SERVERIP "127.0.0.1"
+#define SERVERIP "192.168.43.212"
 #define SERVERPORT 9000
 #define BUFSIZE 524288
 #include<iostream>
@@ -54,7 +54,7 @@ int TCPClient::recvn(SOCKET s, char* buf, int len, int flags)
 int TCPClient::TitleSceneSendData(unsigned char msg)
 {
 	int retval;
-	//std::cout << data->Up << data->Down << data->Left << data->Right << data->Interact1 << data->Interact2 << data->Interact3 << data->Interact4 << std::endl;
+	std::cout << msg << std::endl;
 	retval = send(sock, (char*)&msg, sizeof(msg), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
@@ -63,15 +63,16 @@ int TCPClient::TitleSceneSendData(unsigned char msg)
 	return 1;
 }
 
-int TCPClient::TitleSceneRecvData(unsigned char* msg)
+int TCPClient::TitleSceneRecvData(unsigned char& msg)
 {
 	int retval;
-	retval = recvn(sock, (char*)&msg, sizeof(msg), 0);
+	retval = recv(sock, (char*)&msg, sizeof(msg), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 		return 0;
 	}
-		
+	std::cout << msg << std::endl;
+
 	return 1;
 }
 ///////////////////////////////////////////////////////////////

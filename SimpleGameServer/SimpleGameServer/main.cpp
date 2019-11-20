@@ -110,7 +110,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			break;
 		}
 
-		//printf("[IP:%s	포트:%d]	msg = %d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port), msg);
+		printf("[IP:%s	포트:%d]	msg = %d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port), msg);
 
 		// 현재 상태 보내기
 		if (Msg_ReadyCancel == msg)
@@ -119,7 +119,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			g_Matching.GetClientNum(&msg);
 		else
 			msg = Msg_PlayGame;
-
+		printf("%d", msg);
 		retval = send(client_sock, (char*)&msg, sizeof(msg), 0);
 		if (retval == SOCKET_ERROR)
 		{
@@ -129,7 +129,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 
 		if (Msg_PlayGame == msg)
 		{
-			playgame = false;
+			playgame = true;
 			//g_Matching.PopClient(clientaddr);
 			break;
 		}

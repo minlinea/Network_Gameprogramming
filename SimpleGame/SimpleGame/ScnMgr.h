@@ -30,5 +30,11 @@ private:
 	KeyInput m_key;
 
 	TCPClient* m_client;
+	enum Scene
+	{
+		TitleScene,
+		GameScene
+	};
+	Scene CurrentScene;
 };
 
