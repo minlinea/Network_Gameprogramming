@@ -1,247 +1,13 @@
-#define _WINSOCK_DEPRECATED_NO_WARNINGS 
-#define _CRT_SECURE_NO_WARNINGS
 #include "Global.h"
-#include "MatchingServer.h"
-#include "cTimer.h"
-#define SERVERPORT 9000
-#define BUFSIZE 512
-#pragma pack(1)
-struct InputData
-{
-	bool Up;
-	bool Down;
-	bool Left;
-	bool Right;
-	bool attack;
-	bool button0;
-	bool button1;
-	bool button2;
-	bool button3;
-	bool button4;
-	bool button5;
-	bool button6;
-	bool button7;
-	bool button8;
-	bool button9;
-	bool button10;
-};
-#pragma pack()
-
-#pragma pack(1)
-struct FixedData
-{
-	bool mapChanged;
-	char NumOfClient;
-};
-#pragma pack()
-
-#pragma pack(1)
-struct PlayerData
-{
-	float x;
-	float y;
-};
-#pragma pack()
-
-const int MAX_PLAYER{ 3 };
-
-enum status
-{
-	dead, live
-};
-
-struct Player
-{
-	float x, y;
-	float fSpeed{ 10.f };
-	status stat;
-	SOCKET clientSocket;
-	InputData KeyInput;
-	// 등등 게임 로직에 필요한 변수
-};
-
-struct GAMEMAP
-{
-
-};
-
-struct GameServerThreadData
-{
-	std::vector<SOCKET*> pClients;
-	std::vector<Player*> pPlayers;		// 플레이어 개개인의 상태 구조체 (소켓 프로그래밍과 무관)
-
-	char		m_nCurrentPlayerAmount;
-	bool		m_bMapChanged;
-	CGameTimer	m_timer;				// 업데이트에서 프레임시간연산할때 사용
-	GAMEMAP		m_Map;
-
-	void MakeCommunicationThread(void) {};
-};
-
-// 1개의 게임룸만 테스트하려고 전역에 변수 만듬
-char			NumOfClient{ 0 }; //
-InputData	ClientsInput[256]; //
-FixedData	fPacketH2C;
-Player		Players[10];
-//
-
-DWORD WINAPI GameServerThread(LPVOID arg)
-{
-	CGameTimer timer;
-	float fElapsedTime;
-	GameServerThreadData gameData;
 
 
-	for (int i = 0; i < MAX_PLAYER; ++i)
-	{
-		gameData.MakeCommunicationThread();
-	}
+DWORD WINAPI MatchingThread(LPVOID listen_socket);
+DWORD WINAPI ClientThread(LPVOID arg);
+void err_quit(const char* msg);
+void err_display(const char* msg);
 
-	while (1)
-	{
-		timer.Tick(0.0f);
-		// 게임 업데이트
-
-		Sleep(10);
-
-		// 함수화 안하고 그냥 작성함
-		fElapsedTime = timer.GetTimeElapsed();
-		for (int i = 0; i < fPacketH2C.NumOfClient; ++i)
-		{
-			if (Players[i].KeyInput.Up)
-				Players[i].y -= Players[i].fSpeed*fElapsedTime;
-			if (Players[i].KeyInput.Down)
-				Players[i].y += Players[i].fSpeed*fElapsedTime;
-			if (Players[i].KeyInput.Left)
-				Players[i].x -= Players[i].fSpeed*fElapsedTime;
-			if (Players[i].KeyInput.Right)
-				Players[i].x += Players[i].fSpeed*fElapsedTime;
-		}
-
-	}
-}
-
-DWORD WINAPI ClientCommunicationThread(LPVOID arg)
-{
-	Player* pPlayer = (Player*)arg; // 게임서버스레드의 플레이어 정보를 가지고 클라이언트와 통신한다
-	
-	recv(pPlayer->clientSocket, (char*)&pPlayer->KeyInput, sizeof(InputData), 0);
-
-	//send () 맵변경여부 클라이언트길이
-	//send () 플레이어가 렌더하는데 필요한 정보들
-	return 0;
-}
-
-void update(void);
-
-void err_quit(const char* msg)
-{
-	LPVOID lpMsgBuf;
-	FormatMessage(
-		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-		NULL, WSAGetLastError(),
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(LPTSTR)& lpMsgBuf, 0, NULL);
-	MessageBox(NULL, (LPCTSTR)lpMsgBuf, msg, MB_ICONERROR);
-	LocalFree(lpMsgBuf);
-	exit(1);
-}
-
-// 소켓 함수 오류 출력
-void err_display(const char* msg)
-{
-	LPVOID lpMsgBuf;
-	FormatMessage(
-		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-		NULL, WSAGetLastError(),
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(LPTSTR)& lpMsgBuf, 0, NULL);
-	printf("[%s] %s", msg, (char*)lpMsgBuf);
-	LocalFree(lpMsgBuf);
-}
-
-// 사용자 정이 데이터 수신 함수
-int recvn(SOCKET s, char* buf, int len, int flags)
-{
-	int received;
-	char* ptr = buf;
-	int left = len;
-
-	while (left > 0) {
-		received = recv(s, ptr, left, flags);
-		if (received == SOCKET_ERROR)
-			return SOCKET_ERROR;
-		else if (received == 0)
-			break;
-		left -= received;
-		ptr += received;
-	}
-
-	return (len - left);
-}
-
-
-DWORD WINAPI ProcessClient(LPVOID arg)
-{
-	int clientNumber = fPacketH2C.NumOfClient;
-	PlayerData playerData;
-
-	SOCKET client_sock = (SOCKET)arg;
-	int retval;
-	SOCKADDR_IN clientaddr;
-	int addrlen;
-
-	//클라이언트 정보 얻기
-	addrlen = sizeof(clientaddr);
-	getpeername(client_sock, (SOCKADDR*)& clientaddr, &addrlen);
-
-	while (1)
-	{
-		// 데이터 받기
-		retval = recv(client_sock, (char*)&Players[clientNumber-1].KeyInput, sizeof(InputData), 0);
-		if (retval == SOCKET_ERROR)
-		{
-			err_display("recv()");
-			break;
-		}
-		else if (retval == 0)
-			break;
-
-		// 맵변화,유저수 보내기
-		retval = send(client_sock, (char*)& fPacketH2C, sizeof(FixedData), 0);
-		if (retval == SOCKET_ERROR)
-		{
-			err_display("send()");
-			break;
-		}
-
-		// 맵보내기
-		if (fPacketH2C.mapChanged)
-		{
-			// 맵 정보를 보낸다 (현재는 값 false 라서 그냥 놔둠)
-		}
-
-		// 유저 수 만큼의 개별 유저 정보 보내기
-		for (int i = 0; i < fPacketH2C.NumOfClient; ++i)
-		{
-			playerData.x = Players[i].x;
-			playerData.y = Players[i].y;
-			retval = send(client_sock, (char*)& playerData, sizeof(PlayerData), 0);
-			if (retval == SOCKET_ERROR)
-			{
-				err_display("send()");
-				break;
-			}
-		}
-	}
-
-	//closesocket()
-	closesocket(client_sock);
-	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
-		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
-
-	return 0;
-}
+MatchingServer g_Matching;
+CGameTimer g_Msgtimer;
 
 int main(int argc, char* argv[])
 {
@@ -269,44 +35,13 @@ int main(int argc, char* argv[])
 	retval = listen(listen_sock, SOMAXCONN);
 	if (retval == SOCKET_ERROR) err_quit("listen()");
 
-	// 데이터 통신에 사용할 변수
-	SOCKET client_sock;
-	SOCKADDR_IN clientaddr;
-	int addrlen;
-	HANDLE hThread;
+	// Mathcing Thread
+	HANDLE hMatchingThread;
+	hMatchingThread = CreateThread(NULL, 0, MatchingThread, (LPVOID)listen_sock, 0, NULL);
 
-	// 게임처리용 스레드
-	HANDLE hGthread;
-	hGthread = CreateThread(NULL, 0, GameServerThread, (LPVOID)NULL, 0, NULL);
-	//
-
-	fPacketH2C.NumOfClient = 0;
-	fPacketH2C.mapChanged = 0;
-
-	while (1) {
-		// accept()
-		addrlen = sizeof(clientaddr);
-		client_sock = accept(listen_sock, (SOCKADDR*)& clientaddr, &addrlen);
-		if (client_sock == INVALID_SOCKET) {
-			err_display("accept()");
-			break;
-		}
-		// 접속한 클라이언트 정보 출력
-		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
-
-		// 스레드 생성
-		fPacketH2C.NumOfClient += 1;
-		printf("접속인원이%d가되었어요\n", fPacketH2C.NumOfClient);
-		hThread = CreateThread(NULL, 0, ProcessClient, (LPVOID)client_sock, 0, NULL);
-		if (hThread == NULL)
-		{
-			closesocket(client_sock);
-		}
-		else
-		{
-			CloseHandle(hThread);
-		}
-
+	while (1)
+	{
+		;
 	}
 
 	//closesocket()
@@ -318,10 +53,180 @@ int main(int argc, char* argv[])
 
 }
 
-void update(void)
+DWORD WINAPI MatchingThread(LPVOID listen_socket)
 {
-	for (int i = 0; i < NumOfClient; ++i)
-	{
-		//ClientsInputs[i] 값을 클라이언트 통신 쓰레드로부터 대입
+	// 데이터 통신에 사용할 변수
+	SOCKET client_sock;
+	SOCKADDR_IN clientaddr;
+	int addrlen;
+	HANDLE hThread;
+
+	while (1) {
+		// accept()
+		addrlen = sizeof(clientaddr);
+		client_sock = accept((SOCKET)listen_socket, (SOCKADDR*)& clientaddr, &addrlen);
+		if (client_sock == INVALID_SOCKET) {
+			err_display("accept()");
+			break;
+		}
+		// 접속한 클라이언트 정보 출력
+		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+
+		hThread = CreateThread(NULL, 0, ClientThread, (LPVOID)client_sock, 0, NULL);
+
+		if (hThread == NULL)
+		{
+			closesocket(client_sock);
+		}
+		else
+		{
+			CloseHandle(hThread);
+		}
 	}
+	return 0;
+}
+
+DWORD WINAPI ClientThread(LPVOID arg)
+{
+	SOCKET client_sock = (SOCKET)arg;
+	int retval;
+	SOCKADDR_IN clientaddr;
+	int addrlen;
+	bool playgame = false;
+	//클라이언트 정보 얻기
+	addrlen = sizeof(clientaddr);
+	getpeername(client_sock, (SOCKADDR*)& clientaddr, &addrlen);
+
+	
+	g_Matching.PushClient(clientaddr);
+	while (1)
+	{
+		g_Msgtimer.Tick(1.5f);
+		unsigned char msg;
+		retval = recv(client_sock, (char*)&msg, sizeof(msg), 0);
+		if (retval == SOCKET_ERROR)
+		{
+			err_display("recv()");
+			break;
+		}
+
+		//printf("[IP:%s	포트:%d]	msg = %d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port), msg);
+
+		// 현재 상태 보내기
+		if (Msg_ReadyCancel == msg)
+			msg = Msg_ConfirmReadyCancel;
+		else if (!g_Matching.isMatchingQueueFull())
+			g_Matching.GetClientNum(&msg);
+		else
+			msg = Msg_PlayGame;
+
+		retval = send(client_sock, (char*)&msg, sizeof(msg), 0);
+		if (retval == SOCKET_ERROR)
+		{
+			err_display("send()");
+			break;
+		}
+
+		if (Msg_PlayGame == msg)
+		{
+			playgame = false;
+			//g_Matching.PopClient(clientaddr);
+			break;
+		}
+		if (Msg_ConfirmReadyCancel == msg)
+		{
+			//g_Matching.PopClient(clientaddr);
+			break;
+		}
+	}
+
+	while (playgame)
+	{
+		CommunicationThreadData* pCommData = (CommunicationThreadData*)arg;
+		GameServerThreadData* pGameData = pCommData->pGameData;
+		int clientNumber = pCommData->cClientNumb;
+		PlayerData playerData;
+
+		while (1)
+		{
+			// 데이터 받기
+			retval = recv(client_sock, (char*)&pGameData->m_Players[clientNumber].KeyInput, sizeof(InputData), 0);
+			if (retval == SOCKET_ERROR)
+			{
+				err_display("recv()");
+				break;
+			}
+			else if (retval == 0)
+				break;
+
+			// 데이터 보내기에 앞서 서버가 연산 중인 데이터의 한 순간을 복사시켜서
+			// 복사본을 전송하도록 한다
+			// 왜 이러냐면 고정부 가변부 나눠서 데이터를 보낼건데
+			// 지금 보내는 데이터는 보내는 동시에 서버에서 값이 수정되기 때문이다
+
+			GameServerThreadData gData(*pGameData);
+
+			// 맵변화,유저수 보내기
+			retval = send(client_sock, (char*)&gData.m_fPacketH2C, sizeof(FixedData), 0);
+			if (retval == SOCKET_ERROR)
+			{
+				err_display("send()");
+				break;
+			}
+			// 맵보내기
+			if (gData.m_fPacketH2C.mapChanged)
+			{
+				retval = send(client_sock, (char*)&gData.m_MapData, sizeof(MapData), 0);
+			}
+
+			// 유저 수 만큼의 개별 유저 정보 보내기
+			for (int i = 0; i < gData.m_fPacketH2C.NumOfClient; ++i)
+			{
+				playerData.x = gData.m_Players[i].x;
+				playerData.y = gData.m_Players[i].y;
+				playerData.n = gData.m_cPlayerControl[clientNumber];
+
+				retval = send(client_sock, (char*)& playerData, sizeof(PlayerData), 0);
+				if (retval == SOCKET_ERROR)
+				{
+					err_display("send()");
+					break;
+				}
+			}
+		}
+	}
+	//closesocket()
+	closesocket(client_sock);
+	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
+		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+	g_Matching.PopClient(clientaddr);
+	return 0;
+}
+
+
+
+// 소켓 함수 오류 출력
+void err_quit(const char* msg)
+{
+	LPVOID lpMsgBuf;
+	FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+		NULL, WSAGetLastError(),
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPTSTR)& lpMsgBuf, 0, NULL);
+	MessageBox(NULL, (LPCTSTR)lpMsgBuf, msg, MB_ICONERROR);
+	LocalFree(lpMsgBuf);
+	exit(1);
+}
+
+void err_display(const char* msg)
+{
+	LPVOID lpMsgBuf;
+	FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+		NULL, WSAGetLastError(),
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPTSTR)& lpMsgBuf, 0, NULL);
+	printf("[%s] %s", msg, (char*)lpMsgBuf);
+	LocalFree(lpMsgBuf);
 }

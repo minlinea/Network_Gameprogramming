@@ -2,24 +2,24 @@
 #include "GameServerThread.h"
 
 
-void GameServerThreadData::MakeCommunicationThread(void)
-{
-	HANDLE hThread{ nullptr };
-
-	for (int i = 0; i < m_fPacketH2C.NumOfClient; ++i)
-	{
-		CommunicationThreadData cData(this, i);
-		CreateThread(NULL, 0, ClientCommunicationThread, (LPVOID)&cData, 0, NULL);
-		if (hThread == NULL)
-		{
-			//
-		}
-		else
-		{
-			CloseHandle(hThread);
-		}
-	}
-}
+//void GameServerThreadData::MakeCommunicationThread(void)
+//{
+//	HANDLE hThread{ nullptr };
+//
+//	for (int i = 0; i < m_fPacketH2C.NumOfClient; ++i)
+//	{
+//		CommunicationThreadData cData(this, i);
+//		//CreateThread(NULL, 0, ClientCommunicationThread, (LPVOID)&cData, 0, NULL);
+//		if (hThread == NULL)
+//		{
+//			//
+//		}
+//		else
+//		{
+//			CloseHandle(hThread);
+//		}
+//	}
+//}
 
 void GameServerThreadData::Update(float fTimeElapsed)
 {
@@ -99,7 +99,7 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 		gameData.m_cPlayerControl[i] = i;
 
 	gameData.m_fPacketH2C.mapChanged = 1;
-	gameData.MakeCommunicationThread();
+	//gameData.MakeCommunicationThread();
 
 
 	while (1)
@@ -112,85 +112,85 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 		gameData.Update(timer.GetTimeElapsed());
 	}
 }
-
-DWORD WINAPI ClientCommunicationThread(LPVOID arg)
-{
-	CommunicationThreadData* pCommData = (CommunicationThreadData*)arg;
-
-	GameServerThreadData* pGameData = pCommData->pGameData;
-	int clientNumber = pCommData->cClientNumb;
-
-	SOCKET client_sock = pGameData->m_Players[clientNumber].clientSocket;
-	int retval;
-	SOCKADDR_IN clientaddr;
-	int addrlen;
-
-
-	PlayerData playerData;
-
-	//클라이언트 정보 얻기
-	addrlen = sizeof(clientaddr);
-	getpeername(client_sock, (SOCKADDR*)& clientaddr, &addrlen);
-
-	while (1)
-	{
-		// 데이터 받기
-		retval = recv(client_sock, (char*)&pGameData->m_Players[clientNumber].KeyInput, sizeof(InputData), 0);
-		if (retval == SOCKET_ERROR)
-		{
-			err_display("recv()");
-			break;
-		}
-		else if (retval == 0)
-			break;
-
-
-
-
-		// 데이터 보내기에 앞서 서버가 연산 중인 데이터의 한 순간을 복사시켜서
-		// 복사본을 전송하도록 한다
-		// 왜 이러냐면 고정부 가변부 나눠서 데이터를 보낼건데
-		// 지금 보내는 데이터는 보내는 동시에 서버에서 값이 수정되기 때문이다
-
-		GameServerThreadData gData(*pGameData);
-
-
-
-
-		// 맵변화,유저수 보내기
-		retval = send(client_sock, (char*)&gData.m_fPacketH2C, sizeof(FixedData), 0);
-		if (retval == SOCKET_ERROR)
-		{
-			err_display("send()");
-			break;
-		}
-
-		// 맵보내기
-		if (gData.m_fPacketH2C.mapChanged)
-		{
-			retval = send(client_sock, (char*)&gData.m_MapData, sizeof(MapData), 0);
-		}
-
-		// 유저 수 만큼의 개별 유저 정보 보내기
-		for (int i = 0; i < gData.m_fPacketH2C.NumOfClient; ++i)
-		{
-			playerData.x = gData.m_Players[i].x;
-			playerData.y = gData.m_Players[i].y;
-			playerData.n = gData.m_cPlayerControl[clientNumber];
-
-			retval = send(client_sock, (char*)& playerData, sizeof(PlayerData), 0);
-			if (retval == SOCKET_ERROR)
-			{
-				err_display("send()");
-				break;
-			}
-		}
-	}
-
-	//closesocket()
-	closesocket(client_sock);
-	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
-		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
-
-	return 0;
-}
+//
+//DWORD WINAPI ClientCommunicationThread(LPVOID arg)
+//{
+//	CommunicationThreadData* pCommData = (CommunicationThreadData*)arg;
+//
+//	GameServerThreadData* pGameData = pCommData->pGameData;
+//	int clientNumber = pCommData->cClientNumb;
+//
+//	SOCKET client_sock = pGameData->m_Players[clientNumber].clientSocket;
+//	int retval;
+//	SOCKADDR_IN clientaddr;
+//	int addrlen;
+//
+//
+//	PlayerData playerData;
+//
+//	//클라이언트 정보 얻기
+//	addrlen = sizeof(clientaddr);
+//	getpeername(client_sock, (SOCKADDR*)& clientaddr, &addrlen);
+//
+//	while (1)
+//	{
+//		// 데이터 받기
+//		retval = recv(client_sock, (char*)&pGameData->m_Players[clientNumber].KeyInput, sizeof(InputData), 0);
+//		if (retval == SOCKET_ERROR)
+//		{
+//			err_display("recv()");
+//			break;
+//		}
+//		else if (retval == 0)
+//			break;
+//
+//
+//
+//
+//		// 데이터 보내기에 앞서 서버가 연산 중인 데이터의 한 순간을 복사시켜서
+//		// 복사본을 전송하도록 한다
+//		// 왜 이러냐면 고정부 가변부 나눠서 데이터를 보낼건데
+//		// 지금 보내는 데이터는 보내는 동시에 서버에서 값이 수정되기 때문이다
+//
+//		GameServerThreadData gData(*pGameData);
+//
+//
+//
+//
+//		// 맵변화,유저수 보내기
+//		retval = send(client_sock, (char*)&gData.m_fPacketH2C, sizeof(FixedData), 0);
+//		if (retval == SOCKET_ERROR)
+//		{
+//			err_display("send()");
+//			break;
+//		}
+//
+//		// 맵보내기
+//		if (gData.m_fPacketH2C.mapChanged)
+//		{
+//			retval = send(client_sock, (char*)&gData.m_MapData, sizeof(MapData), 0);
+//		}
+//
+//		// 유저 수 만큼의 개별 유저 정보 보내기
+//		for (int i = 0; i < gData.m_fPacketH2C.NumOfClient; ++i)
+//		{
+//			playerData.x = gData.m_Players[i].x;
+//			playerData.y = gData.m_Players[i].y;
+//			playerData.n = gData.m_cPlayerControl[clientNumber];
+//
+//			retval = send(client_sock, (char*)& playerData, sizeof(PlayerData), 0);
+//			if (retval == SOCKET_ERROR)
+//			{
+//				err_display("send()");
+//				break;
+//			}
+//		}
+//	}
+//
+//	//closesocket()
+//	closesocket(client_sock);
+//	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
+//		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+//
+//	return 0;
+//}

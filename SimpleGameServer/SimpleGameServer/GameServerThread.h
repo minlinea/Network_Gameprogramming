@@ -104,5 +104,5 @@ public:
 
 
 DWORD WINAPI GameServerThread(LPVOID arg);
-
-DWORD WINAPI ClientCommunicationThread(LPVOID arg);
+//
+//DWORD WINAPI ClientCommunicationThread(LPVOID arg);
