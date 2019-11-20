@@ -26,7 +26,7 @@ struct Color4
 struct CharacterStatus
 {
 	Float2 position;
-	char whoseControlNum;
+	//char whoseControlNum;
 };
 #pragma pack()
 #pragma pack(1)

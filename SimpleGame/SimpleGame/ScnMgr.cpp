@@ -17,7 +17,7 @@ ScnMgr::ScnMgr()
 
 	m_client = new TCPClient();
 
-	CurrentScene = GameScene;
+	CurrentScene = TitleScene;
 
 	////////////////////////////////////////////////////////////////
 	//Initialize objects
@@ -155,10 +155,10 @@ void ScnMgr::Update(float ElapsedTime)
 	if (CurrentScene == TitleScene) {
 		unsigned char msg;
 		msg = Msg_Ready;
-
+		std::cout << "update" << std::endl;
 		m_client->TitleSceneSendData(msg);
 
-		m_client->TitleSceneRecvData(&msg);
+		m_client->TitleSceneRecvData(msg);
 		if (msg == Msg_ConfirmReadyCancel)
 			delete m_client;
 		else if (msg == Msg_PlayGame)
@@ -168,11 +168,6 @@ void ScnMgr::Update(float ElapsedTime)
 	}
 	else if (CurrentScene == GameScene) 
 	{
-		//character control
-		/*std::cout << "Up: " << m_key.Up
-			<< ", Down: " << m_key.Down
-			<< ", Left: " << m_key.Left
-			<< ", Right: " << m_key.Right << std::endl;*/
 		CharacterStatus pos[3];
 
 		m_client->PlaySceneSendData(m_key);
