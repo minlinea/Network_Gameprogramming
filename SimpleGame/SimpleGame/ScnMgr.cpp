@@ -3,7 +3,35 @@
 #include "Dependencies\freeglut.h"
 #include <float.h>
 
-
+int Title_arr[TitleSize][TitleSize] = {
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,1,1,1,1,0,0,0,1,0,0,0,0,1,0,1,0,0,1,1,1,1,0,0},
+		{0,0,1,0,0,0,0,0,1,0,1,0,0,1,1,1,1,1,0,1,0,0,0,0,0},
+		{0,0,1,0,1,1,0,1,0,0,0,1,0,1,0,1,0,1,0,1,1,1,1,0,0},
+		{0,0,1,0,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1,0,0,0,0,0},
+		{0,0,1,1,1,1,0,1,0,0,0,1,0,1,0,1,0,1,0,1,1,1,1,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0},
+		{0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0},
+		{0,0,1,0,0,1,1,0,1,1,1,0,0,0,0,1,1,0,1,1,1,0,1,0,0},
+		{0,0,1,0,1,0,0,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,0},
+		{0,0,1,0,0,1,1,0,0,1,0,1,0,1,0,1,1,0,0,1,0,0,1,0,0},
+		{0,0,1,0,0,0,0,1,0,1,0,1,1,1,0,1,0,1,0,1,0,0,1,0,0},
+		{0,0,1,0,0,1,1,0,0,1,0,1,0,1,0,1,0,1,0,1,0,0,1,0,0},
+		{0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0},
+		{0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0},
+		{0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		
+                                 //
+};
 ScnMgr::ScnMgr()
 {
 
@@ -17,7 +45,7 @@ ScnMgr::ScnMgr()
 
 	m_client = new TCPClient();
 
-	CurrentScene = TitleScene;
+	CurrentScene = GameScene;
 
 	////////////////////////////////////////////////////////////////
 	//Initialize objects
@@ -35,20 +63,37 @@ ScnMgr::ScnMgr()
 
 		m_Player[i]->SetType(Player);
 	}
-
+	int map_arr[MAP_COLUMN][MAP_ROW] = {
+		{1,2,3,2,3,2,1,2,4,2,3,2,3,2,2,1},
+		{1,2,2,3,3,3,1,1,1,3,3,3,2,2,1,1},
+		{1,2,2,2,3,2,3,2,3,2,3,2,2,2,2,1},
+		{3,3,3,3,2,3,3,3,3,3,2,3,3,3,3,3},
+		{3,2,3,2,3,3,2,2,2,3,3,2,2,3,3,3},
+		{3,2,3,1,3,2,2,2,2,2,1,1,1,3,3,3},
+		{3,1,3,2,2,2,2,2,2,2,1,2,3,3,3,3},
+		{3,2,3,1,3,3,2,2,2,2,1,1,1,3,2,3},
+		{3,1,3,2,1,1,2,2,2,2,3,2,3,3,1,3},
+		{3,2,3,3,2,1,2,2,2,2,2,3,3,3,2,3},
+		{3,1,3,2,1,1,2,2,2,2,3,2,3,3,1,3},
+		{3,2,2,3,3,3,2,3,2,3,3,3,2,3,2,3},
+		{3,3,3,2,2,2,3,3,3,3,2,2,3,3,3,3},
+		{1,2,3,3,3,3,3,2,3,2,3,3,2,3,2,1},
+		{1,2,2,3,3,3,1,1,1,3,3,3,3,2,2,1},
+		{1,2,2,2,3,2,1,2,1,2,3,2,2,2,2,1},
+	};
 	for (int i = 0; i < MAP_COLUMN; ++i)
 	{
 		for (int j = 0; j < MAP_ROW; ++j)
 		{
 			m_MapObject[i][j] = new Object();
-			m_MapObject[i][j]->SetPos({ (float)(i - MAP_COLUMN / 2),(float)(j - MAP_COLUMN / 2) });
+			m_MapObject[i][j]->SetPos({ (float)(j - MAP_ROW / 2),(float)((MAP_COLUMN - i - 1) - MAP_COLUMN / 2) });
 			m_MapObject[i][j]->SetVol({ 1,1 });
 			m_MapObject[i][j]->SetVel({ 0,0 });
 
 			m_MapObject[i][j]->SetColor({ 0, 0, 0, 1 });
 
 			m_MapObject[i][j]->SetType(Empty);
-
+			//(ObjectType)(map_arr[i][j])
 		}
 	}
 }
@@ -63,41 +108,40 @@ ScnMgr::~ScnMgr()
 	}
 }
 
-
 void ScnMgr::RenderScene(float ElapsedTime)
 {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
 	if (CurrentScene == TitleScene) {
+		for (int i = 0; i < MAP_COLUMN; ++i)
+		{
+			float interval = 20;
+			for (int j = 0; j < MAP_ROW; ++j)
+			{
+				m_Renderer->DrawSolidRect(
+					j * interval + interval / 2, i * interval + interval / 2, 0,
+					1 * interval, 0.35, 0.35, 0.5, 1);
+			}
+		}
 	}
 	else if (CurrentScene == GameScene) {
-	/*********************************************PlayScene***************************************************************************/
+		/*********************************************PlayScene***************************************************************************/
 		Float2 pos;
 		Float2 vol;
 		Color4 col;
 		float interval = 50;
 		ObjectType type;
 
-		//draw character
-		for (int i = 0; i < MAX_PLAYER_NUM; ++i) {
-			m_Player[i]->GetPos(&pos);
-			m_Player[i]->GetVol(&vol);
-			m_Player[i]->GetColor(&col);
-			float body_gap = interval / 4;
-			//head
-			m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval + body_gap, 0, vol.x * body_gap, 1, 1, 1, col.a);
-			//body
-			m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval - body_gap, 0, vol.x * body_gap * 3, col.r, col.g, col.b, col.a);
-		}
+
 		//draw marginal map wall
-		for (int i = -9; i < 9; ++i)
+	/*	for (int i = -9; i < 9; ++i)
 		{
-			m_Renderer->DrawSolidRect(i * interval, -9 * interval, 0, interval, 1, 0, 1, col.a);
-			m_Renderer->DrawSolidRect(-9 * interval, i * interval, 0, interval, 1, 0, 1, col.a);
-			m_Renderer->DrawSolidRect(8 * interval, i * interval, 0, interval, 1, 0, 1, col.a);
-			m_Renderer->DrawSolidRect(i * interval, 8 * interval, 0, interval, 1, 0, 1, col.a);
-		}
+			m_Renderer->DrawSolidRect(i * interval + interval * 0.5, -9 * interval + interval * 0.5, 0, interval, 1, 0, 1, 1);
+			m_Renderer->DrawSolidRect(-9 * interval + interval * 0.5, i * interval + interval * 0.5, 0, interval, 1, 0, 1, 1);
+			m_Renderer->DrawSolidRect(8 * interval + interval * 0.5, i * interval + interval * 0.5, 0, interval, 1, 0, 1, 1);
+			m_Renderer->DrawSolidRect(i * interval + interval * 0.5, 8 * interval + interval * 0.5, 0, interval, 1, 0, 1, 1);
+		}*/
 
 		for (int i = 0; i < MAP_COLUMN; ++i)
 		{
@@ -107,16 +151,91 @@ void ScnMgr::RenderScene(float ElapsedTime)
 				m_MapObject[i][j]->GetVol(&vol);
 				m_MapObject[i][j]->GetColor(&col);
 				m_MapObject[i][j]->GetType(&type);
+				int size = 0;
 
 				switch (type)
 				{
 				case Wall:
-					m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval, 0, vol.x * interval, 1, 1, 1, col.a);
+					size = 50;
+					m_Renderer->DrawSolidRect(
+						pos.x * interval + interval / 2, pos.y * interval + interval / 2, 0,
+						vol.x * interval, 0.35, 0.35, 0.5, 1);
+					m_Renderer->DrawSolidRect(
+						pos.x * interval + interval / 2, pos.y * interval + interval / 2, 0,
+						vol.x * 30, 0.25, 0.25, 0.35, 1);
+					break;
+				case Breakable_Wall:
+					size = 50;
+					m_Renderer->DrawSolidRect(
+						pos.x * interval + interval / 2, pos.y * interval + interval / 2, 0,
+						vol.x * size, 0.8, 0.7, 0.5, 1);
+					break;
+				case Item_AddSpeed:
+					size = 20;
+					m_Renderer->DrawSolidRect(
+						pos.x * interval + interval / 2, pos.y * interval + interval / 2, 0,
+						vol.x * size, 1, 0.66, 0.35, 1);
+					break;
+				case Item_AddBomb:
+					size = 20;
+					m_Renderer->DrawSolidRect(
+						pos.x * interval + interval / 2, pos.y * interval + interval / 2, 0,
+						vol.x * size, 1, 1, 1, 1);
+					break;
+				case Item_AddPower:
+					size = 20;
+					m_Renderer->DrawSolidRect(
+						pos.x * interval + interval / 2, pos.y * interval + interval / 2, 0,
+						vol.x * size, 1, 0.65, 1, 1);
+					break;
+				case Bomb_Anim1:
+					size = 35;
+
+					m_Renderer->DrawSolidRect(
+						pos.x * interval + interval / 2, pos.y * interval + interval / 2, 0,
+						vol.x * size, 0, 0.65, 0.9, 1);
+					m_Renderer->DrawSolidRect(
+						pos.x * interval + interval / 2 + size / 3, pos.y * interval + interval / 2 + size / 4, 0,
+						vol.x * size / 10, 0.9, 0.9, 0.9, 1);
+					m_Renderer->DrawSolidRect(
+						pos.x * interval + interval / 2 + size / 3 - vol.x * size / 10, pos.y * interval + interval / 2 + size / 4, 0,
+						vol.x * size / 10, 0.9, 0.9, 0.9, 1);
+					m_Renderer->DrawSolidRect(
+						pos.x * interval + interval / 2 + size / 3, pos.y * interval + interval / 2 + size / 4 - vol.x * size / 10, 0,
+						vol.x * size / 10, 0.9, 0.9, 0.9, 1);
+					m_Renderer->DrawSolidRect(
+						pos.x * interval + interval / 2, pos.y * interval + interval / 2 + size / 2, 0,
+						vol.x * size / 4, 0, 0.5, 0.9, 1);
 					break;
 				}
 			}
 		}
-	/******************************************************************************************************************************/
+
+		//draw character
+		for (int i = 0; i < MAX_PLAYER_NUM; ++i) {
+			m_Player[i]->GetPos(&pos);
+			m_Player[i]->GetVol(&vol);
+			m_Player[i]->GetColor(&col);
+			float body_gap = interval / 4;
+			//head
+			m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval + body_gap * 2, 0, vol.x * body_gap, 1, 1, 1, 1);
+			//body
+			m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval, 0, vol.x * body_gap * 3, col.r, col.g, col.b, col.a);
+		}
+
+		for (int i = 0; i < TitleSize; ++i)
+		{
+			float interval = 1000/ TitleSize;
+			for (int j = 0; j < TitleSize; ++j)
+			{
+				if (Title_arr[i][j] == 1) {
+					m_Renderer->DrawSolidRect(
+						(j- TitleSize/2) * interval, (TitleSize -1-i- TitleSize/2) * interval, 0,
+						1 * interval, 0.35, 0.35, 0.5, 1);
+				}
+			}
+		}
+		/******************************************************************************************************************************/
 	}
 }
 
@@ -166,7 +285,7 @@ void ScnMgr::Update(float ElapsedTime)
 			CurrentScene = GameScene;
 		}
 	}
-	else if (CurrentScene == GameScene) 
+	else if (CurrentScene == GameScene)
 	{
 		CharacterStatus pos[3];
 

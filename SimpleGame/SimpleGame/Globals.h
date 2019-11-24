@@ -7,6 +7,8 @@
 #define MAP_COLUMN	16
 
 #define MAX_PLAYER_NUM	3
+
+#define TitleSize 25
 ///////////////////////////////////////////////////////////////////////
 struct Float2
 {
@@ -60,7 +62,7 @@ struct FixedData
 
 enum ObjectType 
 {
-	Player,
+	Player=0,
 	Empty,
 	Wall,
 	Breakable_Wall,

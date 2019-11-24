@@ -103,7 +103,7 @@ int main(int argc, char** argv)
 	// 생성자는 이곳에
 
 	g_ScnMgr = new ScnMgr;
-
+	
 
 	// 생성자는 이곳에
 

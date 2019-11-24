@@ -3,7 +3,8 @@
 #include "Object.h"
 #include "Globals.h"
 #include "TCPClient.h"
-
+#include "Dependencies\glew.h"
+#include "Dependencies\freeglut.h"
 class ScnMgr
 {
 public:
