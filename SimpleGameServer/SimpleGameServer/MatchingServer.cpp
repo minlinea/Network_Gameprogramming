@@ -4,7 +4,7 @@
 
 MatchingServer::MatchingServer()
 {
-	m_MatchingQueue.reserve(3);
+	m_MatchingQueue.reserve(MAX_PLAYER);
 	m_ClientNum = (unsigned char)0;
 }
 
@@ -15,7 +15,7 @@ MatchingServer::~MatchingServer()
 
 bool MatchingServer::isMatchingQueueFull()
 {
-	if (m_ClientNum == (unsigned char)3)
+	if (m_ClientNum == (unsigned char)MAX_PLAYER)
 		return true;
 	return false;
 }
@@ -26,7 +26,9 @@ void MatchingServer::CreateGameServerThread()
 
 void MatchingServer::MatchingQueueDeQueue()
 {
-
+	PopClient(m_MatchingQueue[0]);
+	PopClient(m_MatchingQueue[0]);
+	PopClient(m_MatchingQueue[0]);
 }
 
 void MatchingServer::GetClientNum(unsigned char* Data)

@@ -41,30 +41,14 @@ int main(int argc, char* argv[])
 
 	while (1)
 	{
-		;
-	}
-
-	//closesocket()
-	closesocket(listen_sock);
-
-	//윈속 종료
-	WSACleanup();
-	return 0;
-
-}
-
-DWORD WINAPI MatchingThread(LPVOID listen_socket)
-{
-	// 데이터 통신에 사용할 변수
-	SOCKET client_sock;
-	SOCKADDR_IN clientaddr;
-	int addrlen;
-	HANDLE hThread;
-
-	while (1) {
+		// 데이터 통신에 사용할 변수
+		SOCKET client_sock;
+		SOCKADDR_IN clientaddr;
+		int addrlen;
+		HANDLE hThread;
 		// accept()
 		addrlen = sizeof(clientaddr);
-		client_sock = accept((SOCKET)listen_socket, (SOCKADDR*)& clientaddr, &addrlen);
+		client_sock = accept((SOCKET)listen_sock, (SOCKADDR*)& clientaddr, &addrlen);
 		if (client_sock == INVALID_SOCKET) {
 			err_display("accept()");
 			break;
@@ -82,6 +66,32 @@ DWORD WINAPI MatchingThread(LPVOID listen_socket)
 		{
 			CloseHandle(hThread);
 		}
+		g_Matching.PushClient(clientaddr);
+	}
+
+
+	//closesocket()
+	closesocket(listen_sock);
+
+	//윈속 종료
+	WSACleanup();
+	return 0;
+
+}
+
+DWORD WINAPI MatchingThread(LPVOID listen_socket)
+{
+	while (true)
+	{
+		g_Msgtimer.Tick(1.5f);
+		if(g_Matching.isMatchingQueueFull())
+		{
+			//g_Matching.CreateGameServerThread();
+			g_Matching.MatchingQueueDeQueue();
+			unsigned char dataNum;
+			g_Matching.GetClientNum(&dataNum);
+			printf("%d\n", dataNum);
+		}
 	}
 	return 0;
 }
@@ -97,8 +107,6 @@ DWORD WINAPI ClientThread(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)& clientaddr, &addrlen);
 
-	
-	g_Matching.PushClient(clientaddr);
 	while (1)
 	{
 		g_Msgtimer.Tick(1.5f);
@@ -119,7 +127,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			g_Matching.GetClientNum(&msg);
 		else
 			msg = Msg_PlayGame;
-		printf("%d", msg);
+
 		retval = send(client_sock, (char*)&msg, sizeof(msg), 0);
 		if (retval == SOCKET_ERROR)
 		{
@@ -129,13 +137,11 @@ DWORD WINAPI ClientThread(LPVOID arg)
 
 		if (Msg_PlayGame == msg)
 		{
-			playgame = true;
-			//g_Matching.PopClient(clientaddr);
+			playgame = false;
 			break;
 		}
 		if (Msg_ConfirmReadyCancel == msg)
 		{
-			//g_Matching.PopClient(clientaddr);
 			break;
 		}
 	}
