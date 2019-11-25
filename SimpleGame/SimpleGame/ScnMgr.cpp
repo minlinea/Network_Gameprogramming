@@ -45,7 +45,7 @@ ScnMgr::ScnMgr()
 
 	m_client = new TCPClient();
 
-	CurrentScene = GameScene;
+	CurrentScene = TitleScene;
 
 	////////////////////////////////////////////////////////////////
 	//Initialize objects
@@ -66,17 +66,17 @@ ScnMgr::ScnMgr()
 	int map_arr[MAP_COLUMN][MAP_ROW] = {
 		{1,2,3,2,3,2,1,2,4,2,3,2,3,2,2,1},
 		{1,2,2,3,3,3,1,1,1,3,3,3,2,2,1,1},
-		{1,2,2,2,3,2,3,2,3,2,3,2,2,2,2,1},
-		{3,3,3,3,2,3,3,3,3,3,2,3,3,3,3,3},
-		{3,2,3,2,3,3,2,2,2,3,3,2,2,3,3,3},
-		{3,2,3,1,3,2,2,2,2,2,1,1,1,3,3,3},
-		{3,1,3,2,2,2,2,2,2,2,1,2,3,3,3,3},
-		{3,2,3,1,3,3,2,2,2,2,1,1,1,3,2,3},
-		{3,1,3,2,1,1,2,2,2,2,3,2,3,3,1,3},
-		{3,2,3,3,2,1,2,2,2,2,2,3,3,3,2,3},
-		{3,1,3,2,1,1,2,2,2,2,3,2,3,3,1,3},
-		{3,2,2,3,3,3,2,3,2,3,3,3,2,3,2,3},
-		{3,3,3,2,2,2,3,3,3,3,2,2,3,3,3,3},
+		{1,2,2,3,3,2,3,2,3,2,3,2,2,2,2,1},
+		{3,3,3,3,3,3,3,3,3,3,1,3,3,3,3,3},
+		{3,2,3,2,3,3,2,3,3,3,3,2,2,3,2,3},
+		{3,2,3,1,3,2,2,3,3,2,1,1,1,3,2,3},
+		{3,1,3,3,3,3,3,1,1,3,1,2,3,3,3,3},
+		{3,2,3,1,3,3,2,1,1,2,1,1,1,3,2,3},
+		{3,1,3,2,1,1,2,3,3,3,3,2,3,3,1,3},
+		{3,2,3,3,3,1,3,3,3,2,3,3,3,3,2,3},
+		{3,1,3,2,1,1,2,3,3,2,3,2,3,3,1,3},
+		{3,2,1,3,3,3,2,3,3,3,3,3,2,3,2,3},
+		{3,3,3,2,3,2,3,3,3,1,1,3,3,3,3,3},
 		{1,2,3,3,3,3,3,2,3,2,3,3,2,3,2,1},
 		{1,2,2,3,3,3,1,1,1,3,3,3,3,2,2,1},
 		{1,2,2,2,3,2,1,2,1,2,3,2,2,2,2,1},
@@ -92,7 +92,7 @@ ScnMgr::ScnMgr()
 
 			m_MapObject[i][j]->SetColor({ 0, 0, 0, 1 });
 
-			m_MapObject[i][j]->SetType(Empty);
+			m_MapObject[i][j]->SetType((ObjectType)(map_arr[i][j]));
 			//(ObjectType)(map_arr[i][j])
 		}
 	}
@@ -114,17 +114,21 @@ void ScnMgr::RenderScene(float ElapsedTime)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
 	if (CurrentScene == TitleScene) {
-		for (int i = 0; i < MAP_COLUMN; ++i)
+		for (int i = 0; i < TitleSize; ++i)
 		{
-			float interval = 20;
-			for (int j = 0; j < MAP_ROW; ++j)
+			float interval = 1000/ TitleSize;
+			for (int j = 0; j < TitleSize; ++j)
 			{
-				m_Renderer->DrawSolidRect(
-					j * interval + interval / 2, i * interval + interval / 2, 0,
-					1 * interval, 0.35, 0.35, 0.5, 1);
+				if (Title_arr[i][j] == 1) {
+					m_Renderer->DrawSolidRect(
+						(j- TitleSize/2) * interval, (TitleSize -1-i- TitleSize/2) * interval, 0,
+						1 * interval, 0.35, 0.35, 0.5, 1);
+				}
 			}
 		}
+		
 	}
+
 	else if (CurrentScene == GameScene) {
 		/*********************************************PlayScene***************************************************************************/
 		Float2 pos;
@@ -135,13 +139,13 @@ void ScnMgr::RenderScene(float ElapsedTime)
 
 
 		//draw marginal map wall
-	/*	for (int i = -9; i < 9; ++i)
+		for (int i = -9; i < 9; ++i)
 		{
 			m_Renderer->DrawSolidRect(i * interval + interval * 0.5, -9 * interval + interval * 0.5, 0, interval, 1, 0, 1, 1);
 			m_Renderer->DrawSolidRect(-9 * interval + interval * 0.5, i * interval + interval * 0.5, 0, interval, 1, 0, 1, 1);
 			m_Renderer->DrawSolidRect(8 * interval + interval * 0.5, i * interval + interval * 0.5, 0, interval, 1, 0, 1, 1);
 			m_Renderer->DrawSolidRect(i * interval + interval * 0.5, 8 * interval + interval * 0.5, 0, interval, 1, 0, 1, 1);
-		}*/
+		}
 
 		for (int i = 0; i < MAP_COLUMN; ++i)
 		{
@@ -223,18 +227,7 @@ void ScnMgr::RenderScene(float ElapsedTime)
 			m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval, 0, vol.x * body_gap * 3, col.r, col.g, col.b, col.a);
 		}
 
-		for (int i = 0; i < TitleSize; ++i)
-		{
-			float interval = 1000/ TitleSize;
-			for (int j = 0; j < TitleSize; ++j)
-			{
-				if (Title_arr[i][j] == 1) {
-					m_Renderer->DrawSolidRect(
-						(j- TitleSize/2) * interval, (TitleSize -1-i- TitleSize/2) * interval, 0,
-						1 * interval, 0.35, 0.35, 0.5, 1);
-				}
-			}
-		}
+		
 		/******************************************************************************************************************************/
 	}
 }
@@ -287,9 +280,10 @@ void ScnMgr::Update(float ElapsedTime)
 	}
 	else if (CurrentScene == GameScene)
 	{
-		CharacterStatus pos[3];
+		static CharacterStatus pos[3];
 
 		m_client->PlaySceneSendData(m_key);
+
 		m_client->PlaySceneRecvData(pos);
 		ObjectType type;
 		for (int i = 0; i < MAX_PLAYER_NUM; ++i) {
