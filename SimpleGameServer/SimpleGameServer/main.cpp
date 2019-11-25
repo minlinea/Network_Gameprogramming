@@ -108,12 +108,12 @@ DWORD WINAPI MatchingThread(LPVOID listen_socket)
 				}
 				printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
 					inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+				//TerminateThread(ClientThread, 0);
 			}
+			
 
 			g_Matching.MatchingQueueDeQueue();
-			unsigned char dataNum;
-			g_Matching.GetClientNum(&dataNum);
-			printf("%d\n", dataNum);
+
 		}
 	}
 	return 0;
@@ -121,6 +121,7 @@ DWORD WINAPI MatchingThread(LPVOID listen_socket)
 
 DWORD WINAPI ClientThread(LPVOID arg)
 {
+	
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
 	SOCKADDR_IN clientaddr;
@@ -164,7 +165,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 	}
 
 	//closesocket()
-	closesocket(client_sock);
+	
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
 		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
 	g_Matching.PopClient(client_sock);
