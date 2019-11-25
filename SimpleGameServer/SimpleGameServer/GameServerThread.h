@@ -61,7 +61,7 @@ public:
 	float		x, y;
 	float		fSpeed{ 10.f };
 	status		stat;
-	SOCKADDR_IN	sockAddress;
+	SOCKET 	sockAddress;
 	InputData	KeyInput;
 	// 등등 게임 로직에 필요한 변수
 
@@ -105,4 +105,4 @@ public:
 
 DWORD WINAPI GameServerThread(LPVOID arg);
 //
-//DWORD WINAPI ClientCommunicationThread(LPVOID arg);
+DWORD WINAPI ClientCommunicationThread(LPVOID arg);

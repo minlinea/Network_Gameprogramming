@@ -1,11 +1,2 @@
-﻿  GameServerThread.cpp
-c:\networkgameprogramming\network_gameprogramming\simplegameserver\simplegameserver\gameserverthread.cpp(92): error C2065: 'SocketData': 선언되지 않은 식별자입니다.
-c:\networkgameprogramming\network_gameprogramming\simplegameserver\simplegameserver\gameserverthread.cpp(92): error C2065: 'socks': 선언되지 않은 식별자입니다.
-c:\networkgameprogramming\network_gameprogramming\simplegameserver\simplegameserver\gameserverthread.cpp(92): error C2059: 구문 오류: ')'
-c:\networkgameprogramming\network_gameprogramming\simplegameserver\simplegameserver\gameserverthread.cpp(97): error C2065: 'socks': 선언되지 않은 식별자입니다.
-c:\networkgameprogramming\network_gameprogramming\simplegameserver\simplegameserver\gameserverthread.cpp(98): error C2065: 'socks': 선언되지 않은 식별자입니다.
-c:\networkgameprogramming\network_gameprogramming\simplegameserver\simplegameserver\gameserverthread.cpp(99): error C2065: 'socks': 선언되지 않은 식별자입니다.
-  MatchingServer.cpp
-  cTimer.cpp
-  main.cpp
-  코드를 생성하고 있습니다...
+﻿  main.cpp
+  SimpleGameServer.vcxproj -> C:\NetworkGameprogramming\Network_Gameprogramming\SimpleGameServer\SimpleGameServer\x64\Debug\SimpleGameServer.exe

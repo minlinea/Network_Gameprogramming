@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
 		{
 			CloseHandle(hThread);
 		}
-		g_Matching.PushClient(clientaddr);
+		g_Matching.PushClient(client_sock);
 	}
 
 
@@ -81,17 +81,34 @@ int main(int argc, char* argv[])
 
 DWORD WINAPI MatchingThread(LPVOID listen_socket)
 {
+	g_Msgtimer.Tick(1.5f);
 	while (true)
 	{
-		g_Msgtimer.Tick(1.5f);
 		if(g_Matching.isMatchingQueueFull())
 		{
-			//g_Matching.CreateGameServerThread();
 			HANDLE hThread;
 			
-			std::vector<SOCKADDR_IN> matchingqueue = g_Matching.GetQueue();
-			SOCKADDR_IN s[3] = { matchingqueue[0], matchingqueue[1], matchingqueue[2] };
+			std::vector<SOCKET> matchingqueue = g_Matching.GetQueue();
+			SOCKET s[3] = { matchingqueue[0], matchingqueue[1], matchingqueue[2] };
 			hThread = CreateThread(NULL, 0, GameServerThread, (LPVOID)s, 0, NULL);
+
+			for (int i = 0; i < 3; ++i)
+			{
+				SOCKADDR_IN clientaddr;
+				int addrlen;
+				//클라이언트 정보 얻기
+				addrlen = sizeof(clientaddr);
+				getpeername(matchingqueue[i], (SOCKADDR*)& clientaddr, &addrlen);
+				unsigned char msg = Msg_PlayGame;
+				int retval = send(matchingqueue[i], (char*)&msg, sizeof(msg), 0);
+				if (retval == SOCKET_ERROR)
+				{
+					err_display("send()");
+					break;
+				}
+				printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
+					inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+			}
 
 			g_Matching.MatchingQueueDeQueue();
 			unsigned char dataNum;
@@ -140,78 +157,17 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			err_display("send()");
 			break;
 		}
-
-		if (Msg_PlayGame == msg)
-		{
-			playgame = false;
-			break;
-		}
 		if (Msg_ConfirmReadyCancel == msg)
 		{
 			break;
 		}
 	}
 
-	while (playgame)
-	{
-		CommunicationThreadData* pCommData = (CommunicationThreadData*)arg;
-		GameServerThreadData* pGameData = pCommData->pGameData;
-		int clientNumber = pCommData->cClientNumb;
-		PlayerData playerData;
-
-		while (1)
-		{
-			// 데이터 받기
-			retval = recv(client_sock, (char*)&pGameData->m_Players[clientNumber].KeyInput, sizeof(InputData), 0);
-			if (retval == SOCKET_ERROR)
-			{
-				err_display("recv()");
-				break;
-			}
-			else if (retval == 0)
-				break;
-
-			// 데이터 보내기에 앞서 서버가 연산 중인 데이터의 한 순간을 복사시켜서
-			// 복사본을 전송하도록 한다
-			// 왜 이러냐면 고정부 가변부 나눠서 데이터를 보낼건데
-			// 지금 보내는 데이터는 보내는 동시에 서버에서 값이 수정되기 때문이다
-
-			GameServerThreadData gData(*pGameData);
-
-			// 맵변화,유저수 보내기
-			retval = send(client_sock, (char*)&gData.m_fPacketH2C, sizeof(FixedData), 0);
-			if (retval == SOCKET_ERROR)
-			{
-				err_display("send()");
-				break;
-			}
-			// 맵보내기
-			if (gData.m_fPacketH2C.mapChanged)
-			{
-				retval = send(client_sock, (char*)&gData.m_MapData, sizeof(MapData), 0);
-			}
-
-			// 유저 수 만큼의 개별 유저 정보 보내기
-			for (int i = 0; i < gData.m_fPacketH2C.NumOfClient; ++i)
-			{
-				playerData.x = gData.m_Players[i].x;
-				playerData.y = gData.m_Players[i].y;
-				playerData.n = gData.m_cPlayerControl[clientNumber];
-
-				retval = send(client_sock, (char*)& playerData, sizeof(PlayerData), 0);
-				if (retval == SOCKET_ERROR)
-				{
-					err_display("send()");
-					break;
-				}
-			}
-		}
-	}
 	//closesocket()
 	closesocket(client_sock);
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
 		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
-	g_Matching.PopClient(clientaddr);
+	g_Matching.PopClient(client_sock);
 	return 0;
 }
 

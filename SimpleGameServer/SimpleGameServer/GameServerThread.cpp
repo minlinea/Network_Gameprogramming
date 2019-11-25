@@ -9,7 +9,8 @@ void GameServerThreadData::MakeCommunicationThread(void)
 	for (int i = 0; i < m_fPacketH2C.NumOfClient; ++i)
 	{
 		CommunicationThreadData cData(this, i);
-		//CreateThread(NULL, 0, ClientCommunicationThread, (LPVOID)&cData, 0, NULL);
+		hThread = CreateThread(NULL, 0, ClientCommunicationThread, (LPVOID)&cData, 0, NULL);
+
 		if (hThread == NULL)
 		{
 			//
@@ -89,7 +90,7 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 	// arg 를 통해서 gameData를 생성하는 것이다
 	// 이 부분은 추후에 매칭 기능과 합쳐질 때 작성한다
 
-	SOCKADDR_IN* s = (SOCKADDR_IN*)(arg);
+	SOCKET* s = (SOCKET*)(arg);
 
 	CGameTimer timer;
 	GameServerThreadData gameData;
@@ -102,8 +103,8 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 		gameData.m_cPlayerControl[i] = i;
 
 	gameData.m_fPacketH2C.mapChanged = 1;
+	gameData.m_fPacketH2C.NumOfClient = 3;
 	gameData.MakeCommunicationThread();
-
 
 	while (1)
 	{
@@ -123,9 +124,9 @@ DWORD WINAPI ClientCommunicationThread(LPVOID arg)
 	GameServerThreadData* pGameData = pCommData->pGameData;
 	int clientNumber = pCommData->cClientNumb;
 
-	SOCKET client_sock;
+	SOCKET client_sock = pGameData->m_Players[clientNumber].sockAddress;
 	int retval;
-	SOCKADDR_IN clientaddr = pGameData->m_Players[clientNumber].sockAddress;
+	SOCKADDR_IN clientaddr;
 	int addrlen;
 
 
