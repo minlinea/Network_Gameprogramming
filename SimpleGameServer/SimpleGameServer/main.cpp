@@ -90,7 +90,7 @@ DWORD WINAPI MatchingThread(LPVOID listen_socket)
 			
 			std::vector<SOCKET> matchingqueue = g_Matching.GetQueue();
 			SOCKET s[3] = { matchingqueue[0], matchingqueue[1], matchingqueue[2] };
-			hThread = CreateThread(NULL, 0, GameServerThread, (LPVOID)s, 0, NULL);
+			
 
 			for (int i = 0; i < 3; ++i)
 			{
@@ -108,9 +108,10 @@ DWORD WINAPI MatchingThread(LPVOID listen_socket)
 				}
 				printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
 					inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
-				//TerminateThread(ClientThread, 0);
+				TerminateThread(ClientThread, 0);
 			}
 			
+			hThread = CreateThread(NULL, 0, GameServerThread, (LPVOID)s, 0, NULL);
 
 			g_Matching.MatchingQueueDeQueue();
 

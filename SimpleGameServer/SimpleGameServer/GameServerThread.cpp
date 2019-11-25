@@ -4,10 +4,11 @@
 
 void GameServerThreadData::MakeCommunicationThread(void)
 {
-	HANDLE hThread{ nullptr };
+	
 
 	for (int i = 0; i < m_fPacketH2C.NumOfClient; ++i)
 	{
+		HANDLE hThread{ nullptr };
 		CommunicationThreadData cData(this, i);
 		hThread = CreateThread(NULL, 0, ClientCommunicationThread, (LPVOID)&cData, 0, NULL);
 
@@ -105,6 +106,8 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 	gameData.m_fPacketH2C.mapChanged = 1;
 	gameData.m_fPacketH2C.NumOfClient = 3;
 	gameData.MakeCommunicationThread();
+
+	Sleep(2000);
 
 	while (1)
 	{
