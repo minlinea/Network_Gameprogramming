@@ -89,14 +89,14 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 	// arg 를 통해서 gameData를 생성하는 것이다
 	// 이 부분은 추후에 매칭 기능과 합쳐질 때 작성한다
 
-	SocketData* socks = (SocketData*)(arg);
+	//SocketData* socks = (SocketData*)(arg);
 
 	CGameTimer timer;
 	GameServerThreadData gameData;
 
-	gameData.m_Players[0].clientSocket = socks->Sockets[0];
-	gameData.m_Players[1].clientSocket = socks->Sockets[1];
-	gameData.m_Players[2].clientSocket = socks->Sockets[2];
+	//gameData.m_Players[0].clientSocket = socks->Sockets[0];
+	//gameData.m_Players[1].clientSocket = socks->Sockets[1];
+	//gameData.m_Players[2].clientSocket = socks->Sockets[2];
 
 	for (int i = 0; i < MAX_PLAYER; ++i)
 		gameData.m_cPlayerControl[i] = i;

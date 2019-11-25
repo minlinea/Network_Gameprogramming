@@ -61,3 +61,8 @@ void MatchingServer::PopClient(const SOCKADDR_IN& client)
 	return;
 }
 
+std::vector<SOCKADDR_IN> MatchingServer::GetQueue()
+{
+	return m_MatchingQueue;
+}
+

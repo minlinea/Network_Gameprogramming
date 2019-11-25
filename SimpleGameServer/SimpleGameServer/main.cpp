@@ -87,6 +87,12 @@ DWORD WINAPI MatchingThread(LPVOID listen_socket)
 		if(g_Matching.isMatchingQueueFull())
 		{
 			//g_Matching.CreateGameServerThread();
+			HANDLE hThread;
+			
+			std::vector<SOCKADDR_IN> matchingqueue = g_Matching.GetQueue();
+			SOCKADDR_IN s[3] = { matchingqueue[0], matchingqueue[1], matchingqueue[2] };
+			hThread = CreateThread(NULL, 0, GameServerThread, (LPVOID)s, 0, NULL);
+
 			g_Matching.MatchingQueueDeQueue();
 			unsigned char dataNum;
 			g_Matching.GetClientNum(&dataNum);

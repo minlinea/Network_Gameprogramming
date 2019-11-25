@@ -25,4 +25,5 @@ public:
 	void SetClientNum(const unsigned char& Data);
 	void PushClient(const SOCKADDR_IN& client);
 	void PopClient(const SOCKADDR_IN& client);
+	std::vector<SOCKADDR_IN> GetQueue();
 };
