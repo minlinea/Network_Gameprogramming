@@ -61,7 +61,7 @@ public:
 	float		x, y;
 	float		fSpeed{ 10.f };
 	status		stat;
-	SOCKET		clientSocket;
+	SOCKET 	sockAddress;
 	InputData	KeyInput;
 	// 등등 게임 로직에 필요한 변수
 
@@ -75,7 +75,7 @@ public:
 struct GameServerThreadData
 {
 public:
-	std::vector<Player>		m_Players;				// 플레이어 개개인의 상태 구조체 (소켓 프로그래밍과 무관)
+	Player					m_Players[3];				// 플레이어 개개인의 상태 구조체 (소켓 프로그래밍과 무관)
 	FixedData				m_fPacketH2C;
 	MapData					m_MapData;
 	char					m_cPlayerControl[MAX_PLAYER];
@@ -105,4 +105,4 @@ public:
 
 DWORD WINAPI GameServerThread(LPVOID arg);
 //
-//DWORD WINAPI ClientCommunicationThread(LPVOID arg);
+DWORD WINAPI ClientCommunicationThread(LPVOID arg);

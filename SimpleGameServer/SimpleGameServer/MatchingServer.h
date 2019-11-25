@@ -12,7 +12,7 @@ enum MSG_MatchingSystem
 class MatchingServer
 {
 private:
-	std::vector<SOCKADDR_IN> m_MatchingQueue;
+	std::vector<SOCKET> m_MatchingQueue;
 	unsigned char m_ClientNum;
 
 public:
@@ -23,6 +23,7 @@ public:
 	void MatchingQueueDeQueue();
 	void GetClientNum(unsigned char* Data);
 	void SetClientNum(const unsigned char& Data);
-	void PushClient(const SOCKADDR_IN& client);
-	void PopClient(const SOCKADDR_IN& client);
+	void PushClient(const SOCKET& client);
+	void PopClient(const SOCKET& client);
+	std::vector<SOCKET> GetQueue();
 };
