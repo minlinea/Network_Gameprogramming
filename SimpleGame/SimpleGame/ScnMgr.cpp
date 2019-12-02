@@ -11,26 +11,26 @@ int Title_arr[TitleSize][TitleSize] = {
 		{0,0,1,0,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1,0,0,0,0,0},
 		{0,0,1,1,1,1,0,1,0,0,0,1,0,1,0,1,0,1,0,1,1,1,1,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0},
-		{0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0},
 		{0,0,1,0,0,1,1,0,1,1,1,0,0,0,0,1,1,0,1,1,1,0,1,0,0},
 		{0,0,1,0,1,0,0,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,0},
 		{0,0,1,0,0,1,1,0,0,1,0,1,0,1,0,1,1,0,0,1,0,0,1,0,0},
 		{0,0,1,0,0,0,0,1,0,1,0,1,1,1,0,1,0,1,0,1,0,0,1,0,0},
 		{0,0,1,0,0,1,1,0,0,1,0,1,0,1,0,1,0,1,0,1,0,0,1,0,0},
-		{0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0},
-		{0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0},
+		{0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0},
+		{0,0,1,0,1,1,1,0,1,0,0,0,1,0,1,1,1,0,1,1,1,0,1,0,0},
+		{0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,0,0,1,0,0,1,0,0},
+		{0,0,1,0,1,1,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,1,0,0},
+		{0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,0,0,1,0,0,1,0,0},
+		{0,0,1,0,1,1,1,0,1,0,0,0,1,0,1,1,1,0,0,1,0,0,1,0,0},
 		{0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		
-                                 //
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+
+		//
 };
 ScnMgr::ScnMgr()
 {
@@ -43,10 +43,10 @@ ScnMgr::ScnMgr()
 	}
 	///////////////////Mathing////////////////////////////
 
-	m_client = new TCPClient();
 
 	CurrentScene = TitleScene;
-
+	CurrentButton = 0;
+	isPressed = false;
 	////////////////////////////////////////////////////////////////
 	//Initialize objects
 	for (int i = 0; i < MAX_PLAYER_NUM; ++i) {
@@ -93,7 +93,6 @@ ScnMgr::ScnMgr()
 			m_MapObject[i][j]->SetColor({ 0, 0, 0, 1 });
 
 			m_MapObject[i][j]->SetType((ObjectType)(map_arr[i][j]));
-			//(ObjectType)(map_arr[i][j])
 		}
 	}
 }
@@ -113,20 +112,62 @@ void ScnMgr::RenderScene(float ElapsedTime)
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
+	Color4 col;
+
 	if (CurrentScene == TitleScene) {
 		for (int i = 0; i < TitleSize; ++i)
 		{
-			float interval = 1000/ TitleSize;
+			float interval = 1000 / TitleSize;
 			for (int j = 0; j < TitleSize; ++j)
 			{
 				if (Title_arr[i][j] == 1) {
+					if (CurrentButton == 0) {
+						if (i == 7 || i == 13 || (i > 7 && i < 13 && j == 2) || (i > 7 && i < 13 && j == 22)) {
+
+							col.r = 1;
+							col.g = 1;
+							col.b = 1;
+						}
+						else if (i == 15 || i == 21 || (i > 15 && i < 21 && j == 2) || (i > 15 && i < 21 && j == 22)) {
+
+							col.r = 0;
+							col.g = 0;
+							col.b = 0;
+						}
+						else
+						{
+							col.r = rand() % 100 * 0.01;
+							col.g = rand() % 100 * 0.01;
+							col.b = rand() % 100 * 0.01;
+						}
+					}
+					else if (CurrentButton == 1) {
+						if (i == 7 || i == 13 || (i > 7 && i < 13 && j == 2) || (i > 7 && i < 13 && j == 22)) {
+
+							col.r = 0;
+							col.g = 0;
+							col.b = 0;
+						}
+						else if (i == 15 || i == 21 || (i > 15 && i < 21 && j == 2) || (i > 15 && i < 21 && j == 22)) {
+
+							col.r = 1;
+							col.g = 1;
+							col.b = 1;
+						}
+						else
+						{
+							col.r = rand() % 100 * 0.01;
+							col.g = rand() % 100 * 0.01;
+							col.b = rand() % 100 * 0.01;
+						}
+					}
 					m_Renderer->DrawSolidRect(
-						(j- TitleSize/2) * interval, (TitleSize -1-i- TitleSize/2) * interval, 0,
-						1 * interval, 0.35, 0.35, 0.5, 1);
+						(j - TitleSize / 2) * interval, (TitleSize - 1 - i - TitleSize / 2) * interval, 0,
+						1 * interval, col.r, col.g, col.b, 1);
 				}
 			}
 		}
-		
+
 	}
 
 	else if (CurrentScene == GameScene) {
@@ -227,7 +268,7 @@ void ScnMgr::RenderScene(float ElapsedTime)
 			m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval, 0, vol.x * body_gap * 3, col.r, col.g, col.b, col.a);
 		}
 
-		
+
 		/******************************************************************************************************************************/
 	}
 }
@@ -265,18 +306,20 @@ Object* ScnMgr::GetObj() const
 void ScnMgr::Update(float ElapsedTime)
 {
 	if (CurrentScene == TitleScene) {
-		unsigned char msg;
-		msg = Msg_Ready;
-		std::cout << "update" << std::endl;
-		m_client->TitleSceneSendData(msg);
+		if (isPressed) {
+			unsigned char msg;
+			msg = Msg_Ready;
+			std::cout << "update" << std::endl;
+			m_client->TitleSceneSendData(msg);
 
-		m_client->TitleSceneRecvData(msg);
-		if (msg == Msg_ConfirmReadyCancel)
-			delete m_client;
-		else if (msg == Msg_PlayGame)
-		{
-			CurrentScene = GameScene;
-			Sleep(2000);
+			m_client->TitleSceneRecvData(msg);
+			if (msg == Msg_ConfirmReadyCancel)
+				delete m_client;
+			else if (msg == Msg_PlayGame)
+			{
+				CurrentScene = GameScene;
+				Sleep(2000);
+			}
 		}
 	}
 	else if (CurrentScene == GameScene)
@@ -317,6 +360,28 @@ void ScnMgr::DoGarbageCollection()
 
 void ScnMgr::KeyDownInput(unsigned char key, int x, int y)
 {
+	if (CurrentScene == TitleScene) {
+
+		if (key == 13)
+		{
+			if (!isPressed) {
+				if (CurrentButton == 0) {
+					isPressed = true;
+
+					m_client = new TCPClient();
+				}
+				else if (CurrentButton == 1) {
+					exit(0);
+				}
+
+			}
+			else
+			{
+				delete m_client;
+				isPressed = false;
+			}
+		}
+	}
 	if (CurrentScene == GameScene) {
 		if (key == 'w' || key == 'W')
 		{
@@ -365,6 +430,19 @@ void ScnMgr::KeyUpInput(unsigned char key, int x, int y)
 
 void ScnMgr::SpecialKeyDownInput(int key, int x, int y)
 {
+	if (CurrentScene == TitleScene) {
+		if (key == GLUT_KEY_UP)
+		{
+			if (CurrentButton > 0)
+				CurrentButton--;
+		}
+		if (key == GLUT_KEY_DOWN)
+		{
+			if (CurrentButton < NUM_OF_MENU - 1)
+				CurrentButton++;
+		}
+	}
+
 	if (CurrentScene == GameScene) {
 		if (key == GLUT_KEY_UP)
 		{
