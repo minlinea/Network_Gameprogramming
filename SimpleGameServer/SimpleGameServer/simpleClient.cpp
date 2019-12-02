@@ -5,49 +5,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "Global.h"
 
 #define SERVERIP   "127.0.0.1"
 #define SERVERPORT 9000
 #define BUFSIZE    524288
 
-#pragma pack(1)
-typedef struct InputData
-{
-	bool Up;
-	bool Down;
-	bool Left;
-	bool Right;
-	bool attack;
-	bool button0;
-	bool button1;
-	bool button2;
-	bool button3;
-	bool button4;
-	bool button5;
-	bool button6;
-	bool button7;
-	bool button8;
-	bool button9;
-	bool button10;
-}
-InputData;
-#pragma pack()
-
-#pragma pack(1)
-struct FixedData
-{
-	bool mapChanged;
-	char NumOfClient;
-};
-#pragma pack()
-
-#pragma pack(1)
-struct PlayerData
-{
-	float x;
-	float y;
-};
-#pragma pack()
 
 // 소켓 함수 오류 출력 후 종료
 void err_quit(const char *msg)
@@ -102,9 +65,9 @@ int main(int argc, char *argv[])
 	char SVIP[16];
 	ZeroMemory(SVIP, 16);
 
-	printf("type server IP:");
-	scanf("%s", SVIP);
-	getchar();
+	//printf("type server IP:");
+	//scanf("%s", SVIP);
+	//getchar();
 
 	int retval;
 
@@ -121,16 +84,37 @@ int main(int argc, char *argv[])
 	SOCKADDR_IN serveraddr;
 	ZeroMemory(&serveraddr, sizeof(serveraddr));
 	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_addr.s_addr = inet_addr(SVIP);
+	serveraddr.sin_addr.s_addr = inet_addr(SERVERIP);
 	serveraddr.sin_port = htons(SERVERPORT);
 	retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("connect()");
+
+
+
+	unsigned char msg = Msg_Ready;
+
+
+
+	// 업데이트시작
+	while (1)
+	{
+		msg = Msg_Ready;
+
+		send(sock, (char*)& msg, sizeof(msg), 0);
+
+		recv(sock, (char*)& msg, sizeof(msg), 0);
+
+		if (msg == Msg_PlayGame)
+			break;
+	}
+	// 업데이트종료
 
 	InputData myInput;
 	PlayerData Players[10];
 	FixedData fPacketH2C;
 
-	// 업데이트시작
+	Sleep(2000);
+
 	while (1)
 	{
 		myInput.Up = false;
@@ -152,7 +136,9 @@ int main(int argc, char *argv[])
 
 		send(sock, (char*)& myInput, sizeof(myInput), 0);
 
+
 		recv(sock, (char*)& fPacketH2C, sizeof(FixedData), 0);
+
 
 		if (fPacketH2C.mapChanged)
 		{
@@ -168,7 +154,8 @@ int main(int argc, char *argv[])
 			printf("\n###%d번 유저###\nX\t%f\nY\t%f\n", i, Players[i].x, Players[i].y);
 		// 출력부
 	}
-	// 업데이트종료
+
+
 
 	// closesocket()
 	closesocket(sock);

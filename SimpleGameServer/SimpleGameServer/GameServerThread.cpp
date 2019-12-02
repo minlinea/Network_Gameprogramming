@@ -4,12 +4,13 @@
 
 void GameServerThreadData::MakeCommunicationThread(void)
 {
-	HANDLE hThread{ nullptr };
+	
 
 	for (int i = 0; i < m_fPacketH2C.NumOfClient; ++i)
 	{
-		CommunicationThreadData cData(this, i);
-		hThread = CreateThread(NULL, 0, ClientCommunicationThread, (LPVOID)&cData, 0, NULL);
+		HANDLE hThread{ nullptr };
+		CommunicationThreadData* cData = new CommunicationThreadData(this, i);
+		hThread = CreateThread(NULL, 0, ClientCommunicationThread, (LPVOID)cData, 0, NULL);
 
 		if (hThread == NULL)
 		{
@@ -98,16 +99,29 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 	gameData.m_Players[0].sockAddress = s[0];
 	gameData.m_Players[1].sockAddress = s[1];
 	gameData.m_Players[2].sockAddress = s[2];
+	gameData.m_Players[0].x = 0.10f;
+	gameData.m_Players[0].y = 0.20f;
+	gameData.m_Players[1].x = 0.30f;
+	gameData.m_Players[1].y = 0.40f;
+	gameData.m_Players[2].x = 0.50f;
+	gameData.m_Players[2].y = 0.60f;
 
 	for (int i = 0; i < MAX_PLAYER; ++i)
 		gameData.m_cPlayerControl[i] = i;
 
 	gameData.m_fPacketH2C.mapChanged = 1;
 	gameData.m_fPacketH2C.NumOfClient = 3;
+
+	Sleep(2000);
+
 	gameData.MakeCommunicationThread();
+
+	//Sleep(2000);
 
 	while (1)
 	{
+		//printf("업데이트\n");
+
 		timer.Tick(0.0f);
 		// 게임 업데이트
 
