@@ -19,17 +19,6 @@ bool MatchingServer::isMatchingQueueFull()
 		return true;
 	return false;
 }
-void MatchingServer::CreateGameServerThread()
-{
-
-}
-
-void MatchingServer::MatchingQueueDeQueue()
-{
-	PopClient(m_MatchingQueue[0]);
-	PopClient(m_MatchingQueue[0]);
-	PopClient(m_MatchingQueue[0]);
-}
 
 void MatchingServer::GetClientNum(unsigned char* Data)
 {

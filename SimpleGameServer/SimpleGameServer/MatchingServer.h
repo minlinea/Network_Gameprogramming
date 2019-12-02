@@ -19,8 +19,6 @@ public:
 	MatchingServer();
 	~MatchingServer();
 	bool isMatchingQueueFull();
-	void CreateGameServerThread();
-	void MatchingQueueDeQueue();
 	void GetClientNum(unsigned char* Data);
 	void SetClientNum(const unsigned char& Data);
 	void PushClient(const SOCKET& client);

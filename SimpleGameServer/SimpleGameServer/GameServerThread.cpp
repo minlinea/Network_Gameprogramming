@@ -180,6 +180,7 @@ DWORD WINAPI ClientCommunicationThread(LPVOID arg)
 	printf("%d", clientaddr);
 	while (1)
 	{
+		Sleep(10);
 		// 데이터 받기
 		retval = recv(client_sock, (char*)&pGameData->m_Players[clientNumber].KeyInput, sizeof(InputData), 0);
 		if (retval == SOCKET_ERROR)
