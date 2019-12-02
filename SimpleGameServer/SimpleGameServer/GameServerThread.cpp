@@ -26,7 +26,7 @@ void GameServerThreadData::MakeCommunicationThread(void)
 void GameServerThreadData::Update(float fTimeElapsed)
 {
 	// 함수화 안하고 그냥 작성함
-	m_fPacketH2C.mapChanged = 0;
+	
 
 	for (int i = 0; i < m_fPacketH2C.NumOfClient; ++i)
 	{
@@ -35,40 +35,41 @@ void GameServerThreadData::Update(float fTimeElapsed)
 
 		if (m_Players[i].KeyInput.Up)
 		{
-			m_Players[i].vec2[0] += 1.f;
+			m_Players[i].vec2[1] -= 1.f;
 		}
 		if (m_Players[i].KeyInput.Down)
 		{
-			m_Players[i].vec2[0] -= 1.f;
+			m_Players[i].vec2[1] += 1.f;
 		}
 		if (m_Players[i].KeyInput.Left)
 		{
-			m_Players[i].vec2[1] += 1.f;
+			m_Players[i].vec2[0] -= 1.f;
 		}
 		if (m_Players[i].KeyInput.Right)
 		{
-			m_Players[i].vec2[1] -= 1.f;
+			m_Players[i].vec2[0] += 1.f;
 		}
 
 		float posX = m_Players[i].vec2[0] * m_Players[i].fSpeed * fTimeElapsed + m_Players[i].x;
 		float posY = m_Players[i].vec2[1] * m_Players[i].fSpeed * fTimeElapsed + m_Players[i].y;
-		bool collision = 0;
+		bool collision = false;
 
 		for (int a = 0; a < MAP_ROW; ++a)
 			for (int b = 0; b < MAP_COLUMN; ++b)
 			{
-				if (posX > b*TILEWIDTH&&posX<(b + 1)*TILEWIDTH&&posY>a*TILEHEIGHT&&posY < a*TILEHEIGHT)
+				if (posX + MAP_ROW/2  > b && posX + MAP_ROW / 2 < (b + 1)
+					&& posY + MAP_COLUMN / 2 > a && posY + MAP_COLUMN / 2 < a + 1)
 				{
 					switch (m_MapData.m_Map[a*MAP_COLUMN + b])
 					{
 					case 0:
 						break;
 					case 1:
-						collision = 1;
-						a = MAP_ROW;
-						b = MAP_COLUMN;
 						break;
 					default:
+						collision = true;
+						a = MAP_ROW;
+						b = MAP_COLUMN;
 						break;
 					}
 				}
@@ -80,7 +81,7 @@ void GameServerThreadData::Update(float fTimeElapsed)
 			m_Players[i].y = posY;
 		}
 	}
-
+	m_fPacketH2C.mapChanged = false;
 
 }
 
@@ -109,8 +110,35 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 	for (int i = 0; i < MAX_PLAYER; ++i)
 		gameData.m_cPlayerControl[i] = i;
 
-	gameData.m_fPacketH2C.mapChanged = 1;
+	gameData.m_fPacketH2C.mapChanged = true;
 	gameData.m_fPacketH2C.NumOfClient = 3;
+
+		int map_arr[MAP_COLUMN][MAP_ROW] = {
+		{1,2,3,2,3,2,1,2,4,2,3,2,3,2,2,1},
+		{1,2,2,3,3,3,1,1,1,3,3,3,2,2,1,1},
+		{1,2,2,3,3,2,3,2,3,2,3,2,2,2,2,1},
+		{3,3,3,3,3,3,3,3,3,3,1,3,3,3,3,3},
+		{3,2,3,2,3,3,2,3,3,3,3,2,2,3,2,3},
+		{3,2,3,1,3,2,2,3,3,2,1,1,1,3,2,3},
+		{3,1,3,3,3,3,3,1,1,3,1,2,3,3,3,3},
+		{3,2,3,1,3,3,2,1,1,2,1,1,1,3,2,3},
+		{3,1,3,2,1,1,2,1,1,3,3,2,3,3,1,3},
+		{3,2,3,3,3,1,3,3,3,2,3,3,3,3,2,3},
+		{3,1,3,2,1,1,2,3,3,2,3,2,3,3,1,3},
+		{3,2,1,3,3,3,2,3,3,3,3,3,2,3,2,3},
+		{3,3,3,2,3,2,3,3,3,1,1,3,3,3,3,3},
+		{1,2,3,3,3,3,3,2,3,2,3,3,2,3,2,1},
+		{1,2,2,3,3,3,1,1,1,3,3,3,3,2,2,1},
+		{1,2,2,2,3,2,1,2,1,2,3,2,2,2,2,1},
+	};
+	gameData.m_MapData;
+	for (int i = 0; i < MAP_COLUMN; ++i)
+	{
+		for (int j = 0; j < MAP_ROW; ++j)
+		{
+			gameData.m_MapData.m_Map[i*MAP_COLUMN+j] = map_arr[i][j];
+		}
+	}
 
 	Sleep(2000);
 
