@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "TCPClient.h"
-#define SERVERIP "127.0.0.1"
+#define SERVERIP "192.168.43.23"
 #define SERVERPORT 9000
 #define BUFSIZE 524288
 #include<iostream>

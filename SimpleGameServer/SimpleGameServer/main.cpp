@@ -34,6 +34,9 @@ int main(int argc, char* argv[])
 	//listen()
 	retval = listen(listen_sock, SOMAXCONN);
 	if (retval == SOCKET_ERROR) err_quit("listen()");
+	
+	BOOL optval = TRUE;
+	setsockopt(listen_sock, IPPROTO_TCP, TCP_NODELAY, (char *)&optval, sizeof(optval));
 
 	// Mathcing Thread
 	HANDLE hMatchingThread;
