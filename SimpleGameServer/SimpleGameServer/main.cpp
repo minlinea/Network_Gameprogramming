@@ -86,36 +86,24 @@ DWORD WINAPI MatchingThread(LPVOID listen_socket)
 	{
 		if(g_Matching.isMatchingQueueFull())
 		{
+			printf("풀상태\n");
+
 			HANDLE hThread;
 			
 			std::vector<SOCKET> matchingqueue = g_Matching.GetQueue();
-			SOCKET s[3] = { matchingqueue[0], matchingqueue[1], matchingqueue[2] };
-			
 
-			for (int i = 0; i < 3; ++i)
-			{
-				SOCKADDR_IN clientaddr;
-				int addrlen;
-				//클라이언트 정보 얻기
-				addrlen = sizeof(clientaddr);
-				getpeername(matchingqueue[i], (SOCKADDR*)& clientaddr, &addrlen);
-				unsigned char msg = Msg_PlayGame;
-				int retval = send(matchingqueue[i], (char*)&msg, sizeof(msg), 0);
-				if (retval == SOCKET_ERROR)
-				{
-					err_display("send()");
-					break;
-				}
-				printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
-					inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
-				TerminateThread(ClientThread, 0);
-			}
-			
+			SOCKET s[3] = { matchingqueue[0], matchingqueue[1], matchingqueue[2] };
+					   			
 			hThread = CreateThread(NULL, 0, GameServerThread, (LPVOID)s, 0, NULL);
+
+
+			Sleep(2000);
 
 			g_Matching.MatchingQueueDeQueue();
 
 		}
+
+		//
 	}
 	return 0;
 }
@@ -134,6 +122,8 @@ DWORD WINAPI ClientThread(LPVOID arg)
 
 	while (1)
 	{
+		printf("매칭 클라 스레드가 실행중\n");
+
 		g_Msgtimer.Tick(1.5f);
 		unsigned char msg;
 		retval = recv(client_sock, (char*)&msg, sizeof(msg), 0);
@@ -153,6 +143,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 		else
 			msg = Msg_PlayGame;
 
+
 		retval = send(client_sock, (char*)&msg, sizeof(msg), 0);
 		if (retval == SOCKET_ERROR)
 		{
@@ -163,7 +154,14 @@ DWORD WINAPI ClientThread(LPVOID arg)
 		{
 			break;
 		}
+
+		if (msg == Msg_PlayGame)
+			break;
 	}
+
+	Sleep(2000);
+
+	printf("\t\t클라 한개 나옴\n");
 
 	//closesocket()
 	

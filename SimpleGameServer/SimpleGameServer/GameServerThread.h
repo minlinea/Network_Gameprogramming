@@ -92,7 +92,7 @@ public:
 	GameServerThreadData*	pGameData;
 	char					cClientNumb;
 
-	CommunicationThreadData(GameServerThreadData* pData, int n) :pGameData(pData), cClientNumb(n) {};
+	CommunicationThreadData(GameServerThreadData* pData, char n) :pGameData(pData), cClientNumb(n) {};
 };
 
 class GameServerThread
