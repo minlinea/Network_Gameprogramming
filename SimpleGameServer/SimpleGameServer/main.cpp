@@ -147,6 +147,9 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			msg = Msg_PlayGame;
 
 
+		//매칭스레드로부터 send해도 상관없는지 확인
+
+		
 		retval = send(client_sock, (char*)&msg, sizeof(msg), 0);
 		if (retval == SOCKET_ERROR)
 		{
