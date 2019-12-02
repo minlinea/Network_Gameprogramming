@@ -35,19 +35,19 @@ void GameServerThreadData::Update(float fTimeElapsed)
 
 		if (m_Players[i].KeyInput.Up)
 		{
-			m_Players[i].vec2[0] += 1.f;
+			m_Players[i].vec2[1] -= 1.f;
 		}
 		if (m_Players[i].KeyInput.Down)
 		{
-			m_Players[i].vec2[0] -= 1.f;
+			m_Players[i].vec2[1] += 1.f;
 		}
 		if (m_Players[i].KeyInput.Left)
 		{
-			m_Players[i].vec2[1] += 1.f;
+			m_Players[i].vec2[0] -= 1.f;
 		}
 		if (m_Players[i].KeyInput.Right)
 		{
-			m_Players[i].vec2[1] -= 1.f;
+			m_Players[i].vec2[0] += 1.f;
 		}
 
 		float posX = m_Players[i].vec2[0] * m_Players[i].fSpeed * fTimeElapsed + m_Players[i].x;

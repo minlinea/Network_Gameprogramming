@@ -1,1 +1,3 @@
-﻿  SimpleGameServer.vcxproj -> C:\Users\rkdqm\OneDrive\바탕 화면\넷겜플\Network_Gameprogramming\SimpleGameServer\SimpleGameServer\x64\Debug\SimpleGameServer.exe
+﻿  GameServerThread.cpp
+c:\networkgameprogramming\network_gameprogramming\simplegameserver\simplegameserver\gameserverthread.cpp(152): warning C4477: 'printf' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'SOCKADDR_IN'입니다.
+  SimpleGameServer.vcxproj -> C:\NetworkGameprogramming\Network_Gameprogramming\SimpleGameServer\SimpleGameServer\x64\Debug\SimpleGameServer.exe
