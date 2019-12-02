@@ -84,11 +84,13 @@ int main(int argc, char* argv[])
 
 DWORD WINAPI MatchingThread(LPVOID listen_socket)
 {
+	bool creating = true;
 	g_Msgtimer.Tick(1.5f);
 	while (true)
 	{
-		if(g_Matching.isMatchingQueueFull())
+		if(g_Matching.isMatchingQueueFull() && creating)
 		{
+			creating = false;
 			printf("г╝╩Себ\n");
 
 			HANDLE hThread;
@@ -99,7 +101,11 @@ DWORD WINAPI MatchingThread(LPVOID listen_socket)
 					   			
 			hThread = CreateThread(NULL, 0, GameServerThread, (LPVOID)s, 0, NULL);
 
-			Sleep(2000);
+		}
+
+		if (!creating && !g_Matching.isMatchingQueueFull())
+		{
+			creating = true;
 		}
 	}
 	return 0;
