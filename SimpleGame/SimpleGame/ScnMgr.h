@@ -37,5 +37,7 @@ private:
 		GameScene
 	};
 	Scene CurrentScene;
+	int CurrentButton;
+	bool isPressed;
 };
 

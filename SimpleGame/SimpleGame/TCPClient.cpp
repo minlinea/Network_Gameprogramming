@@ -113,7 +113,7 @@ TCPClient::TCPClient()
 	int retval;
 
 	//윈속 초기화
-	WSAData wsa;
+	wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		err_quit("WSAStartup()");
 

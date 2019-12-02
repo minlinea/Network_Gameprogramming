@@ -7,6 +7,7 @@
 #define MAP_COLUMN	16
 
 #define MAX_PLAYER_NUM	3
+#define NUM_OF_MENU 2
 
 #define TitleSize 25
 ///////////////////////////////////////////////////////////////////////
