@@ -135,7 +135,7 @@ DWORD WINAPI ClientCommunicationThread(LPVOID arg)
 	//클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)& clientaddr, &addrlen);
-
+	printf("%d", clientaddr);
 	while (1)
 	{
 		// 데이터 받기

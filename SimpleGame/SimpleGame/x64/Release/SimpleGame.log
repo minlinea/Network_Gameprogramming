@@ -14,7 +14,7 @@ c:\users\rkdqm\onedrive\바탕 화면\넷겜플\network_gameprogramming\simplega
 c:\users\rkdqm\onedrive\바탕 화면\넷겜플\network_gameprogramming\simplegame\simplegame\scnmgr.cpp(206): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
 c:\users\rkdqm\onedrive\바탕 화면\넷겜플\network_gameprogramming\simplegame\simplegame\scnmgr.cpp(209): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
 c:\users\rkdqm\onedrive\바탕 화면\넷겜플\network_gameprogramming\simplegame\simplegame\scnmgr.cpp(212): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
-c:\users\rkdqm\onedrive\바탕 화면\넷겜플\network_gameprogramming\simplegame\simplegame\scnmgr.cpp(287): warning C4101: 'type' :참조되지 않은 지역 변수입니다.
+c:\users\rkdqm\onedrive\바탕 화면\넷겜플\network_gameprogramming\simplegame\simplegame\scnmgr.cpp(288): warning C4101: 'type' :참조되지 않은 지역 변수입니다.
   코드를 생성하고 있습니다.
   3 of 223 functions ( 1.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
