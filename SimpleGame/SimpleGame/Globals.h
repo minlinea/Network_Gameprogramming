@@ -61,6 +61,13 @@ struct FixedData
 };
 #pragma pack()
 
+#pragma pack(1)
+struct MapData
+{
+	char Map[MAP_ROW * MAP_COLUMN];
+};
+#pragma pack()
+
 enum ObjectType 
 {
 	Player=0,

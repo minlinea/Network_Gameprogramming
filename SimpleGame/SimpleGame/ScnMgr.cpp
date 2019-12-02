@@ -72,7 +72,7 @@ ScnMgr::ScnMgr()
 		{3,2,3,1,3,2,2,3,3,2,1,1,1,3,2,3},
 		{3,1,3,3,3,3,3,1,1,3,1,2,3,3,3,3},
 		{3,2,3,1,3,3,2,1,1,2,1,1,1,3,2,3},
-		{3,1,3,2,1,1,2,3,3,3,3,2,3,3,1,3},
+		{3,1,3,2,1,1,2,1,1,3,3,2,3,3,1,3},
 		{3,2,3,3,3,1,3,3,3,2,3,3,3,3,2,3},
 		{3,1,3,2,1,1,2,3,3,2,3,2,3,3,1,3},
 		{3,2,1,3,3,3,2,3,3,3,3,3,2,3,2,3},
@@ -325,10 +325,11 @@ void ScnMgr::Update(float ElapsedTime)
 	else if (CurrentScene == GameScene)
 	{
 		static CharacterStatus pos[3];
+		static MapData map[MAP_ROW * MAP_COLUMN];
 
 		m_client->PlaySceneSendData(m_key);
 
-		m_client->PlaySceneRecvData(pos);
+		m_client->PlaySceneRecvData(pos, map);
 		ObjectType type;
 		for (int i = 0; i < MAX_PLAYER_NUM; ++i) {
 			m_Player[i]->Update(pos[i], ElapsedTime);
@@ -368,7 +369,7 @@ void ScnMgr::KeyDownInput(unsigned char key, int x, int y)
 				if (CurrentButton == 0) {
 					isPressed = true;
 
-					m_client = new TCPClient();
+					m_client = new TCPClient();  
 				}
 				else if (CurrentButton == 1) {
 					exit(0);

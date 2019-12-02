@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "TCPClient.h"
-#define SERVERIP "127.0.0.1"
+#define SERVERIP "192.168.43.23"
 #define SERVERPORT 9000
 #define BUFSIZE 524288
 #include<iostream>
@@ -89,7 +89,7 @@ int TCPClient::PlaySceneSendData(KeyInput& data)
 	}
 	return 1;
 }
-int TCPClient::PlaySceneRecvData(CharacterStatus* data)
+int TCPClient::PlaySceneRecvData(CharacterStatus* data,MapData* map)
 {
 	int retval;
 	retval = recvn(sock, (char*)&m_FixData, sizeof(FixedData), 0);
@@ -99,7 +99,11 @@ int TCPClient::PlaySceneRecvData(CharacterStatus* data)
 	}
 	if (m_FixData.mapChanged)
 	{
-		//
+		retval = recvn(sock, (char*)&map, sizeof(MapData), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+			return 0;
+		}
 	}
 
 	for (int i = 0; i < m_FixData.NumOfClient; ++i)
