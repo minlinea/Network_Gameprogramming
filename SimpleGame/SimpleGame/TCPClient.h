@@ -30,5 +30,5 @@ public:
 
 	int PlaySceneSendData(KeyInput&);
 
-	int PlaySceneRecvData(CharacterStatus*);
+	int PlaySceneRecvData(CharacterStatus* data, MapData* map);
 };

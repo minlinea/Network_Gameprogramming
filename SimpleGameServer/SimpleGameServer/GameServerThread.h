@@ -5,22 +5,22 @@
 #pragma pack(1)
 struct InputData
 {
-	bool Up;
-	bool Down;
-	bool Left;
-	bool Right;
-	bool attack;
-	bool button0;
-	bool button1;
-	bool button2;
-	bool button3;
-	bool button4;
-	bool button5;
-	bool button6;
-	bool button7;
-	bool button8;
-	bool button9;
-	bool button10;
+	bool Up = false;
+	bool Down = false;
+	bool Left = false; 
+	bool Right = false;
+	bool attack = false;
+	bool button0 = false;
+	bool button1 = false;
+	bool button2 = false;
+	bool button3 = false; 
+	bool button4 = false;
+	bool button5 = false;
+	bool button6 = false;
+	bool button7 = false;
+	bool button8 = false;
+	bool button9 = false;
+	bool button10 = false;
 };
 #pragma pack()
 

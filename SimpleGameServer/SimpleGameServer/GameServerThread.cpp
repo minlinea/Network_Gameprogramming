@@ -26,7 +26,7 @@ void GameServerThreadData::MakeCommunicationThread(void)
 void GameServerThreadData::Update(float fTimeElapsed)
 {
 	// 함수화 안하고 그냥 작성함
-	
+	int death_cnt = 0;
 
 	for (int i = 0; i < m_fPacketH2C.NumOfClient; ++i)
 	{
@@ -54,35 +54,70 @@ void GameServerThreadData::Update(float fTimeElapsed)
 		float posY = m_Players[i].vec2[1] * m_Players[i].fSpeed * fTimeElapsed + m_Players[i].y;
 		bool collision = false;
 
+		int posA, posB;
 		for (int a = 0; a < MAP_ROW; ++a)
+		{
 			for (int b = 0; b < MAP_COLUMN; ++b)
 			{
-				if (posX + MAP_ROW/2  > b && posX + MAP_ROW / 2 < (b + 1)
+				if (posX + MAP_ROW / 2 > b && posX + MAP_ROW / 2 < (b + 1)
 					&& posY + MAP_COLUMN / 2 > a && posY + MAP_COLUMN / 2 < a + 1)
 				{
-					switch (m_MapData.m_Map[a*MAP_COLUMN + b])
-					{
-					case 0:
-						break;
-					case 1:
-						break;
-					default:
-						collision = true;
-						a = MAP_ROW;
-						b = MAP_COLUMN;
-						break;
-					}
+					posA = a;
+					posB = b;
+					a = MAP_ROW;
+					b = MAP_COLUMN;
 				}
 			}
-
+		}
+		switch (m_MapData.m_Map[posA*MAP_COLUMN + posB])
+		{
+		case 0:
+			break;
+		case 1:
+			break;
+		case 5:
+			break;
+		case 6:		// 폭탄 물줄기
+			m_Players->stat = dead;
+			break;
+		case 7:		// 스피드 아이템
+			m_Players->fSpeed += 2.f;
+			break;
+		case 8:		// 폭탄 아이템
+			//m_Players->fSpeed += 2.f;
+			break;
+		case 9:		// 물줄기 아이템
+			//m_Players->fSpeed += 2.f;
+			break;
+		default:
+			collision = true;
+			break;
+		}
 		if (!collision)
 		{
 			m_Players[i].x = posX;
 			m_Players[i].y = posY;
 		}
-	}
-	m_fPacketH2C.mapChanged = false;
 
+		if (m_Players[i].KeyInput.attack)		// 폭탄(5) 두기
+		{
+			switch (m_MapData.m_Map[posA*MAP_COLUMN + posB])
+			{
+			case 1:
+				m_MapData.m_Map[posA*MAP_COLUMN + posB] = 5;
+				m_fPacketH2C.mapChanged = true;
+				break;
+			default:
+				m_fPacketH2C.mapChanged = false;
+				break;
+			}
+		}
+		if (m_Players->stat == dead)
+			death_cnt += 1;
+	}
+	//m_fPacketH2C.mapChanged = false;
+	if (death_cnt >= 2)
+		;
 }
 
 DWORD WINAPI GameServerThread(LPVOID arg)
@@ -106,7 +141,7 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 	gameData.m_Players[1].y = 0.40f;
 	gameData.m_Players[2].x = 0.50f;
 	gameData.m_Players[2].y = 0.60f;
-
+	
 	for (int i = 0; i < MAX_PLAYER; ++i)
 		gameData.m_cPlayerControl[i] = i;
 
@@ -144,8 +179,7 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 
 	gameData.MakeCommunicationThread();
 
-	//Sleep(2000);
-
+	gameData.m_fPacketH2C.mapChanged = false;
 	while (1)
 	{
 		//printf("업데이트\n");
@@ -191,17 +225,12 @@ DWORD WINAPI ClientCommunicationThread(LPVOID arg)
 		else if (retval == 0)
 			break;
 
-
-
-
 		// 데이터 보내기에 앞서 서버가 연산 중인 데이터의 한 순간을 복사시켜서
 		// 복사본을 전송하도록 한다
 		// 왜 이러냐면 고정부 가변부 나눠서 데이터를 보낼건데
 		// 지금 보내는 데이터는 보내는 동시에 서버에서 값이 수정되기 때문이다
 
 		GameServerThreadData gData(*pGameData);
-
-
 
 
 		// 맵변화,유저수 보내기
@@ -241,3 +270,20 @@ DWORD WINAPI ClientCommunicationThread(LPVOID arg)
 
 	return 0;
 }
+
+
+/*
+폭탄 관련 클래스 추가?
+캐릭터 클래스?
+	보유할 수 있는 최대 폭탄 num과 현재 사용되고 있는 폭탄 num 보유
+	물줄기 길이
+	
+	폭탄 타이머 보유
+
+
+서버스레드가 관리하는 캐릭터 변경용 타이머 추가
+
+attack이 무조건 true?
+
+update 구조 변경
+*/

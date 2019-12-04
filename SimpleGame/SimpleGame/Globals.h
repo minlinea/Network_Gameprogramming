@@ -82,3 +82,10 @@ enum MSG_MatchingSystem
 	Msg_ConfirmReadyCancel,
 	Msg_PlayGame
 };
+
+#pragma pack(1)
+struct MapData
+{
+	char	m_Map[MAP_ROW*MAP_COLUMN];
+};
+#pragma pack()

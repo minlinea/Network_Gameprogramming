@@ -325,10 +325,11 @@ void ScnMgr::Update(float ElapsedTime)
 	else if (CurrentScene == GameScene)
 	{
 		static CharacterStatus pos[3];
+		static MapData map;
 
 		m_client->PlaySceneSendData(m_key);
 
-		m_client->PlaySceneRecvData(pos);
+		m_client->PlaySceneRecvData(pos,&map);
 		ObjectType type;
 		for (int i = 0; i < MAX_PLAYER_NUM; ++i) {
 			m_Player[i]->Update(pos[i], ElapsedTime);
@@ -460,6 +461,10 @@ void ScnMgr::SpecialKeyDownInput(int key, int x, int y)
 		{
 			m_key.Right = true;
 		}
+		if (key == GLUT_KEY_CTRL_L)
+		{
+			m_key.Attack = true;
+		}
 	}
 }
 
@@ -481,6 +486,10 @@ void ScnMgr::SpecialKeyUpInput(int key, int x, int y)
 		if (key == GLUT_KEY_RIGHT)
 		{
 			m_key.Right = false;
+		}
+		if (key == GLUT_KEY_CTRL_L)
+		{
+			m_key.Attack = false;
 		}
 	}
 }
