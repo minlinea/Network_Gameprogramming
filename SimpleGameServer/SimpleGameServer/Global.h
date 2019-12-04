@@ -38,5 +38,12 @@ const float TILEHEIGHT{ 50 };
 
 
 
-
+enum ObjectType
+{
+	User = 0,
+	Empty,
+	Wall,
+	Bomb,
+	WaterStream
+};
 

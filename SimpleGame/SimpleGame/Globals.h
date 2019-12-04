@@ -63,16 +63,11 @@ struct FixedData
 
 enum ObjectType 
 {
-	Player=0,
+	User = 0,
 	Empty,
 	Wall,
-	Breakable_Wall,
-	Item_AddSpeed,
-	Item_AddBomb,
-	Item_AddPower,
-	Bomb_Anim1,		//기본 형태
-	Bomb_Anim2,		//중간 크기
-	Bomb_Anim3		//가장 작은 크기
+	Bomb,
+	WaterStream
 };
 
 enum MSG_MatchingSystem

@@ -61,25 +61,25 @@ ScnMgr::ScnMgr()
 			m_Player[i]->SetColor({ 0, 0, 1, 1 });
 		m_Player[i]->SetVel({ 1,1 });
 
-		m_Player[i]->SetType(Player);
+		m_Player[i]->SetType(User);
 	}
 	int map_arr[MAP_COLUMN][MAP_ROW] = {
-		{1,2,3,2,3,2,1,2,4,2,3,2,3,2,2,1},
-		{1,2,2,3,3,3,1,1,1,3,3,3,2,2,1,1},
-		{1,2,2,3,3,2,3,2,3,2,3,2,2,2,2,1},
-		{3,3,3,3,3,3,3,3,3,3,1,3,3,3,3,3},
-		{3,2,3,2,3,3,2,3,3,3,3,2,2,3,2,3},
-		{3,2,3,1,3,2,2,3,3,2,1,1,1,3,2,3},
-		{3,1,3,3,3,3,3,1,1,3,1,2,3,3,3,3},
-		{3,2,3,1,3,3,2,1,1,2,1,1,1,3,2,3},
-		{3,1,3,2,1,1,2,3,3,3,3,2,3,3,1,3},
-		{3,2,3,3,3,1,3,3,3,2,3,3,3,3,2,3},
-		{3,1,3,2,1,1,2,3,3,2,3,2,3,3,1,3},
-		{3,2,1,3,3,3,2,3,3,3,3,3,2,3,2,3},
-		{3,3,3,2,3,2,3,3,3,1,1,3,3,3,3,3},
-		{1,2,3,3,3,3,3,2,3,2,3,3,2,3,2,1},
-		{1,2,2,3,3,3,1,1,1,3,3,3,3,2,2,1},
-		{1,2,2,2,3,2,1,2,1,2,3,2,2,2,2,1},
+		{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
+		{2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2},
+		{2,2,2,1,1,2,1,2,1,2,1,2,2,2,1,2},
+		{2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2},
+		{2,2,1,2,1,1,2,1,1,1,1,2,2,1,2,2},
+		{2,2,1,1,1,2,2,1,1,2,1,1,1,1,2,2},
+		{2,1,1,1,1,1,1,1,1,1,1,2,1,1,1,2},
+		{2,2,1,1,1,1,2,1,1,2,1,1,1,1,2,2},
+		{2,1,1,2,1,1,2,1,1,1,1,2,1,1,1,2},
+		{2,2,1,1,1,1,1,1,1,2,1,1,1,1,2,2},
+		{2,1,1,2,1,1,2,1,1,2,1,2,1,1,1,2},
+		{2,2,1,1,1,1,2,1,1,1,1,1,2,1,2,2},
+		{2,1,1,2,1,2,1,1,1,1,1,1,1,1,1,2},
+		{2,2,1,1,1,1,1,2,1,2,1,1,2,1,2,2},
+		{2,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2},
+		{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
 	};
 	for (int i = 0; i < MAP_COLUMN; ++i)
 	{
@@ -209,31 +209,13 @@ void ScnMgr::RenderScene(float ElapsedTime)
 						pos.x * interval + interval / 2, pos.y * interval + interval / 2, 0,
 						vol.x * 30, 0.25, 0.25, 0.35, 1);
 					break;
-				case Breakable_Wall:
-					size = 50;
+				case WaterStream:
+					size = 40;
 					m_Renderer->DrawSolidRect(
 						pos.x * interval + interval / 2, pos.y * interval + interval / 2, 0,
 						vol.x * size, 0.8, 0.7, 0.5, 1);
 					break;
-				case Item_AddSpeed:
-					size = 20;
-					m_Renderer->DrawSolidRect(
-						pos.x * interval + interval / 2, pos.y * interval + interval / 2, 0,
-						vol.x * size, 1, 0.66, 0.35, 1);
-					break;
-				case Item_AddBomb:
-					size = 20;
-					m_Renderer->DrawSolidRect(
-						pos.x * interval + interval / 2, pos.y * interval + interval / 2, 0,
-						vol.x * size, 1, 1, 1, 1);
-					break;
-				case Item_AddPower:
-					size = 20;
-					m_Renderer->DrawSolidRect(
-						pos.x * interval + interval / 2, pos.y * interval + interval / 2, 0,
-						vol.x * size, 1, 0.65, 1, 1);
-					break;
-				case Bomb_Anim1:
+				case Bomb:
 					size = 35;
 
 					m_Renderer->DrawSolidRect(
@@ -328,7 +310,6 @@ void ScnMgr::Update(float ElapsedTime)
 		static MapData map;
 
 		m_client->PlaySceneSendData(m_key);
-
 		m_client->PlaySceneRecvData(pos,&map);
 		ObjectType type;
 		for (int i = 0; i < MAX_PLAYER_NUM; ++i) {

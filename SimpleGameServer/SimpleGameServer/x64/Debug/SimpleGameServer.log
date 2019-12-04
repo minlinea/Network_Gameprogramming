@@ -1,4 +1,4 @@
 ﻿  GameServerThread.cpp
-c:\networkgameprogramming\network_gameprogramming\simplegameserver\simplegameserver\gameserverthread.cpp(120): warning C4390: ';': 제어된 빈 문이 있습니다. 이 문이 필요합니까?
-c:\networkgameprogramming\network_gameprogramming\simplegameserver\simplegameserver\gameserverthread.cpp(214): warning C4477: 'printf' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'SOCKADDR_IN'입니다.
+c:\networkgameprogramming\network_gameprogramming\simplegameserver\simplegameserver\gameserverthread.cpp(112): warning C4390: ';': 제어된 빈 문이 있습니다. 이 문이 필요합니까?
+c:\networkgameprogramming\network_gameprogramming\simplegameserver\simplegameserver\gameserverthread.cpp(206): warning C4477: 'printf' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'SOCKADDR_IN'입니다.
   SimpleGameServer.vcxproj -> C:\NetworkGameprogramming\Network_Gameprogramming\SimpleGameServer\SimpleGameServer\x64\Debug\SimpleGameServer.exe
