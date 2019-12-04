@@ -81,11 +81,13 @@ int main(int argc, char* argv[])
 
 DWORD WINAPI MatchingThread(LPVOID listen_socket)
 {
+	bool creating = true;
 	g_Msgtimer.Tick(1.5f);
 	while (true)
 	{
-		if(g_Matching.isMatchingQueueFull())
+		if(g_Matching.isMatchingQueueFull() && creating)
 		{
+			creating = false;
 			printf("풀상태\n");
 
 			HANDLE hThread;
@@ -96,14 +98,12 @@ DWORD WINAPI MatchingThread(LPVOID listen_socket)
 					   			
 			hThread = CreateThread(NULL, 0, GameServerThread, (LPVOID)s, 0, NULL);
 
-
-			Sleep(2000);
-
-			g_Matching.MatchingQueueDeQueue();
-
 		}
 
-		//
+		if (!creating && !g_Matching.isMatchingQueueFull())
+		{
+			creating = true;
+		}
 	}
 	return 0;
 }
@@ -122,8 +122,6 @@ DWORD WINAPI ClientThread(LPVOID arg)
 
 	while (1)
 	{
-		printf("매칭 클라 스레드가 실행중\n");
-
 		g_Msgtimer.Tick(1.5f);
 		unsigned char msg;
 		retval = recv(client_sock, (char*)&msg, sizeof(msg), 0);
@@ -133,7 +131,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			break;
 		}
 
-		printf("[IP:%s	포트:%d]	msg = %d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port), msg);
+		printf("Client Thread[IP:%s	포트:%d]	msg = %d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port), msg);
 
 		// 현재 상태 보내기
 		if (Msg_ReadyCancel == msg)
@@ -161,11 +159,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 
 	Sleep(2000);
 
-	printf("\t\t클라 한개 나옴\n");
-
-	//closesocket()
-	
-	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
+	printf("[TCP 서버] Client Thread 종료: IP 주소=%s, 포트 번호=%d\n",
 		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
 	g_Matching.PopClient(client_sock);
 	return 0;
