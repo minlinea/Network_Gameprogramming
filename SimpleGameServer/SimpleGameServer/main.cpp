@@ -34,9 +34,6 @@ int main(int argc, char* argv[])
 	//listen()
 	retval = listen(listen_sock, SOMAXCONN);
 	if (retval == SOCKET_ERROR) err_quit("listen()");
-	
-	BOOL optval = TRUE;
-	setsockopt(listen_sock, IPPROTO_TCP, TCP_NODELAY, (char *)&optval, sizeof(optval));
 
 	// Mathcing Thread
 	HANDLE hMatchingThread;
@@ -147,9 +144,6 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			msg = Msg_PlayGame;
 
 
-		//매칭스레드로부터 send해도 상관없는지 확인
-
-		
 		retval = send(client_sock, (char*)&msg, sizeof(msg), 0);
 		if (retval == SOCKET_ERROR)
 		{
