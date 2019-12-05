@@ -307,11 +307,21 @@ void ScnMgr::Update(float ElapsedTime)
 	else if (CurrentScene == GameScene)
 	{
 		static CharacterStatus pos[3];
-		static MapData map;
+		MapData map;
 
 		m_client->PlaySceneSendData(m_key);
-		m_client->PlaySceneRecvData(pos,&map);
-		ObjectType type;
+		if (m_client->PlaySceneRecvData(pos) == 2)
+		{
+			map = m_client->GetMap();
+		}
+		
+		for (int i = 0; i < MAP_COLUMN; ++i)
+		{
+			for (int j = 0; j < MAP_ROW; ++j)
+			{
+				m_MapObject[i][j]->SetType((ObjectType)(map.m_Map[i* MAP_COLUMN+j]));
+			}
+		}
 		for (int i = 0; i < MAX_PLAYER_NUM; ++i) {
 			m_Player[i]->Update(pos[i], ElapsedTime);
 		}

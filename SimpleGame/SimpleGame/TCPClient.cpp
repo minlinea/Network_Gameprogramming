@@ -89,9 +89,10 @@ int TCPClient::PlaySceneSendData(KeyInput& data)
 	}
 	return 1;
 }
-int TCPClient::PlaySceneRecvData(CharacterStatus* data, MapData* map)
+int TCPClient::PlaySceneRecvData(CharacterStatus* data)
 {
 	int retval;
+	
 	retval = recvn(sock, (char*)&m_FixData, sizeof(FixedData), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
@@ -99,16 +100,25 @@ int TCPClient::PlaySceneRecvData(CharacterStatus* data, MapData* map)
 	}
 	if (m_FixData.mapChanged)
 	{
-		retval = recvn(sock, (char*)&map, sizeof(MapData), 0);
+		retval = recv(sock, (char*)&m_Map, sizeof(MapData), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("recv()");
 			return 0;
 		}
+		retval = 2;
+	}
+	else
+	{
+		retval = 1;
 	}
 
 	for (int i = 0; i < m_FixData.NumOfClient; ++i)
 		recv(sock, (char*)&data[i], sizeof(CharacterStatus), 0);
-	return 1;
+	return retval;
+}
+MapData TCPClient::GetMap()
+{
+	return m_Map;
 }
 ////////////////////////////////////////////////////////////////
 

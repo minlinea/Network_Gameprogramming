@@ -12,6 +12,7 @@ private:
 	WSADATA wsa;
 	SOCKET sock;
 	FixedData m_FixData;
+	MapData m_Map;
 
 public:
 	TCPClient();
@@ -30,5 +31,8 @@ public:
 
 	int PlaySceneSendData(KeyInput&);
 
-	int PlaySceneRecvData(CharacterStatus* data, MapData* map);
+	int PlaySceneRecvData(CharacterStatus* data);
+
+	MapData GetMap();
+
 };

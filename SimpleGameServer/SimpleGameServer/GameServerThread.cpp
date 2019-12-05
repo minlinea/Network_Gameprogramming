@@ -137,7 +137,7 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 	for (int i = 0; i < MAX_PLAYER; ++i)
 		gameData.m_cPlayerControl[i] = i;
 
-	gameData.m_fPacketH2C.mapChanged = true;
+	gameData.m_fPacketH2C.mapChanged = false;
 	gameData.m_fPacketH2C.NumOfClient = 3;
 
 		int map_arr[MAP_COLUMN][MAP_ROW] = {
@@ -171,7 +171,7 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 
 	gameData.MakeCommunicationThread();
 
-	gameData.m_fPacketH2C.mapChanged = false;
+	gameData.m_fPacketH2C.mapChanged = true;
 	while (1)
 	{
 		//printf("업데이트\n");
