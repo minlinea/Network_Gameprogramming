@@ -55,6 +55,14 @@ enum status
 	dead, live
 };
 
+struct InfoBomb
+{
+	float ftime = 0.f;
+	int x = -1, y = -1;
+
+	InfoBomb(int a, int b) :x(a), y(b) {}
+};
+
 struct Player
 {
 public:
@@ -63,6 +71,9 @@ public:
 	status		stat;
 	SOCKET 	sockAddress;
 	InputData	KeyInput;
+
+	std::vector<InfoBomb> HaveBomb;
+	
 	// 등등 게임 로직에 필요한 변수
 
 	float		vec2[2];
@@ -70,6 +81,7 @@ public:
 public:
 //	void move();
 };
+
 
 
 struct GameServerThreadData

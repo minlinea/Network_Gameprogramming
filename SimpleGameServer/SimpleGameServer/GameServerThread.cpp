@@ -96,14 +96,38 @@ void GameServerThreadData::Update(float fTimeElapsed)
 			switch (m_MapData.m_Map[posA*MAP_COLUMN + posB])
 			{
 			case Empty:
-				m_MapData.m_Map[posA*MAP_COLUMN + posB] = Bomb;
-				m_fPacketH2C.mapChanged = true;
+				if (m_Players[i].HaveBomb.size() <= MAX_BOMB)
+				{
+					m_Players[i].HaveBomb.emplace_back(posA,posB);
+					m_MapData.m_Map[posA*MAP_COLUMN + posB] = Bomb;
+					m_fPacketH2C.mapChanged = true;
+				}
 				break;
 			default:
 				m_fPacketH2C.mapChanged = false;
 				break;
 			}
 		}
+		
+		//ÆøÅº Ã³¸®
+		for (auto p = m_Players[i].HaveBomb.begin(); p != m_Players[i].HaveBomb.end(); ++p)
+		{
+			p->ftime += fTimeElapsed;
+			if (p->ftime > MAINTAIN_BOMBTIME + 0.5f)
+			{
+				m_MapData.m_Map[p->x*MAP_COLUMN + p->y] = Empty;
+				m_fPacketH2C.mapChanged = true;
+				//m_Players[i].HaveBomb.erase(p);
+				//--p;
+			}
+			else if (p->ftime > MAINTAIN_BOMBTIME)
+			{
+				m_MapData.m_Map[p->x*MAP_COLUMN + p->y] = WaterStream;
+				m_fPacketH2C.mapChanged = true;
+			}
+		}
+
+
 		if (m_Players->stat == dead)
 			death_cnt += 1;
 	}
