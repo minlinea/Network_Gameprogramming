@@ -96,7 +96,7 @@ void GameServerThreadData::Update(float fTimeElapsed)
 			switch (m_MapData.m_Map[posA*MAP_COLUMN + posB])
 			{
 			case Empty:
-				m_MapData.m_Map[posA*MAP_COLUMN + posB] = 5;
+				m_MapData.m_Map[posA*MAP_COLUMN + posB] = Bomb;
 				m_fPacketH2C.mapChanged = true;
 				break;
 			default:

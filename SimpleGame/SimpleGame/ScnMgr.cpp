@@ -311,10 +311,10 @@ void ScnMgr::Update(float ElapsedTime)
 		MapData map;
 
 		m_client->PlaySceneSendData(m_key);
-		if (m_client->PlaySceneRecvData(pos) == 2)
-		{
-			map = m_client->GetMap();
-		}
+		m_client->PlaySceneRecvData(pos);
+		
+		map = m_client->GetMap();
+		
 		
 		for (int i = 0; i < MAP_COLUMN; ++i)
 		{
