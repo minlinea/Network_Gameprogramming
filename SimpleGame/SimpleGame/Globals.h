@@ -73,7 +73,7 @@ enum ObjectType
 enum MSG_MatchingSystem
 {
 	Msg_Ready = 8,
-	msg_ReadyCancel,
+	Msg_ReadyCancel,
 	Msg_ConfirmReadyCancel,
 	Msg_PlayGame
 };

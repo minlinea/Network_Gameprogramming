@@ -17,7 +17,4 @@ c:\users\rkdqm\onedrive\바탕 화면\넷겜플\network_gameprogramming\simplega
 c:\users\rkdqm\onedrive\바탕 화면\넷겜플\network_gameprogramming\simplegame\simplegame\scnmgr.cpp(229): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
 c:\users\rkdqm\onedrive\바탕 화면\넷겜플\network_gameprogramming\simplegame\simplegame\scnmgr.cpp(232): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
 c:\users\rkdqm\onedrive\바탕 화면\넷겜플\network_gameprogramming\simplegame\simplegame\scnmgr.cpp(235): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
-  SimpleGame.cpp
-  TCPClient.cpp
-  코드를 생성하고 있습니다...
   SimpleGame.vcxproj -> C:\Users\rkdqm\OneDrive\바탕 화면\넷겜플\Network_Gameprogramming\SimpleGame\x64\Debug\SimpleGame.exe
