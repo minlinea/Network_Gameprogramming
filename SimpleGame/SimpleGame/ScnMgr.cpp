@@ -288,13 +288,13 @@ Object* ScnMgr::GetObj() const
 void ScnMgr::Update(float ElapsedTime)
 {
 	if (CurrentScene == TitleScene) {
+		unsigned char msg;
 		if (isPressed) {
-			unsigned char msg;
 			msg = Msg_Ready;
-			std::cout << "update" << std::endl;
 			m_client->TitleSceneSendData(msg);
 
 			m_client->TitleSceneRecvData(msg);
+
 			if (msg == Msg_ConfirmReadyCancel)
 				delete m_client;
 			else if (msg == Msg_PlayGame)
@@ -303,6 +303,7 @@ void ScnMgr::Update(float ElapsedTime)
 				Sleep(2000);
 			}
 		}
+		
 	}
 	else if (CurrentScene == GameScene)
 	{
@@ -310,10 +311,10 @@ void ScnMgr::Update(float ElapsedTime)
 		MapData map;
 
 		m_client->PlaySceneSendData(m_key);
-		if (m_client->PlaySceneRecvData(pos) == 2)
-		{
-			map = m_client->GetMap();
-		}
+		m_client->PlaySceneRecvData(pos);
+		
+		map = m_client->GetMap();
+		
 		
 		for (int i = 0; i < MAP_COLUMN; ++i)
 		{
@@ -369,7 +370,15 @@ void ScnMgr::KeyDownInput(unsigned char key, int x, int y)
 			}
 			else
 			{
-				delete m_client;
+				unsigned char msg;
+				msg = Msg_ReadyCancel;
+				m_client->TitleSceneSendData(msg);
+
+				m_client->TitleSceneRecvData(msg);
+
+				if (msg == Msg_ConfirmReadyCancel)
+					delete m_client;
+
 				isPressed = false;
 			}
 		}
