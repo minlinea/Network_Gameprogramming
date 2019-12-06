@@ -214,12 +214,12 @@ void GameServerThreadData::Update(float fTimeElapsed)
 					break;
 			}
 		}
+		if (m_MapData.m_Map[posA*MAP_COLUMN + posB] == WaterStream)
+			m_Players[i].stat = dead;
 
-		if (m_Players->stat == dead)
+		if (m_Players[i].stat == dead)
 			death_cnt += 1;
 	}
-	if (death_cnt >= 2)
-		;
 	Now_Time += fTimeElapsed;
 	if (Now_Time > ChangeTime)
 	{
@@ -237,6 +237,7 @@ void GameServerThreadData::Update(float fTimeElapsed)
 		}
 		Now_Time = 0.f;
 	}
+
 
 }
 
