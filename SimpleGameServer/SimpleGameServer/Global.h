@@ -25,6 +25,7 @@ const int MAX_PLAYER{ 3 };
 const int MAP_ROW{ 16 };
 const int MAP_COLUMN{ 16 };
 const int MAX_BOMB{ 8 };
+const int BOMB_POWER{ 5 };
 const float MAINTAIN_BOMBTIME{ 3 };
 const float TILEWIDTH{ 50 };
 const float TILEHEIGHT{ 50 };

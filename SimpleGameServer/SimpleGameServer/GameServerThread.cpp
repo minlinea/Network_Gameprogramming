@@ -96,7 +96,7 @@ void GameServerThreadData::Update(float fTimeElapsed)
 			switch (m_MapData.m_Map[posA*MAP_COLUMN + posB])
 			{
 			case Empty:
-				if (m_Players[i].HaveBomb.size() <= MAX_BOMB)
+				if (m_Players[i].HaveBomb.size() < MAX_BOMB)
 				{
 					m_Players[i].HaveBomb.emplace_back(posA,posB);
 					m_MapData.m_Map[posA*MAP_COLUMN + posB] = Bomb;
@@ -116,22 +116,107 @@ void GameServerThreadData::Update(float fTimeElapsed)
 			if (p->ftime > MAINTAIN_BOMBTIME + 0.5f)
 			{
 				m_MapData.m_Map[p->x*MAP_COLUMN + p->y] = Empty;
+				
+				int bx = p->x;
+				int by = p->y;
+				for (int t = 0; t < BOMB_POWER; ++t)
+				{
+					if (bx + t >= MAP_ROW)
+						break;
+					else if (m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] == Wall)
+						break;
+					else
+						m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] = Empty;
+				}
+				for (int t = 0; t < BOMB_POWER; ++t)
+				{
+					if (bx - t <= -1)
+						break;
+					else if (m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] == Wall)
+						break;
+					else
+						m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] = Empty;
+				}
+				for (int t = 0; t < BOMB_POWER; ++t)
+				{
+					if (by + t >= MAP_COLUMN)
+						break;
+					else if (m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] == Wall)
+						break;
+					else
+						m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] = Empty;
+				}
+				for (int t = 0; t < BOMB_POWER; ++t)
+				{
+					if (by - t <= -1)
+						break;
+					else if (m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] == Wall)
+						break;
+					else
+						m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] = Empty;
+				}
+				p->alive = false;
 				m_fPacketH2C.mapChanged = true;
-				//m_Players[i].HaveBomb.erase(p);
-				//--p;
 			}
 			else if (p->ftime > MAINTAIN_BOMBTIME)
 			{
 				m_MapData.m_Map[p->x*MAP_COLUMN + p->y] = WaterStream;
+				int bx = p->x;
+				int by = p->y;
+				for (int t = 0; t < BOMB_POWER; ++t)
+				{
+					if (bx + t >= MAP_ROW)
+						break;
+					else if (m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] == Wall)
+						break;
+					else
+						m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] = WaterStream;
+				}
+				for (int t = 0; t < BOMB_POWER; ++t)
+				{
+					if (bx - t <= -1)
+						break;
+					else if (m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] == Wall)
+						break;
+					else
+						m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] = WaterStream;
+				}
+				for (int t = 0; t < BOMB_POWER; ++t)
+				{
+					if (by + t >= MAP_COLUMN)
+						break;
+					else if (m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] == Wall)
+						break;
+					else
+						m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] = WaterStream;
+				}
+				for (int t = 0; t < BOMB_POWER; ++t)
+				{
+					if (by - t <= -1)
+						break;
+					else if (m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] == Wall)
+						break;
+					else
+						m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] = WaterStream;
+				}
+
 				m_fPacketH2C.mapChanged = true;
 			}
+			else
+				m_MapData.m_Map[p->x*MAP_COLUMN + p->y] = Bomb;
 		}
-
+		for (auto t = m_Players[i].HaveBomb.begin(); t < m_Players[i].HaveBomb.end(); ++t)
+		{
+			if (!t->alive)
+			{
+				t = m_Players[i].HaveBomb.erase(t);
+					break;
+			}
+		}
 
 		if (m_Players->stat == dead)
 			death_cnt += 1;
 	}
-	//m_fPacketH2C.mapChanged = false;
 	if (death_cnt >= 2)
 		;
 }

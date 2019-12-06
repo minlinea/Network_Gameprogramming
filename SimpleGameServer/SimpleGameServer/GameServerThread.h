@@ -59,7 +59,7 @@ struct InfoBomb
 {
 	float ftime = 0.f;
 	int x = -1, y = -1;
-
+	bool alive = true;
 	InfoBomb(int a, int b) :x(a), y(b) {}
 };
 
@@ -75,7 +75,7 @@ public:
 	std::vector<InfoBomb> HaveBomb;
 	
 	// 등등 게임 로직에 필요한 변수
-
+	int			power = 3;
 	float		vec2[2];
 
 public:
