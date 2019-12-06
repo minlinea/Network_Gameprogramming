@@ -1,7 +1,8 @@
 #pragma once
 #include "GameServerThread.h"
 
-
+float ChangeTime = 5.f;
+float Now_Time = 0.f;
 void GameServerThreadData::MakeCommunicationThread(void)
 {
 	
@@ -219,6 +220,24 @@ void GameServerThreadData::Update(float fTimeElapsed)
 	}
 	if (death_cnt >= 2)
 		;
+	Now_Time += fTimeElapsed;
+	if (Now_Time > ChangeTime)
+	{
+		float tempx[3], tempy[3];
+		int t = rand() % 3;
+		for (int i = 0; i < MAX_PLAYER; ++i)
+		{
+			tempx[i] = m_Players[(i+t) % 3].x;
+			tempy[i] = m_Players[(i+t) % 3].y;
+		}
+		for (int i = 0; i < MAX_PLAYER; ++i)
+		{
+			m_Players[(i) % 3].x = tempx[i];
+			m_Players[(i) % 3].y = tempy[i];
+		}
+		Now_Time = 0.f;
+	}
+
 }
 
 DWORD WINAPI GameServerThread(LPVOID arg)
