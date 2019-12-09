@@ -148,25 +148,24 @@ DWORD WINAPI ClientThread(LPVOID arg)
 
 		//매칭스레드로부터 send해도 상관없는지 확인
 
-		
-		//retval = send(client_sock, (char*)&msg, sizeof(msg), 0);
-		//if (retval == SOCKET_ERROR)
-		//{
-		//	err_display("send()");
-		//	break;
-		//}
-		//if (Msg_ConfirmReadyCancel == msg)
-		//{
-		//	break;
-		//}
-
 		if (msg == Msg_PlayGame)
 			break;
+		else
+		{
+			retval = send(client_sock, (char*)&msg, sizeof(msg), 0);
+			if (retval == SOCKET_ERROR)
+			{
+				err_display("send()");
+				break;
+			}
+			if (Msg_ConfirmReadyCancel == msg)
+			{
+				break;
+			}
+		}
 	}
 
-	while (!creating)
-		;
-	//Sleep(2000);
+	Sleep(2000);
 
 	printf("[TCP 서버] Client Thread 종료: IP 주소=%s, 포트 번호=%d\n",
 		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
