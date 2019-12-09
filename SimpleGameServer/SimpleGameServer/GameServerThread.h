@@ -10,17 +10,6 @@ struct InputData
 	bool Left = false; 
 	bool Right = false;
 	bool attack = false;
-	bool button0 = false;
-	bool button1 = false;
-	bool button2 = false;
-	bool button3 = false; 
-	bool button4 = false;
-	bool button5 = false;
-	bool button6 = false;
-	bool button7 = false;
-	bool button8 = false;
-	bool button9 = false;
-	bool button10 = false;
 };
 #pragma pack()
 

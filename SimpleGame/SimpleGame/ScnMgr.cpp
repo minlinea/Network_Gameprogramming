@@ -390,22 +390,6 @@ void ScnMgr::KeyDownInput(unsigned char key, int x, int y)
 		}
 	}
 	if (CurrentScene == GameScene) {
-		if (key == 'w' || key == 'W')
-		{
-			m_key.notuse0 = true;
-		}
-		if (key == 'a' || key == 'A')
-		{
-			m_key.notuse1 = true;
-		}
-		if (key == 's' || key == 'S')
-		{
-			m_key.notuse2 = true;
-		}
-		if (key == 'd' || key == 'D')
-		{
-			m_key.notuse3 = true;
-		}
 		if (key == 'r' || key == 'R')
 		{
 			m_Player[0]->SetPos({ 0, 0 });
@@ -416,22 +400,6 @@ void ScnMgr::KeyDownInput(unsigned char key, int x, int y)
 void ScnMgr::KeyUpInput(unsigned char key, int x, int y)
 {
 	if (CurrentScene == GameScene) {
-		if (key == 'w' || key == 'W')
-		{
-			m_key.notuse0 = false;
-		}
-		if (key == 'a' || key == 'A')
-		{
-			m_key.notuse1 = false;
-		}
-		if (key == 's' || key == 'S')
-		{
-			m_key.notuse2 = false;
-		}
-		if (key == 'd' || key == 'D')
-		{
-			m_key.notuse3 = false;
-		}
 	}
 }
 

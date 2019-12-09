@@ -54,7 +54,6 @@ int TCPClient::recvn(SOCKET s, char* buf, int len, int flags)
 int TCPClient::TitleSceneSendData(unsigned char msg)
 {
 	int retval;
-	std::cout << msg << std::endl;
 	retval = send(sock, (char*)&msg, sizeof(msg), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
@@ -71,7 +70,7 @@ int TCPClient::TitleSceneRecvData(unsigned char& msg)
 		err_display("recv()");
 		return 0;
 	}
-	std::cout << msg << std::endl;
+	printf("%d\n", msg);
 
 	return 1;
 }
