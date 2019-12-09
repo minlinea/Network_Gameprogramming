@@ -5,7 +5,6 @@
 MatchingServer::MatchingServer()
 {
 	m_MatchingQueue.reserve(MAX_PLAYER);
-	m_ClientNum = (unsigned char)0;
 }
 
 MatchingServer::~MatchingServer()
@@ -15,24 +14,19 @@ MatchingServer::~MatchingServer()
 
 bool MatchingServer::isMatchingQueueFull()
 {
-	if (m_ClientNum == (unsigned char)MAX_PLAYER)
+	if (m_MatchingQueue.size() == (unsigned char)MAX_PLAYER)
 		return true;
 	return false;
 }
 
 void MatchingServer::GetClientNum(unsigned char* Data)
 {
-	*Data = m_ClientNum;
-};
-void MatchingServer::SetClientNum(const unsigned char& Data)
-{
-	m_ClientNum = Data;
+	*Data = m_MatchingQueue.size();
 };
 
 void MatchingServer::PushClient(const SOCKET& client)
 {
 	m_MatchingQueue.insert(m_MatchingQueue.end(), client);
-	m_ClientNum += 1;
 	return;
 }
 
@@ -46,7 +40,6 @@ void MatchingServer::PopClient(const SOCKET& client)
 			break;
 		}
 	}
-	m_ClientNum -= 1;
 	return;
 }
 
@@ -55,3 +48,7 @@ std::vector<SOCKET> MatchingServer::GetQueue()
 	return m_MatchingQueue;
 }
 
+void MatchingServer::ClearClient()
+{
+	m_MatchingQueue.clear();
+}

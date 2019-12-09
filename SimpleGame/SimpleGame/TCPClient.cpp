@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "TCPClient.h"
-//#define SERVERIP "192.168.43.23"
+#define SERVERIP "127.0.0.1"
 #define SERVERPORT 9000
 #define BUFSIZE 524288
 #include<iostream>
@@ -134,10 +134,10 @@ TCPClient::TCPClient()
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET) err_quit("socket()");
 
-	char SERVERIP[256];
+	/*char SERVERIP[256];
 
 	std::cout << std::endl << "서버 IP 입력: ";
-	std::cin >> SERVERIP;
+	std::cin >> SERVERIP;*/
 
 	// connect()
 	SOCKADDR_IN serveraddr;

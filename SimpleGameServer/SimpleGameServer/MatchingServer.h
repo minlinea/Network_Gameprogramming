@@ -13,15 +13,13 @@ class MatchingServer
 {
 private:
 	std::vector<SOCKET> m_MatchingQueue;
-	unsigned char m_ClientNum;
-
 public:
 	MatchingServer();
 	~MatchingServer();
 	bool isMatchingQueueFull();
 	void GetClientNum(unsigned char* Data);
-	void SetClientNum(const unsigned char& Data);
 	void PushClient(const SOCKET& client);
 	void PopClient(const SOCKET& client);
+	void ClearClient();
 	std::vector<SOCKET> GetQueue();
 };
