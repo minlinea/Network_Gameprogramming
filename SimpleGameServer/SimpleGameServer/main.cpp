@@ -5,7 +5,7 @@ DWORD WINAPI MatchingThread(LPVOID listen_socket);
 DWORD WINAPI ClientThread(LPVOID arg);
 void err_quit(const char* msg);
 void err_display(const char* msg);
-
+bool creating = true;
 MatchingServer g_Matching;
 CGameTimer g_Msgtimer;
 HANDLE hGameServerThread;
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
 
 DWORD WINAPI MatchingThread(LPVOID listen_socket)
 {
-	bool creating = true;
+
 	g_Msgtimer.Tick(1.5f);
 	while (true)
 	{
@@ -141,13 +141,12 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			msg = Msg_ConfirmReadyCancel;
 		else if (!g_Matching.isMatchingQueueFull())
 			g_Matching.GetClientNum(&msg);
-		else
-			msg = Msg_PlayGame;
+
 
 
 		//매칭스레드로부터 send해도 상관없는지 확인
 
-		if (msg == Msg_PlayGame)
+		if (!creating)
 			break;
 		else
 		{
@@ -165,7 +164,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 	}
 
 		//retval = WaitForMultipleObjects(3, CommunicationThread, TRUE, INFINITE);
-	if(msg == Msg_PlayGame)
+	if(!creating)
 		retval = WaitForSingleObject(hGameServerThread, INFINITE);
 		//
 	
@@ -229,7 +228,6 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 			gameData.m_MapData.m_Map[i*MAP_COLUMN + j] = map_arr[i][j];
 		}
 	}
-
 	gameData.MakeCommunicationThread();
 
 	gameData.m_fPacketH2C.mapChanged = true;
