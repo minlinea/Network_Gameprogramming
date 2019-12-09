@@ -60,8 +60,8 @@ void GameServerThreadData::Update(float fTimeElapsed)
 		{
 			for (int b = 0; b < MAP_COLUMN; ++b)
 			{
-				if (posX + MAP_ROW / 2 > b && posX + MAP_ROW / 2 < (b + 1)
-					&& posY + MAP_COLUMN / 2 > a && posY + MAP_COLUMN / 2 < a + 1)
+				if (posX + MAP_ROW / 2 >= b && posX + MAP_ROW / 2 <= (b + 1)
+					&& posY + MAP_COLUMN / 2 >= a && posY + MAP_COLUMN / 2 <= a + 1)
 				{
 					posA = a;
 					posB = b;
@@ -92,14 +92,34 @@ void GameServerThreadData::Update(float fTimeElapsed)
 			m_Players[i].y = posY;
 		}
 
+		//if (m_Players[i].KeyInput.attack)		// 气藕(5) 滴扁
+		//{
+		//	switch (m_MapData.m_Map[posA*MAP_COLUMN + posB])
+		//	{
+		//	case Empty:
+		//		if (m_Players[i].HaveBomb.size() < MAX_BOMB)
+		//		{
+		//			m_Players[i].HaveBomb.emplace_back(posA,posB, 0.f, true);
+		//			m_MapData.m_Map[posA*MAP_COLUMN + posB] = Bomb;
+		//			m_fPacketH2C.mapChanged = true;
+		//		}
+		//		break;
+		//	default:
+		//		m_fPacketH2C.mapChanged = false;
+		//		break;
+		//	}
+		//}
+		
 		if (m_Players[i].KeyInput.attack)		// 气藕(5) 滴扁
 		{
 			switch (m_MapData.m_Map[posA*MAP_COLUMN + posB])
 			{
 			case Empty:
-				if (m_Players[i].HaveBomb.size() < MAX_BOMB)
+				if (m_Players[i].iBomb < MAX_BOMB)
 				{
-					m_Players[i].HaveBomb.emplace_back(posA,posB);
+
+					m_Players[i].HaveBomb[m_Players[i].iBomb] = { posA, posB, 0.f, true };
+					m_Players[i].iBomb += 1;
 					m_MapData.m_Map[posA*MAP_COLUMN + posB] = Bomb;
 					m_fPacketH2C.mapChanged = true;
 				}
@@ -109,111 +129,226 @@ void GameServerThreadData::Update(float fTimeElapsed)
 				break;
 			}
 		}
-		
-		//气藕 贸府
-		for (auto p = m_Players[i].HaveBomb.begin(); p != m_Players[i].HaveBomb.end(); ++p)
+		for (int k=0; k< m_Players[i].iBomb; ++k)
 		{
-			p->ftime += fTimeElapsed;
-			if (p->ftime > MAINTAIN_BOMBTIME + 0.5f)
+			if (m_Players[i].HaveBomb[k].alive)
 			{
-				m_MapData.m_Map[p->x*MAP_COLUMN + p->y] = Empty;
-				
-				int bx = p->x;
-				int by = p->y;
-				for (int t = 0; t < BOMB_POWER; ++t)
+				m_Players[i].HaveBomb[k].ftime += fTimeElapsed;
+				int bx = m_Players[i].HaveBomb[k].x;
+				int by = m_Players[i].HaveBomb[k].y;
+				if (m_Players[i].HaveBomb[k].ftime > MAINTAIN_BOMBTIME + 0.5f)
 				{
-					if (bx + t >= MAP_ROW)
-						break;
-					else if (m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] == Wall)
-						break;
-					else
-						m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] = Empty;
-				}
-				for (int t = 0; t < BOMB_POWER; ++t)
-				{
-					if (bx - t <= -1)
-						break;
-					else if (m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] == Wall)
-						break;
-					else
-						m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] = Empty;
-				}
-				for (int t = 0; t < BOMB_POWER; ++t)
-				{
-					if (by + t >= MAP_COLUMN)
-						break;
-					else if (m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] == Wall)
-						break;
-					else
-						m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] = Empty;
-				}
-				for (int t = 0; t < BOMB_POWER; ++t)
-				{
-					if (by - t <= -1)
-						break;
-					else if (m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] == Wall)
-						break;
-					else
-						m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] = Empty;
-				}
-				p->alive = false;
-				m_fPacketH2C.mapChanged = true;
-			}
-			else if (p->ftime > MAINTAIN_BOMBTIME)
-			{
-				m_MapData.m_Map[p->x*MAP_COLUMN + p->y] = WaterStream;
-				int bx = p->x;
-				int by = p->y;
-				for (int t = 0; t < BOMB_POWER; ++t)
-				{
-					if (bx + t >= MAP_ROW)
-						break;
-					else if (m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] == Wall)
-						break;
-					else
-						m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] = WaterStream;
-				}
-				for (int t = 0; t < BOMB_POWER; ++t)
-				{
-					if (bx - t <= -1)
-						break;
-					else if (m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] == Wall)
-						break;
-					else
-						m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] = WaterStream;
-				}
-				for (int t = 0; t < BOMB_POWER; ++t)
-				{
-					if (by + t >= MAP_COLUMN)
-						break;
-					else if (m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] == Wall)
-						break;
-					else
-						m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] = WaterStream;
-				}
-				for (int t = 0; t < BOMB_POWER; ++t)
-				{
-					if (by - t <= -1)
-						break;
-					else if (m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] == Wall)
-						break;
-					else
-						m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] = WaterStream;
-				}
+					m_MapData.m_Map[bx*MAP_COLUMN + by] = Empty;
 
-				m_fPacketH2C.mapChanged = true;
+					for (int t = 0; t < BOMB_POWER; ++t)
+					{
+						if (bx + t > MAP_ROW - 1)
+							break;
+						else if (m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] == Wall)
+							break;
+						else
+							m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] = Empty;
+					}
+					for (int t = 0; t < BOMB_POWER; ++t)
+					{
+						if (bx - t < 0)
+							break;
+						else if (m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] == Wall)
+							break;
+						else
+							m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] = Empty;
+					}
+					for (int t = 0; t < BOMB_POWER; ++t)
+					{
+						if (by + t > MAP_COLUMN - 1)
+							break;
+						else if (m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] == Wall)
+							break;
+						else
+							m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] = Empty;
+					}
+					for (int t = 0; t < BOMB_POWER; ++t)
+					{
+						if (by - t < 0)
+							break;
+						else if (m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] == Wall)
+							break;
+						else
+							m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] = Empty;
+					}
+					m_Players[i].HaveBomb[k].alive = false;
+					m_fPacketH2C.mapChanged = true;
+				}
+				else if (m_Players[i].HaveBomb[k].ftime > MAINTAIN_BOMBTIME)
+				{
+					m_MapData.m_Map[bx*MAP_COLUMN + by] = WaterStream;
+					for (int t = 0; t < BOMB_POWER; ++t)
+					{
+						if (bx + t > MAP_ROW - 1)
+							break;
+						else if (m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] == Wall)
+							break;
+						else
+							m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] = WaterStream;
+					}
+					for (int t = 0; t < BOMB_POWER; ++t)
+					{
+						if (bx - t < 0)
+							break;
+						else if (m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] == Wall)
+							break;
+						else
+							m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] = WaterStream;
+					}
+					for (int t = 0; t < BOMB_POWER; ++t)
+					{
+						if (by + t > MAP_COLUMN - 1)
+							break;
+						else if (m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] == Wall)
+							break;
+						else
+							m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] = WaterStream;
+					}
+					for (int t = 0; t < BOMB_POWER; ++t)
+					{
+						if (by - t < 0)
+							break;
+						else if (m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] == Wall)
+							break;
+						else
+							m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] = WaterStream;
+					}
+
+					m_fPacketH2C.mapChanged = true;
+				}
+				else
+					m_MapData.m_Map[bx*MAP_COLUMN + by] = Bomb;
 			}
-			else
-				m_MapData.m_Map[p->x*MAP_COLUMN + p->y] = Bomb;
 		}
-		for (auto t = m_Players[i].HaveBomb.begin(); t < m_Players[i].HaveBomb.end(); ++t)
+		for (int t = 0; t < m_Players[i].iBomb; ++t)
 		{
-			if (!t->alive)
+			if (!m_Players[i].HaveBomb[t].alive)
 			{
-				t = m_Players[i].HaveBomb.erase(t);
-					break;
+				for (int k = 0; k < m_Players[i].iBomb - 1; ++k)
+				{
+					m_Players[i].HaveBomb[k] = m_Players[i].HaveBomb[k + 1];
+				}
+				m_Players[i].HaveBomb[m_Players[i].iBomb - 1] = { -1, -1, 0.f, false };
+				m_Players[i].iBomb += -1;
+				break;
 			}
+			
 		}
+
+
+
+		////气藕 贸府
+		//for (auto p = m_Players[i].HaveBomb.begin(); p != m_Players[i].HaveBomb.end(); ++p)
+		//{
+		//	if (p->alive)
+		//	{
+		//		p->ftime += fTimeElapsed;
+		//		if (p->ftime > MAINTAIN_BOMBTIME + 0.5f)
+		//		{
+		//			m_MapData.m_Map[p->x*MAP_COLUMN + p->y] = Empty;
+
+		//			int bx = p->x;
+		//			int by = p->y;
+		//			for (int t = 0; t < BOMB_POWER; ++t)
+		//			{
+		//				if (bx + t > MAP_ROW - 1)
+		//					break;
+		//				else if (m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] == Wall)
+		//					break;
+		//				else
+		//					m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] = Empty;
+		//			}
+		//			for (int t = 0; t < BOMB_POWER; ++t)
+		//			{
+		//				if (bx - t < 0)
+		//					break;
+		//				else if (m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] == Wall)
+		//					break;
+		//				else
+		//					m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] = Empty;
+		//			}
+		//			for (int t = 0; t < BOMB_POWER; ++t)
+		//			{
+		//				if (by + t > MAP_COLUMN - 1)
+		//					break;
+		//				else if (m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] == Wall)
+		//					break;
+		//				else
+		//					m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] = Empty;
+		//			}
+		//			for (int t = 0; t < BOMB_POWER; ++t)
+		//			{
+		//				if (by - t < 0)
+		//					break;
+		//				else if (m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] == Wall)
+		//					break;
+		//				else
+		//					m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] = Empty;
+		//			}
+		//			p->alive = false;
+		//			m_fPacketH2C.mapChanged = true;
+		//		}
+		//		else if (p->ftime > MAINTAIN_BOMBTIME)
+		//		{
+		//			m_MapData.m_Map[p->x*MAP_COLUMN + p->y] = WaterStream;
+		//			int bx = p->x;
+		//			int by = p->y;
+		//			for (int t = 0; t < BOMB_POWER; ++t)
+		//			{
+		//				if (bx + t > MAP_ROW - 1)
+		//					break;
+		//				else if (m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] == Wall)
+		//					break;
+		//				else
+		//					m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] = WaterStream;
+		//			}
+		//			for (int t = 0; t < BOMB_POWER; ++t)
+		//			{
+		//				if (bx - t < 0)
+		//					break;
+		//				else if (m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] == Wall)
+		//					break;
+		//				else
+		//					m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] = WaterStream;
+		//			}
+		//			for (int t = 0; t < BOMB_POWER; ++t)
+		//			{
+		//				if (by + t > MAP_COLUMN - 1)
+		//					break;
+		//				else if (m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] == Wall)
+		//					break;
+		//				else
+		//					m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] = WaterStream;
+		//			}
+		//			for (int t = 0; t < BOMB_POWER; ++t)
+		//			{
+		//				if (by - t < 0)
+		//					break;
+		//				else if (m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] == Wall)
+		//					break;
+		//				else
+		//					m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] = WaterStream;
+		//			}
+
+		//			m_fPacketH2C.mapChanged = true;
+		//		}
+		//		else
+		//			m_MapData.m_Map[p->x*MAP_COLUMN + p->y] = Bomb;
+		//	}
+		//}
+		//for (auto t = m_Players[i].HaveBomb.begin(); t < m_Players[i].HaveBomb.end(); ++t)
+		//{
+		//	if (!t->alive)
+		//	{
+		//		t = m_Players[i].HaveBomb.erase(t);
+		//		break;
+		//	}
+		//}
 		if (m_MapData.m_Map[posA*MAP_COLUMN + posB] == WaterStream)
 			m_Players[i].stat = dead;
 

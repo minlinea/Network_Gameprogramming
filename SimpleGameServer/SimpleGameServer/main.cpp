@@ -8,6 +8,7 @@ void err_display(const char* msg);
 
 MatchingServer g_Matching;
 CGameTimer g_Msgtimer;
+bool creating = true;
 
 int main(int argc, char* argv[])
 {
@@ -84,7 +85,7 @@ int main(int argc, char* argv[])
 
 DWORD WINAPI MatchingThread(LPVOID listen_socket)
 {
-	bool creating = true;
+	
 	g_Msgtimer.Tick(1.5f);
 	while (true)
 	{
@@ -163,7 +164,9 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			break;
 	}
 
-	Sleep(2000);
+	while (!creating)
+		;
+	//Sleep(2000);
 
 	printf("[TCP 서버] Client Thread 종료: IP 주소=%s, 포트 번호=%d\n",
 		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));

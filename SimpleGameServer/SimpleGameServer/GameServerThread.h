@@ -57,10 +57,11 @@ enum status
 
 struct InfoBomb
 {
-	float ftime = 0.f;
+	float ftime = 3.f;
 	int x = -1, y = -1;
-	bool alive = true;
-	InfoBomb(int a, int b) :x(a), y(b) {}
+	bool alive = false;
+	InfoBomb(int a, int b, float ft, bool al) :x(a), y(b), ftime(ft), alive(al) {	};
+	InfoBomb() {};
 };
 
 struct Player
@@ -72,10 +73,11 @@ public:
 	SOCKET 	sockAddress;
 	InputData	KeyInput;
 
-	std::vector<InfoBomb> HaveBomb;
+	int iBomb = 0;
+	InfoBomb HaveBomb[MAX_BOMB];
+	//std::vector<InfoBomb> HaveBomb;
 	
 	// 등등 게임 로직에 필요한 변수
-	int			power = 3;
 	float		vec2[2];
 
 public:
