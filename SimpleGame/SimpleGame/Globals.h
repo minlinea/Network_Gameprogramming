@@ -40,17 +40,6 @@ struct KeyInput
 	bool Left;
 	bool Right;
 	bool Attack;
-	bool notuse0;
-	bool notuse1;
-	bool notuse2;
-	bool notuse3;
-	bool notuse4;
-	bool notuse5;
-	bool notuse6;
-	bool notuse7;
-	bool notuse8;
-	bool notuse9;
-	bool notuse10;
 };
 #pragma pack()
 #pragma pack(1)

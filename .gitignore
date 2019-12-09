@@ -30,3 +30,7 @@
 *.out
 *.app
 *.vs
+SimpleGame/SimpleGame/x64/Debug/vc141.idb
+SimpleGame/SimpleGame/x64/Debug/vc141.pdb
+SimpleGame/x64/Debug/SimpleGame.ilk
+SimpleGame/x64/Debug/SimpleGame.pdb

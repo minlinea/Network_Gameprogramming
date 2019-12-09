@@ -247,8 +247,9 @@ void ScnMgr::RenderScene(float ElapsedTime)
 			float body_gap = interval / 4;
 			
 			if (m_Player[i]->GetIsControlNum() == MAX_PLAYER_NUM) {
-				for (int i = 0; i < 10; ++i) {
-					m_Renderer->DrawSolidRect(pos.x* interval, pos.y* interval + body_gap * 2, 0, vol.x* body_gap, 1, 1, 1, 1);
+				for (int i = 0; i < 5; ++i) {
+					m_Renderer->DrawSolidRect(pos.x* interval, pos.y* interval - interval /2+ (interval / 5 * i), 0, vol.x* interval / 5, 0.5, 0.5, 0.5, 1);
+					m_Renderer->DrawSolidRect(pos.x* interval - interval /2- interval / 5 /2+ (interval / 5 * (i+1)), pos.y* interval+ interval / 5/2, 0, vol.x* interval / 5, 0.5, 0.5, 0.5, 1);
 				}
 			}
 			else 
@@ -390,22 +391,6 @@ void ScnMgr::KeyDownInput(unsigned char key, int x, int y)
 		}
 	}
 	if (CurrentScene == GameScene) {
-		if (key == 'w' || key == 'W')
-		{
-			m_key.notuse0 = true;
-		}
-		if (key == 'a' || key == 'A')
-		{
-			m_key.notuse1 = true;
-		}
-		if (key == 's' || key == 'S')
-		{
-			m_key.notuse2 = true;
-		}
-		if (key == 'd' || key == 'D')
-		{
-			m_key.notuse3 = true;
-		}
 		if (key == 'r' || key == 'R')
 		{
 			m_Player[0]->SetPos({ 0, 0 });
@@ -416,22 +401,6 @@ void ScnMgr::KeyDownInput(unsigned char key, int x, int y)
 void ScnMgr::KeyUpInput(unsigned char key, int x, int y)
 {
 	if (CurrentScene == GameScene) {
-		if (key == 'w' || key == 'W')
-		{
-			m_key.notuse0 = false;
-		}
-		if (key == 'a' || key == 'A')
-		{
-			m_key.notuse1 = false;
-		}
-		if (key == 's' || key == 'S')
-		{
-			m_key.notuse2 = false;
-		}
-		if (key == 'd' || key == 'D')
-		{
-			m_key.notuse3 = false;
-		}
 	}
 }
 

@@ -93,23 +93,6 @@ void GameServerThreadData::Update(float fTimeElapsed)
 			m_Players[i].y = posY;
 		}
 
-		//if (m_Players[i].KeyInput.attack)		// 气藕(5) 滴扁
-		//{
-		//	switch (m_MapData.m_Map[posA*MAP_COLUMN + posB])
-		//	{
-		//	case Empty:
-		//		if (m_Players[i].HaveBomb.size() < MAX_BOMB)
-		//		{
-		//			m_Players[i].HaveBomb.emplace_back(posA,posB, 0.f, true);
-		//			m_MapData.m_Map[posA*MAP_COLUMN + posB] = Bomb;
-		//			m_fPacketH2C.mapChanged = true;
-		//		}
-		//		break;
-		//	default:
-		//		m_fPacketH2C.mapChanged = false;
-		//		break;
-		//	}
-		//}
 		
 		if (m_Players[i].KeyInput.attack)		// 气藕(5) 滴扁
 		{
@@ -241,115 +224,6 @@ void GameServerThreadData::Update(float fTimeElapsed)
 			
 		}
 
-
-
-		////气藕 贸府
-		//for (auto p = m_Players[i].HaveBomb.begin(); p != m_Players[i].HaveBomb.end(); ++p)
-		//{
-		//	if (p->alive)
-		//	{
-		//		p->ftime += fTimeElapsed;
-		//		if (p->ftime > MAINTAIN_BOMBTIME + 0.5f)
-		//		{
-		//			m_MapData.m_Map[p->x*MAP_COLUMN + p->y] = Empty;
-
-		//			int bx = p->x;
-		//			int by = p->y;
-		//			for (int t = 0; t < BOMB_POWER; ++t)
-		//			{
-		//				if (bx + t > MAP_ROW - 1)
-		//					break;
-		//				else if (m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] == Wall)
-		//					break;
-		//				else
-		//					m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] = Empty;
-		//			}
-		//			for (int t = 0; t < BOMB_POWER; ++t)
-		//			{
-		//				if (bx - t < 0)
-		//					break;
-		//				else if (m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] == Wall)
-		//					break;
-		//				else
-		//					m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] = Empty;
-		//			}
-		//			for (int t = 0; t < BOMB_POWER; ++t)
-		//			{
-		//				if (by + t > MAP_COLUMN - 1)
-		//					break;
-		//				else if (m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] == Wall)
-		//					break;
-		//				else
-		//					m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] = Empty;
-		//			}
-		//			for (int t = 0; t < BOMB_POWER; ++t)
-		//			{
-		//				if (by - t < 0)
-		//					break;
-		//				else if (m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] == Wall)
-		//					break;
-		//				else
-		//					m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] = Empty;
-		//			}
-		//			p->alive = false;
-		//			m_fPacketH2C.mapChanged = true;
-		//		}
-		//		else if (p->ftime > MAINTAIN_BOMBTIME)
-		//		{
-		//			m_MapData.m_Map[p->x*MAP_COLUMN + p->y] = WaterStream;
-		//			int bx = p->x;
-		//			int by = p->y;
-		//			for (int t = 0; t < BOMB_POWER; ++t)
-		//			{
-		//				if (bx + t > MAP_ROW - 1)
-		//					break;
-		//				else if (m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] == Wall)
-		//					break;
-		//				else
-		//					m_MapData.m_Map[(bx + t)*MAP_COLUMN + by] = WaterStream;
-		//			}
-		//			for (int t = 0; t < BOMB_POWER; ++t)
-		//			{
-		//				if (bx - t < 0)
-		//					break;
-		//				else if (m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] == Wall)
-		//					break;
-		//				else
-		//					m_MapData.m_Map[(bx - t)*MAP_COLUMN + by] = WaterStream;
-		//			}
-		//			for (int t = 0; t < BOMB_POWER; ++t)
-		//			{
-		//				if (by + t > MAP_COLUMN - 1)
-		//					break;
-		//				else if (m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] == Wall)
-		//					break;
-		//				else
-		//					m_MapData.m_Map[bx*MAP_COLUMN + (by + t)] = WaterStream;
-		//			}
-		//			for (int t = 0; t < BOMB_POWER; ++t)
-		//			{
-		//				if (by - t < 0)
-		//					break;
-		//				else if (m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] == Wall)
-		//					break;
-		//				else
-		//					m_MapData.m_Map[bx*MAP_COLUMN + (by - t)] = WaterStream;
-		//			}
-
-		//			m_fPacketH2C.mapChanged = true;
-		//		}
-		//		else
-		//			m_MapData.m_Map[p->x*MAP_COLUMN + p->y] = Bomb;
-		//	}
-		//}
-		//for (auto t = m_Players[i].HaveBomb.begin(); t < m_Players[i].HaveBomb.end(); ++t)
-		//{
-		//	if (!t->alive)
-		//	{
-		//		t = m_Players[i].HaveBomb.erase(t);
-		//		break;
-		//	}
-		//}
 		if (m_MapData.m_Map[posA*MAP_COLUMN + posB] == WaterStream)
 			m_Players[i].stat = dead;
 
@@ -392,12 +266,12 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 	gameData.m_Players[0].sockAddress = s[0];
 	gameData.m_Players[1].sockAddress = s[1];
 	gameData.m_Players[2].sockAddress = s[2];
-	gameData.m_Players[0].x = 0.10f;
-	gameData.m_Players[0].y = 0.20f;
-	gameData.m_Players[1].x = 0.30f;
-	gameData.m_Players[1].y = 0.40f;
-	gameData.m_Players[2].x = 0.50f;
-	gameData.m_Players[2].y = 0.60f;
+	gameData.m_Players[0].x = -4.5f;
+	gameData.m_Players[0].y = -5.0f;
+	gameData.m_Players[1].x = 4.0f;
+	gameData.m_Players[1].y = 1.5f;
+	gameData.m_Players[2].x = -4.0f;
+	gameData.m_Players[2].y = 5.5f;
 	
 	for (int i = 0; i < MAX_PLAYER; ++i)
 		gameData.m_cPlayerControl[i] = i;
