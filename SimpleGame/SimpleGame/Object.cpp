@@ -62,3 +62,13 @@ void Object::GetType(ObjectType*type)
 {
 	*type = m_type;
 }
+
+void Object::SetIsControlNum(int ic)
+{
+	ControlNum = ic;
+}
+
+int Object::GetIsControlNum()
+{
+	return ControlNum;
+}

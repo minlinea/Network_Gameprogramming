@@ -81,6 +81,7 @@ void GameServerThreadData::Update(float fTimeElapsed)
 			break;
 		case WaterStream:		// ÆøÅº ¹°ÁÙ±â
 			m_Players->stat = dead;
+
 			break;
 		default:
 			collision = true;
@@ -508,7 +509,10 @@ DWORD WINAPI ClientCommunicationThread(LPVOID arg)
 		{
 			playerData.x = gData.m_Players[i].x;
 			playerData.y = gData.m_Players[i].y;
-			playerData.n = gData.m_cPlayerControl[clientNumber];
+			if (gData.m_Players[i].stat == dead)
+				playerData.n = 3;
+			else
+				playerData.n = gData.m_cPlayerControl[clientNumber];
 
 			retval = send(client_sock, (char*)& playerData, sizeof(PlayerData), 0);
 			if (retval == SOCKET_ERROR)

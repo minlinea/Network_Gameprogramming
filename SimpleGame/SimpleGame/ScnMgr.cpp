@@ -240,14 +240,26 @@ void ScnMgr::RenderScene(float ElapsedTime)
 
 		//draw character
 		for (int i = 0; i < MAX_PLAYER_NUM; ++i) {
+		
 			m_Player[i]->GetPos(&pos);
 			m_Player[i]->GetVol(&vol);
 			m_Player[i]->GetColor(&col);
 			float body_gap = interval / 4;
-			//head
-			m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval + body_gap * 2, 0, vol.x * body_gap, 1, 1, 1, 1);
-			//body
-			m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval, 0, vol.x * body_gap * 3, col.r, col.g, col.b, col.a);
+			
+			if (m_Player[i]->GetIsControlNum() == MAX_PLAYER_NUM) {
+				for (int i = 0; i < 10; ++i) {
+					m_Renderer->DrawSolidRect(pos.x* interval, pos.y* interval + body_gap * 2, 0, vol.x* body_gap, 1, 1, 1, 1);
+				}
+			}
+			else 
+			{
+				if (m_Player[i]->GetIsControlNum() == i)
+					m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval + body_gap * 4, 0, vol.x * body_gap / 2, 1, 1, 0, 1);
+				//head
+				m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval + body_gap * 2, 0, vol.x * body_gap, 1, 1, 1, 1);
+				//body
+				m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval, 0, vol.x * body_gap * 3, col.r, col.g, col.b, col.a);
+			}
 		}
 
 
@@ -262,13 +274,6 @@ void ScnMgr::DeleteObject(int idx)
 		std::cout << "input idx is negative : " << idx << std::endl;
 		return;
 	}
-
-	//if (idx >= MAX_OBJ_COUNT)
-	//{
-	//	std::cout << "input idx exceeds MAX_OBJ_COUNT : " << idx << std::endl;
-	//	return;
-	//}
-
 	if (m_Player[idx] == NULL)
 	{
 		std::cout << "m_Player[" << idx << "] is NULL" << std::endl;
@@ -325,6 +330,7 @@ void ScnMgr::Update(float ElapsedTime)
 		}
 		for (int i = 0; i < MAX_PLAYER_NUM; ++i) {
 			m_Player[i]->Update(pos[i], ElapsedTime);
+			m_Player[i]->SetIsControlNum(pos[i].whoseControlNum);
 		}
 	}
 }

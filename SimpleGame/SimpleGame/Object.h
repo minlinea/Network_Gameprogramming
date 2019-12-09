@@ -20,6 +20,8 @@ public:
 	void GetVol(Float2 *volume);
 	void SetType(ObjectType  type);
 	void GetType(ObjectType*type);
+	void SetIsControlNum(int ic);
+	int GetIsControlNum();
 
 private:
 	Color4		m_color;			//		색깔
@@ -27,6 +29,7 @@ private:
 	Float2		m_volume;		//		부피
 	Float2		m_velocity;
 	ObjectType  m_type;								//		오브젝트 타입
+	int		ControlNum;
 
 };
 
