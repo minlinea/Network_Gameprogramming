@@ -337,7 +337,6 @@ void ScnMgr::Update(float ElapsedTime)
 			else if (msg == Msg_PlayGame)
 			{
 				CurrentScene = GameScene;
-				Sleep(2000);
 			}
 		}
 
