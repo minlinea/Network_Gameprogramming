@@ -32,6 +32,37 @@ int Title_arr[TitleSize][TitleSize] = {
 
 		//
 };
+
+int Ending_arr[TitleSize][TitleSize] = {
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,1,1,1,1,0,0,0,1,0,0,0,0,1,0,1,0,0,1,1,1,1,0,0},
+		{0,0,1,0,0,0,0,0,1,0,1,0,0,1,1,1,1,1,0,1,0,0,0,0,0},
+		{0,0,1,0,1,1,0,1,0,0,0,1,0,1,0,1,0,1,0,1,1,1,1,0,0},
+		{0,0,1,0,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1,0,0,0,0,0},
+		{0,0,1,1,1,1,0,1,0,0,0,1,0,1,0,1,0,1,0,1,1,1,1,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,1,1,1,1,0,1,0,0,0,1,0,1,1,1,0,0,0,0,0,0},
+		{0,0,0,0,0,1,0,0,0,0,1,1,0,0,1,0,1,0,0,1,0,0,0,0,0},
+		{0,0,0,0,0,1,1,1,1,0,1,0,1,0,1,0,1,0,0,1,0,0,0,0,0},
+		{0,0,0,0,0,1,0,0,0,0,1,0,0,1,1,0,1,0,0,1,0,0,0,0,0},
+		{0,0,0,0,0,1,1,1,1,0,1,0,0,0,1,0,1,1,1,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0},
+		{0,0,2,0,1,1,1,0,1,0,0,0,1,0,1,1,1,0,1,1,1,0,2,0,0},
+		{0,0,2,0,1,0,0,0,0,1,0,1,0,0,0,1,0,0,0,1,0,0,2,0,0},
+		{0,0,2,0,1,1,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,2,0,0},
+		{0,0,2,0,1,0,0,0,0,1,0,1,0,0,0,1,0,0,0,1,0,0,2,0,0},
+		{0,0,2,0,1,1,1,0,1,0,0,0,1,0,1,1,1,0,0,1,0,0,2,0,0},
+		{0,0,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+
+		//
+};
+
 ScnMgr::ScnMgr()
 {
 
@@ -63,24 +94,6 @@ ScnMgr::ScnMgr()
 
 		m_Player[i]->SetType(User);
 	}
-	int map_arr[MAP_COLUMN][MAP_ROW] = {
-		{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
-		{2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2},
-		{2,2,2,1,1,2,1,2,1,2,1,2,2,2,1,2},
-		{2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2},
-		{2,2,1,2,1,1,2,1,1,1,1,2,2,1,2,2},
-		{2,2,1,1,1,2,2,1,1,2,1,1,1,1,2,2},
-		{2,1,1,1,1,1,1,1,1,1,1,2,1,1,1,2},
-		{2,2,1,1,1,1,2,1,1,2,1,1,1,1,2,2},
-		{2,1,1,2,1,1,2,1,1,1,1,2,1,1,1,2},
-		{2,2,1,1,1,1,1,1,1,2,1,1,1,1,2,2},
-		{2,1,1,2,1,1,2,1,1,2,1,2,1,1,1,2},
-		{2,2,1,1,1,1,2,1,1,1,1,1,2,1,2,2},
-		{2,1,1,2,1,2,1,1,1,1,1,1,1,1,1,2},
-		{2,2,1,1,1,1,1,2,1,2,1,1,2,1,2,2},
-		{2,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2},
-		{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
-	};
 	for (int i = 0; i < MAP_COLUMN; ++i)
 	{
 		for (int j = 0; j < MAP_ROW; ++j)
@@ -92,7 +105,7 @@ ScnMgr::ScnMgr()
 
 			m_MapObject[i][j]->SetColor({ 0, 0, 0, 1 });
 
-			m_MapObject[i][j]->SetType((ObjectType)(map_arr[i][j]));
+			m_MapObject[i][j]->SetType(Empty);
 		}
 	}
 }
@@ -167,10 +180,8 @@ void ScnMgr::RenderScene(float ElapsedTime)
 				}
 			}
 		}
-
 	}
-
-	else if (CurrentScene == GameScene) {
+	else{
 		/*********************************************PlayScene***************************************************************************/
 		Float2 pos;
 		Float2 vol;
@@ -240,19 +251,19 @@ void ScnMgr::RenderScene(float ElapsedTime)
 
 		//draw character
 		for (int i = 0; i < MAX_PLAYER_NUM; ++i) {
-		
+
 			m_Player[i]->GetPos(&pos);
 			m_Player[i]->GetVol(&vol);
 			m_Player[i]->GetColor(&col);
 			float body_gap = interval / 4;
-			
+
 			if (m_Player[i]->GetIsControlNum() == MAX_PLAYER_NUM) {
 				for (int i = 0; i < 5; ++i) {
-					m_Renderer->DrawSolidRect(pos.x* interval, pos.y* interval - interval /2+ (interval / 5 * i), 0, vol.x* interval / 5, 0.5, 0.5, 0.5, 1);
-					m_Renderer->DrawSolidRect(pos.x* interval - interval /2- interval / 5 /2+ (interval / 5 * (i+1)), pos.y* interval+ interval / 5/2, 0, vol.x* interval / 5, 0.5, 0.5, 0.5, 1);
+					m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval - interval / 2 + (interval / 5 * i), 0, vol.x * interval / 5, 0.5, 0.5, 0.5, 1);
+					m_Renderer->DrawSolidRect(pos.x * interval - interval / 2 - interval / 5 / 2 + (interval / 5 * (i + 1)), pos.y * interval + interval / 5 / 2, 0, vol.x * interval / 5, 0.5, 0.5, 0.5, 1);
 				}
 			}
-			else 
+			else
 			{
 				if (m_Player[i]->GetIsControlNum() == i)
 					m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval + body_gap * 4, 0, vol.x * body_gap / 2, 1, 1, 0, 1);
@@ -265,7 +276,27 @@ void ScnMgr::RenderScene(float ElapsedTime)
 
 
 		/******************************************************************************************************************************/
+		if (CurrentScene == EndingScene)
+		{
+			for (int i = 0; i < TitleSize; ++i)
+			{
+				float interval = 1000 / TitleSize;
+				for (int j = 0; j < TitleSize; ++j)
+				{
+					if (Ending_arr[i][j] == 1)
+						m_Renderer->DrawSolidRect(
+						(j - TitleSize / 2) * interval, (TitleSize - 1 - i - TitleSize / 2) * interval, 0,
+							1 * interval, 0, 1, 1, 1);
+					else if(Ending_arr[i][j] == 2)
+						m_Renderer->DrawSolidRect(
+						(j - TitleSize / 2) * interval, (TitleSize - 1 - i - TitleSize / 2) * interval, 0,
+							1 * interval, 1, 1, 1, 1);
+				}
+			}
+		}
 	}
+
+	
 }
 
 void ScnMgr::DeleteObject(int idx)
@@ -309,55 +340,47 @@ void ScnMgr::Update(float ElapsedTime)
 				Sleep(2000);
 			}
 		}
-		
+
 	}
 	else if (CurrentScene == GameScene)
 	{
+
 		static CharacterStatus pos[3];
-		MapData map;
+		static MapData map;
+		int count = 0;
 
 		m_client->PlaySceneSendData(m_key);
 		m_client->PlaySceneRecvData(pos);
-		
+
 		map = m_client->GetMap();
-		
-		
+
+
 		for (int i = 0; i < MAP_COLUMN; ++i)
 		{
 			for (int j = 0; j < MAP_ROW; ++j)
 			{
-				m_MapObject[i][j]->SetType((ObjectType)(map.m_Map[i* MAP_COLUMN+j]));
+				m_MapObject[i][j]->SetType((ObjectType)(map.m_Map[i * MAP_COLUMN + j]));
 			}
 		}
 		for (int i = 0; i < MAX_PLAYER_NUM; ++i) {
 			m_Player[i]->Update(pos[i], ElapsedTime);
 			m_Player[i]->SetIsControlNum(pos[i].whoseControlNum);
+			if (m_Player[i]->GetIsControlNum() == MAX_PLAYER_NUM)
+				count++;
+		}
+		if (count == MAX_PLAYER_NUM - 1) {
+			delete m_client;
+			CurrentScene = EndingScene;
 		}
 	}
 }
 
 void ScnMgr::DoGarbageCollection()
 {
-	/*for (int i = 0; i < MAX_OBJ_COUNT; ++i)
-	{
-		if (m_Player[i] != NULL)
-		{
-			int type;
-			m_Player[i]->GetType(&type);
-			if (type == TYPE_BULLET)
-			{
-				Float2 v;
-				m_Player[i]->GetVel(&v);
-				float vSize = sqrtf(v.x * v.x + v.y * v.y );
-				if (vSize < FLT_EPSILON)
-					DeleteObject(i);
-			}
-		}
-	}*/
+
 }
 
 //디버그는 호출하는 놈을 찾아야 한다.	--> 호출 스택
-
 void ScnMgr::KeyDownInput(unsigned char key, int x, int y)
 {
 	if (CurrentScene == TitleScene) {
@@ -390,10 +413,13 @@ void ScnMgr::KeyDownInput(unsigned char key, int x, int y)
 			}
 		}
 	}
-	if (CurrentScene == GameScene) {
-		if (key == 'r' || key == 'R')
+	else if (CurrentScene == GameScene) {
+
+	}
+	else if (CurrentScene == EndingScene) {
+		if (key == 13)
 		{
-			m_Player[0]->SetPos({ 0, 0 });
+			exit(0);
 		}
 	}
 }

@@ -34,7 +34,8 @@ private:
 	enum Scene
 	{
 		TitleScene,
-		GameScene
+		GameScene,
+		EndingScene
 	};
 	Scene CurrentScene;
 	int CurrentButton;
