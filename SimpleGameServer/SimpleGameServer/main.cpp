@@ -149,16 +149,16 @@ DWORD WINAPI ClientThread(LPVOID arg)
 		//매칭스레드로부터 send해도 상관없는지 확인
 
 		
-		retval = send(client_sock, (char*)&msg, sizeof(msg), 0);
-		if (retval == SOCKET_ERROR)
-		{
-			err_display("send()");
-			break;
-		}
-		if (Msg_ConfirmReadyCancel == msg)
-		{
-			break;
-		}
+		//retval = send(client_sock, (char*)&msg, sizeof(msg), 0);
+		//if (retval == SOCKET_ERROR)
+		//{
+		//	err_display("send()");
+		//	break;
+		//}
+		//if (Msg_ConfirmReadyCancel == msg)
+		//{
+		//	break;
+		//}
 
 		if (msg == Msg_PlayGame)
 			break;

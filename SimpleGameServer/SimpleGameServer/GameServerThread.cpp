@@ -306,7 +306,7 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 		}
 	}
 
-	Sleep(2000);
+	//Sleep(2000);
 
 	gameData.MakeCommunicationThread();
 
@@ -343,6 +343,22 @@ DWORD WINAPI ClientCommunicationThread(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)& clientaddr, &addrlen);
 	printf("%d", clientaddr);
+
+	unsigned char msg;
+	msg = Msg_PlayGame;
+
+	retval = send(client_sock, (char*)&msg, sizeof(msg), 0);
+	if (retval == SOCKET_ERROR)
+	{
+		//err_display("send()");
+		//break;
+		return 0;
+	}
+	if (Msg_ConfirmReadyCancel == msg)
+	{
+		//break;
+	}
+
 	while (1)
 	{
 		Sleep(10);
