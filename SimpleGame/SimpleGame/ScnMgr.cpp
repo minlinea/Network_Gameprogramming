@@ -32,8 +32,36 @@ int Title_arr[TitleSize][TitleSize] = {
 
 		//
 };
+int Ending_Win_arr[TitleSize][TitleSize] = {
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,1,1,1,1,0,0,0,1,0,0,0,0,1,0,1,0,0,1,1,1,1,0,0},
+		{0,0,1,0,0,0,0,0,1,0,1,0,0,1,1,1,1,1,0,1,0,0,0,0,0},
+		{0,0,1,0,1,1,0,1,0,0,0,1,0,1,0,1,0,1,0,1,1,1,1,0,0},
+		{0,0,1,0,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1,0,0,0,0,0},
+		{0,0,1,1,1,1,0,1,0,0,0,1,0,1,0,1,0,1,0,1,1,1,1,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,1,0,0,0,1,0,1,1,1,0,1,0,0,0,1,0,0,0,0,0},
+		{0,0,0,0,0,1,0,1,0,1,0,0,1,0,0,1,1,0,0,1,0,0,0,0,0},
+		{0,0,0,0,0,1,0,1,0,1,0,0,1,0,0,1,0,1,0,1,0,0,0,0,0},
+		{0,0,0,0,0,1,0,1,0,1,0,0,1,0,0,1,0,0,1,1,0,0,0,0,0},
+		{0,0,0,0,0,0,1,0,1,0,0,1,1,1,0,1,0,0,0,1,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0},
+		{0,0,2,0,1,1,1,0,1,0,0,0,1,0,1,1,1,0,1,1,1,0,2,0,0},
+		{0,0,2,0,1,0,0,0,0,1,0,1,0,0,0,1,0,0,0,1,0,0,2,0,0},
+		{0,0,2,0,1,1,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,2,0,0},
+		{0,0,2,0,1,0,0,0,0,1,0,1,0,0,0,1,0,0,0,1,0,0,2,0,0},
+		{0,0,2,0,1,1,1,0,1,0,0,0,1,0,1,1,1,0,0,1,0,0,2,0,0},
+		{0,0,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 
-int Ending_arr[TitleSize][TitleSize] = {
+		//
+};
+int Ending_Loose_arr[TitleSize][TitleSize] = {
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,1,1,1,1,0,0,0,1,0,0,0,0,1,0,1,0,0,1,1,1,1,0,0},
 		{0,0,1,0,0,0,0,0,1,0,1,0,0,1,1,1,1,1,0,1,0,0,0,0,0},
@@ -249,6 +277,7 @@ void ScnMgr::RenderScene(float ElapsedTime)
 			}
 		}
 
+		bool isWin = false;
 		//draw character
 		for (int i = 0; i < MAX_PLAYER_NUM; ++i) {
 
@@ -256,7 +285,8 @@ void ScnMgr::RenderScene(float ElapsedTime)
 			m_Player[i]->GetVol(&vol);
 			m_Player[i]->GetColor(&col);
 			float body_gap = interval / 4;
-
+			if (i == m_Player[i]->GetIsControlNum())
+				isWin = true;
 			if (m_Player[i]->GetIsControlNum() == MAX_PLAYER_NUM) {
 				for (int i = 0; i < 5; ++i) {
 					m_Renderer->DrawSolidRect(pos.x * interval, pos.y * interval - interval / 2 + (interval / 5 * i), 0, vol.x * interval / 5, 0.5, 0.5, 0.5, 1);
@@ -283,14 +313,26 @@ void ScnMgr::RenderScene(float ElapsedTime)
 				float interval = 1000 / TitleSize;
 				for (int j = 0; j < TitleSize; ++j)
 				{
-					if (Ending_arr[i][j] == 1)
-						m_Renderer->DrawSolidRect(
-						(j - TitleSize / 2) * interval, (TitleSize - 1 - i - TitleSize / 2) * interval, 0,
-							1 * interval, 0, 1, 1, 1);
-					else if(Ending_arr[i][j] == 2)
-						m_Renderer->DrawSolidRect(
-						(j - TitleSize / 2) * interval, (TitleSize - 1 - i - TitleSize / 2) * interval, 0,
-							1 * interval, 1, 1, 1, 1);
+					if (isWin) {
+						if (Ending_Win_arr[i][j] == 1)
+							m_Renderer->DrawSolidRect(
+							(j - TitleSize / 2) * interval, (TitleSize - 1 - i - TitleSize / 2) * interval, 0,
+								1 * interval, 0, 1, 1, 1);
+						else if (Ending_Win_arr[i][j] == 2)
+							m_Renderer->DrawSolidRect(
+							(j - TitleSize / 2) * interval, (TitleSize - 1 - i - TitleSize / 2) * interval, 0,
+								1 * interval, 1, 1, 1, 1);
+					}
+					else {
+						if (Ending_Loose_arr[i][j] == 1)
+							m_Renderer->DrawSolidRect(
+							(j - TitleSize / 2) * interval, (TitleSize - 1 - i - TitleSize / 2) * interval, 0,
+								1 * interval, 0, 1, 1, 1);
+						else if (Ending_Loose_arr[i][j] == 2)
+							m_Renderer->DrawSolidRect(
+							(j - TitleSize / 2) * interval, (TitleSize - 1 - i - TitleSize / 2) * interval, 0,
+								1 * interval, 1, 1, 1, 1);
+					}
 				}
 			}
 		}
@@ -337,7 +379,6 @@ void ScnMgr::Update(float ElapsedTime)
 			else if (msg == Msg_PlayGame)
 			{
 				CurrentScene = GameScene;
-				Sleep(2000);
 			}
 		}
 
