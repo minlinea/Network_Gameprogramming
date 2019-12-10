@@ -204,12 +204,22 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 
 		Sleep(10);
 
+		bool isEnd = true;
+		for (int i = 0; i < gameData.m_fPacketH2C.NumOfClient; ++i)
+		{
+			if (gameData.m_Players[i].sockAddress != NULL)
+				isEnd = false;
+		}
+		if (isEnd)
+			break;
 		gameData.Update(timer.GetTimeElapsed());
-
 	}
-	printf("GameServerThread\n");
+	printf("GameServerThread 종료\n");
+
 	return 0;
 }
+
+
 DWORD WINAPI ClientCommunicationThread(LPVOID arg)
 {
 	CommunicationThreadData* pCommData = (CommunicationThreadData*)arg;
@@ -240,7 +250,10 @@ DWORD WINAPI ClientCommunicationThread(LPVOID arg)
 
 	while (true)
 	{
-		Sleep(10);
+		//Sleep(10);
+
+		int deadcount{ 0 };
+
 		// 데이터 받기
 		retval = recv(client_sock, (char*)&pGameData->m_Players[clientNumber].KeyInput, sizeof(InputData), 0);
 		if (retval == SOCKET_ERROR)
@@ -262,6 +275,7 @@ DWORD WINAPI ClientCommunicationThread(LPVOID arg)
 		if (retval == SOCKET_ERROR)
 		{
 			err_display("ClientCommunicationThread m_fPacketH2C send()");
+
 			break;
 		}
 
@@ -282,7 +296,10 @@ DWORD WINAPI ClientCommunicationThread(LPVOID arg)
 			playerData.x = gData.m_Players[i].x;
 			playerData.y = gData.m_Players[i].y;
 			if (gData.m_Players[i].stat == dead)		//조종 불능 상태로 만듦
+			{
 				playerData.n = 3;
+				++deadcount;
+			}
 			else
 				playerData.n = gData.m_cPlayerControl[clientNumber];
 
@@ -294,7 +311,11 @@ DWORD WINAPI ClientCommunicationThread(LPVOID arg)
 			}
 		}
 	}
-
+	for (int i = 0; i < pGameData->m_fPacketH2C.NumOfClient; ++i)
+	{
+		if (pGameData->m_Players[i].sockAddress == client_sock)
+			pGameData->m_Players[i].sockAddress = NULL;
+	}
 	//closesocket()
 	closesocket(client_sock);
 	printf("[TCP 서버] Communication Thread 종료: IP 주소=%s, 포트 번호=%d\n",

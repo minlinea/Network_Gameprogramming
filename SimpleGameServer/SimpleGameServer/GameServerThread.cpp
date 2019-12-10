@@ -245,5 +245,8 @@ void GameServerThreadData::Update(float fTimeElapsed)
 		Now_Time = 0.f;
 	}
 
+	if (death_cnt >= MAX_PLAYER - 1)
+		m_bGameEnd = true;
+
 
 }

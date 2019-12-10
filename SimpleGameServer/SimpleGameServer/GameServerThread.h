@@ -78,10 +78,12 @@ public:
 struct GameServerThreadData
 {
 public:
-	Player					m_Players[3];				// 플레이어 개개인의 상태 구조체 (소켓 프로그래밍과 무관)
+	Player					m_Players[3];				// 플레이어 개개인의 상태 구조체 (socket 구조체도 갖고 있음)
 	FixedData				m_fPacketH2C;
 	MapData					m_MapData;
 	char					m_cPlayerControl[MAX_PLAYER];
+
+	bool					m_bGameEnd{ 0 };
 
 public:
 
@@ -96,13 +98,6 @@ public:
 	char					cClientNumb;
 
 	CommunicationThreadData(GameServerThreadData* pData, char n) :pGameData(pData), cClientNumb(n) {};
-};
-
-class GameServerThread
-{
-public:
-	//GameServerThread();
-	//~GameServerThread();
 };
 
 
