@@ -3,7 +3,8 @@
 
 float ChangeTime = 5.f;
 float Now_Time = 0.f;
-extern HANDLE CommunicationThread[3];
+extern HANDLE hCommunicationThread[3];
+extern HANDLE hCommunicationThreadEvent[3];
 void GameServerThreadData::MakeCommunicationThread(void)
 {
 	
@@ -11,17 +12,20 @@ void GameServerThreadData::MakeCommunicationThread(void)
 	for (int i = 0; i < m_fPacketH2C.NumOfClient; ++i)
 	{
 		HANDLE hThread{ nullptr };
-		CommunicationThread[i] = CreateEvent(NULL, TRUE, FALSE, NULL);
-		CommunicationThreadData* cData = new CommunicationThreadData(this, i);
-		hThread = CreateThread(NULL, 0, ClientCommunicationThread, (LPVOID)cData, 0, NULL);
+		hCommunicationThreadEvent[i] = CreateEvent(NULL, TRUE, FALSE, NULL);
+		if (hCommunicationThreadEvent[i] != NULL)
+		{
+			CommunicationThreadData* cData = new CommunicationThreadData(this, i);
+			hCommunicationThread[i] = CreateThread(NULL, 0, ClientCommunicationThread, (LPVOID)cData, 0, NULL);
 
-		if (hThread == NULL)
-		{
-			//
-		}
-		else
-		{
-			CloseHandle(hThread);
+			if (hCommunicationThread[i] == NULL)
+			{
+				//
+			}
+			else
+			{
+				CloseHandle(hCommunicationThread[i]);
+			}
 		}
 	}
 }

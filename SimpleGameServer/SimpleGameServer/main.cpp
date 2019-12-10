@@ -6,11 +6,14 @@ DWORD WINAPI ClientThread(LPVOID arg);
 void err_quit(const char* msg);
 void err_display(const char* msg);
 bool creating = true;
+bool matching = false;
+bool end_game = false;
 MatchingServer g_Matching;
 CGameTimer g_Msgtimer;
 HANDLE hGameServerThread;
-HANDLE CommunicationThread[3];
-
+HANDLE hGameServerThreadEvent;
+HANDLE hCommunicationThread[3];
+HANDLE hCommunicationThreadEvent[3];
 int main(int argc, char* argv[])
 {
 	int retval;
@@ -62,7 +65,6 @@ int main(int argc, char* argv[])
 		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
 
 		hThread = CreateThread(NULL, 0, ClientThread, (LPVOID)client_sock, 0, NULL);
-
 		if (hThread == NULL)
 		{
 			closesocket(client_sock);
@@ -86,26 +88,31 @@ int main(int argc, char* argv[])
 
 DWORD WINAPI MatchingThread(LPVOID listen_socket)
 {
-
 	g_Msgtimer.Tick(1.5f);
 	while (true)
 	{
-		if (g_Matching.isMatchingQueueFull() && creating)
+		if (g_Matching.isMatchingQueueFull())
 		{
 			printf("풀상태\n");
+			matching = true;
+			hGameServerThreadEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+			if (hGameServerThreadEvent != NULL)
+			{
+				std::vector<SOCKET> matchingqueue = g_Matching.GetQueue();
 
-			hGameServerThread = CreateEvent(NULL, TRUE, TRUE, NULL);
-			std::vector<SOCKET> matchingqueue = g_Matching.GetQueue();
+				SOCKET s[3] = { matchingqueue[0], matchingqueue[1], matchingqueue[2] };
 
-			SOCKET s[3] = { matchingqueue[0], matchingqueue[1], matchingqueue[2] };
-
-			hGameServerThread = CreateThread(NULL, 0, GameServerThread, (LPVOID)s, 0, NULL);
-
-			creating = false;
-		}
-		if (!creating && !g_Matching.isMatchingQueueFull())
-		{
-			creating = true;
+				hGameServerThread = CreateThread(NULL, 0, GameServerThread, (LPVOID)s, 0, NULL);
+				creating = false;
+			}
+			else
+			{
+				printf("hGameServerThreadEvent error!\n");
+				break;
+			}
+			int retval = WaitForSingleObject(hGameServerThreadEvent, INFINITE);
+			
+			break;
 		}
 	}
 	return 0;
@@ -164,13 +171,17 @@ DWORD WINAPI ClientThread(LPVOID arg)
 	}
 
 		//retval = WaitForMultipleObjects(3, CommunicationThread, TRUE, INFINITE);
-	if(!creating)
-		retval = WaitForSingleObject(hGameServerThread, INFINITE);
-		//
-	
+	if (!creating)
+	{
+		retval = WaitForSingleObject(hGameServerThreadEvent, INFINITE);
+	}
+	else
+	{
+		g_Matching.PopClient(client_sock);
+	}
 	printf("[TCP 서버] Client Thread 종료: IP 주소=%s, 포트 번호=%d\n",
 		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
-	g_Matching.PopClient(client_sock);
+	
 	return 0;
 }
 
@@ -232,9 +243,10 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 
 	gameData.m_fPacketH2C.mapChanged = true;
 
-	int retval = WaitForMultipleObjects(3, CommunicationThread, TRUE, INFINITE);
+	int retval = WaitForMultipleObjects(3, hCommunicationThreadEvent, TRUE, INFINITE);
 	
-	SetEvent(hGameServerThread);
+	SetEvent(hGameServerThreadEvent);
+	
 	while (1)
 	{
 		//printf("업데이트\n");
@@ -245,7 +257,12 @@ DWORD WINAPI GameServerThread(LPVOID arg)
 		Sleep(10);
 
 		gameData.Update(timer.GetTimeElapsed());
+		
+		if (end_game)
+			break;
 	}
+	exit(1);
+	return 0;
 }
 
 DWORD WINAPI ClientCommunicationThread(LPVOID arg)
@@ -277,7 +294,10 @@ DWORD WINAPI ClientCommunicationThread(LPVOID arg)
 	}
 
 
-	SetEvent(CommunicationThread[pCommData->cClientNumb]);
+	SetEvent(hCommunicationThreadEvent[pCommData->cClientNumb]);
+	retval = WaitForSingleObject(hGameServerThreadEvent, INFINITE);
+
+	
 	while (1)
 	{
 		Sleep(10);
@@ -336,7 +356,7 @@ DWORD WINAPI ClientCommunicationThread(LPVOID arg)
 	closesocket(client_sock);
 	printf("[TCP 서버] Communication Thread 종료: IP 주소=%s, 포트 번호=%d\n",
 		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
-
+	end_game = true;
 	return 0;
 }
 
