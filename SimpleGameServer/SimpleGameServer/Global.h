@@ -36,9 +36,14 @@ const float TILEHEIGHT{ 50 };
 //// 사용자 정의 헤더
 #include "cTimer.h"
 #include "GameServerThread.h"
-#include "MatchingServer.h"
 
-
+enum MSG_MatchingSystem
+{
+	Msg_Ready = 8,
+	Msg_ReadyCancel,
+	Msg_ConfirmReadyCancel,
+	Msg_PlayGame
+};
 
 enum ObjectType
 {
