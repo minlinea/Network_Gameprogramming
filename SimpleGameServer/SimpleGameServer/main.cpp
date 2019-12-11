@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
 
 DWORD WINAPI MatchingThread(LPVOID listen_socket)		// 매칭 스레드, 매칭 대기 중인 클라이언트와 통신하며
 {																				// 인원 충족 시, GameServerThread를 생성한다.
-	g_Msgtimer.Tick(1.5f);
+	g_Msgtimer.Tick(1.f);
 	int retval;
 	unsigned char msg;
 	SOCKADDR_IN clientaddr;

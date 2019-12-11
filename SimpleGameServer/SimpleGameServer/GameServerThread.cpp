@@ -92,7 +92,7 @@ void GameServerThreadData::Update(float fTimeElapsed)
 		}
 
 
-		if (m_Players[i].KeyInput.attack)		// ÆøÅº(5) µÎ±â
+		if (m_Players[i].KeyInput.attack && m_Players[i].stat != dead)		// ÆøÅº(5) µÎ±â
 		{
 			switch (m_MapData.m_Map[posA * MAP_COLUMN + posB])
 			{

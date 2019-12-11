@@ -58,7 +58,7 @@ struct Player
 public:
 	float		x, y;
 	float		fSpeed{ 10.f };
-	status		stat;
+	status		stat = live;
 	SOCKET 	sockAddress;
 	InputData	KeyInput;
 
