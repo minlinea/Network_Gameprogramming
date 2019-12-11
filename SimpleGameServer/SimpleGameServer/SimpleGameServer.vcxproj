@@ -120,13 +120,11 @@
     <ClCompile Include="cTimer.cpp" />
     <ClCompile Include="GameServerThread.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MatchingServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cTimer.h" />
     <ClInclude Include="GameServerThread.h" />
     <ClInclude Include="Global.h" />
-    <ClInclude Include="MatchingServer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
